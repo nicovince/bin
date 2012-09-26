@@ -1,0 +1,8 @@
+#!/usr/bin/python
+import sys, os
+diffprogram = '/usr/bin/gvimdiff'
+fn_old = sys.argv[6]
+fn_working_copy = sys.argv[7]
+# arrange the args in the order diffprogram expects them
+args = ['svndiffwithvim', '-g', '-d', fn_old, fn_working_copy]
+os.execv(diffprogram, args)

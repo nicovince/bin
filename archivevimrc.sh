@@ -1,0 +1,12 @@
+#!/bin/bash
+
+BACKUP_FOLDER_NAME="vim_`date +%Y%m%d`"
+BACKUP_FOLDER=$HOME/$BACKUP_FOLDER_NAME
+
+
+cp -r $HOME/.vim $BACKUP_FOLDER
+cp $HOME/.vimrc $BACKUP_FOLDER
+
+cd $HOME
+
+tar czvf $BACKUP_FOLDER_NAME.tar.gz $BACKUP_FOLDER_NAME
