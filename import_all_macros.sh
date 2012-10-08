@@ -60,3 +60,9 @@ MODULE=mac_tdc
 echo "Import ${MODULE}"
 macro2git.sh -macro ${MODULE} -filelist srcv/tops/lte_tops/file_list_mac_tdc -dest ${DEST} -top mac_tdc
 copy_to_repo ${MODULE}
+
+# downlink
+MODULE=downlink
+echo "Import ${MODULE}"
+macro2git.sh -macro ${MODULE} -filelist srcv/tops/lte_tops/file_list_downlink -dest ${DEST} -top downlink_top
+copy_to_repo ${MODULE}
