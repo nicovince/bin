@@ -11,7 +11,7 @@ copy_to_repo()
   pushd ${DEST} > /dev/null
   pushd ${module} > /dev/null
   if [ ${module} = "asiclib" ]; then
-    cp -r memories srcv ${REPO_DEST}/${MODULE}
+    cp -r memories srcv ${REPO_DEST}/${module}
   else
     cp -r simv srcv ${REPO_DEST}/${module}
   fi
@@ -52,7 +52,7 @@ copy_to_repo ${MODULE}
 # mips_cpu
 MODULE=mips_cpu
 echo "Import ${MODULE}"
-macro2git.sh -macro ${MODULE} -filelist ./srcv/platform/mips24kc_macro/mips24kc_cpu_macro/file_list -dest ${DEST} -top mips24kc_cpu_top.v
+macro2git.sh -macro ${MODULE} -filelist ./srcv/platform/mips24kc_macro/mips24kc_cpu_macro/file_list -dest ${DEST} -top mips24kc_cpu_top
 copy_to_repo ${MODULE}
 
 # mac_tdc
@@ -65,4 +65,39 @@ copy_to_repo ${MODULE}
 MODULE=downlink
 echo "Import ${MODULE}"
 macro2git.sh -macro ${MODULE} -filelist srcv/tops/lte_tops/file_list_downlink -dest ${DEST} -top downlink_top
+copy_to_repo ${MODULE}
+
+# lte_top_dsproc
+MODULE=lte_top_dsproc
+echo "Import ${MODULE}"
+macro2git.sh -macro ${MODULE} -filelist srcv/phy/dsproc/file_list -dest ${DEST} -top lte_top_dsproc
+copy_to_repo ${MODULE}
+
+# digrf_macro
+MODULE=digrf
+echo "Import ${MODULE}"
+macro2git.sh -macro ${MODULE} -filelist srcv/phy/digrf_v4/digrf_macro/file_list -dest ${DEST} -top digrf_macro
+copy_to_repo ${MODULE}
+
+
+# shiva_top
+MODULE=shiva_top
+echo "Import ${MODULE}"
+macro2git.sh -macro ${MODULE} -filelist srcv/tops/shiva_top/file_list -dest ${DEST} -top shiva_top \
+  -flag USE_SCS_MEAS_MACRO_STUB \
+  -flag USE_SCS_MEAS_MACRO_0_STUB \
+  -flag USE_SCS_MEAS_MACRO_1_STUB \
+  -flag ULP_CORE_STUB \
+  -flag MIPS_CPU_STUB \
+  -flag MIPS_CLIENT_STUB \
+  -flag MAC_TDC_TOP_STUB \
+  -flag USE_DOWNLINK_TOP_STUB \
+  -flag USE_DOWNLINK_TOP_0_STUB \
+  -flag USE_DOWNLINK_TOP_1_STUB \
+  -flag LTE_TOP_DSPROC_STUB \
+  -flag LTE_TOP_DSPROC_0_STUB \
+  -flag LTE_TOP_DSPROC_1_STUB \
+  -flag USE_DIGRF_MACRO_STUB \
+  -flag USE_DIGRF_MACRO_0_STUB \
+  -flag USE_DIGRF_MACRO_1_STUB
 copy_to_repo ${MODULE}

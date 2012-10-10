@@ -20,21 +20,39 @@ done
 
 ASICLIB="asiclib"
 ASICLIBPATH=${ASICLIBPATH:-./srcv/common/asiclib}
+PADLIBPATH=${PADLIBPATH:-./srcv/common/padlib}
+PAD32KLIBPATH=${PAD32KLIBPATH:-srcv/common/32kosc}
 DEST=${DEST:-${HOME}/work/SQN3210_product/importFrom3210}/${ASICLIB}
-echo "${ASICLIB}: Copy files"
+echo "${ASICLIB} : Copy files"
 
 # Cleanup Dest folder
 rm -Rf ${DEST}
 mkdir -p ${DEST}
 
-# Deals  with cells
+# Copy cells
 cp -r --parents ${ASICLIBPATH} ${DEST}
 pushd ${DEST}/${ASICLIBPATH} > /dev/null
+sed "s@ASIC/@ASIC/${ASICLIB}/@" file_list -i
 chmod -x *
+popd > /dev/null
+
+# Copy pads
+cp -r --parents ${PADLIBPATH} ${DEST}
+pushd ${DEST}/${PADLIBPATH} > /dev/null
+sed "s@ASIC/@ASIC/${ASICLIB}/@" file_list -i
+chmod -x *
+popd > /dev/null
+
+# 32K pads
+cp -r --parents ${PAD32KLIBPATH} ${DEST}
+pushd ${DEST}/${PAD32KLIBPATH} > /dev/null
+sed "s@ASIC/@ASIC/${ASICLIB}/@" file_list -i
+chmod -x *
+popd > /dev/null
+
 
 # Deals with memories
 MEMORYPATH=${MEMORYPATH:-./memories}
-popd > /dev/null
 # copy common stuff
 cp --parents ${MEMORYPATH}/Verilog/std_cells.v ${DEST}
 
@@ -109,7 +127,33 @@ RA1RW_D800_W72
 RF1RW_D256_W8
 RF1RW_D288_W72"
 
-MEMORIES="${SCS_MEAS_MEMORIES} ${ULP_MEMORIES} ${MIPS_CLIENT_MEMORIES} ${MIPS_CPU_MEMORIES} ${MAC_TDC_MEMORIES} ${DOWNLINK_MEMORIES}"
+LTE_TOP_DSPROC_MEMORIES="RF1R1W_D16_W64
+RA1RW_D1024_W32_BE_PG
+RA1RW_D2048_W32_BE_PG
+RA1RW_D3584_W48_RE_PG
+RA1RW_D4096_W32_BE_RE
+RA1RW_D4096_W32_BE_RE_PG
+RF1R1W_D24_W48
+RF1R1W_D32_W48
+RF1RW_D16_W168
+RF1RW_D16_W182"
+
+DIGRF_MEMORIES="RF1R1W_D512_W32
+RA2RW_D2048_W8"
+
+SHIVA_TOP_MEMORIES="RA2RW_D2048_W8
+RF1R1W_D16_W32
+RF1R1W_D32_W32
+RF1R1W_D48_W16
+RF1R1W_D64_W52
+RF1R1W_D784_W32_BE
+RF1R1W_D800_W32_BE
+RA2RW_D1024_W32
+RF1R1W_D64_W32
+RF1R1W_D64_W96
+RF1RW_D16_W26"
+
+MEMORIES="${SCS_MEAS_MEMORIES} ${ULP_MEMORIES} ${MIPS_CLIENT_MEMORIES} ${MIPS_CPU_MEMORIES} ${MAC_TDC_MEMORIES} ${DOWNLINK_MEMORIES} ${LTE_TOP_DSPROC_MEMORIES} ${DIGRF_MEMORIES} ${SHIVA_TOP_MEMORIES}"
 for m in ${MEMORIES}; do
   find  ${MEMORYPATH} -name "*${m}*" -exec cp --parents {} ${DEST} \;
 done
