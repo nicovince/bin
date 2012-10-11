@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # repo/git path
 REPO_DEST="${HOME}/work/SQN3210_product/git/SQN3210_PRODUCT"
 # import in a temporary location 
@@ -101,3 +102,6 @@ macro2git.sh -macro ${MODULE} -filelist srcv/tops/shiva_top/file_list -dest ${DE
   -flag USE_DIGRF_MACRO_0_STUB \
   -flag USE_DIGRF_MACRO_1_STUB
 copy_to_repo ${MODULE}
+
+svn info > svn_info.txt
+cp svn_info.txt ${DEST}
