@@ -47,18 +47,18 @@ def getRenamesVerilog(filename, prefix):
     fp = open(filename)
     regexModuleName = re.compile("^ *module *(\w+) *.*$")
     regexDefine = re.compile("^ *`define *(\w+) *.*$")
-    searchAndReplace = list()
+    searchAndReplace = dict()
     for line in fp:
         if regexModuleName.match(line) != None:
             moduleName = regexModuleName.match(line).group(1)
             if parsedArgs.debug:
                 print "[getRenamesVerilog]: module match : " + moduleName
-            searchAndReplace.append([moduleName, prefix + "_" + moduleName]);
+            searchAndReplace.update({moduleName : prefix + "_" + moduleName});
         elif regexDefine.match(line) != None:
             defineName = regexDefine.match(line).group(1)
             if parsedArgs.debug:
                 print "[getRenamesVerilog]: define match : " + defineName
-            searchAndReplace.append([defineName, prefix.upper() + "_" + defineName]);
+            searchAndReplace.update({defineName : prefix.upper() + "_" + defineName});
 
     fp.close()
     return searchAndReplace
@@ -67,52 +67,54 @@ def getRenamesVerilog(filename, prefix):
 def getRenamesVhdl(filename, prefix):
     fp = open(filename)
     regexEntityName = re.compile("^ *entity *(\w+) *.*$", re.IGNORECASE)
-    regexPackageName = re.compile("^ *package *(\w+) *.*$", re.IGNORECASE)
+    regexPackageName = re.compile("^ *package *(body)? *(\w+) *.*$", re.IGNORECASE)
     regexConstantName =re.compile("^ *constant *(\w+) *.*$", re.IGNORECASE)
-    searchAndReplace = list()
+    searchAndReplace = dict()
     for line in fp:
         if regexEntityName.match(line) != None:
             entityName = regexEntityName.match(line).group(1)
             if parsedArgs.debug:
-                print "[getRenamesVhdl]: entity match : " + entityName
-            searchAndReplace.append([entityName, prefix + "_" + entityName])
+                print "[getRenamesVhdl]: entity match : " + entityName + "[" + line +"]"
+            searchAndReplace.update({entityName : prefix + "_" + entityName})
         elif regexPackageName.match(line) != None:
-            entityName = regexPackageName.match(line).group(1)
+            packageName = regexPackageName.match(line).group(2)
             if parsedArgs.debug:
-                print "[getRenamesVhdl]: Package match : " + entityName
-            searchAndReplace.append([entityName, prefix + "_" + entityName])
-        elif regexConstantName.match(line) != None:
-            entityName = regexConstantName.match(line).group(1)
-            if parsedArgs.debug:
-                print "[getRenamesVhdl]: Constant match : " + entityName
-            searchAndReplace.append([entityName, prefix + "_" + entityName])
+                print "[getRenamesVhdl]: Package match : " + packageName + "[" + line +"]"
+            searchAndReplace.update({packageName : prefix + "_" + packageName})
+        # Do not replace constants as they are protected by vhdl namespace
+        #elif regexConstantName.match(line) != None:
+        #    constantName = regexConstantName.match(line).group(1)
+        #    if parsedArgs.debug:
+        #        print "[getRenamesVhdl]: Constant match : " + constantName + "[" + line +"]"
+        #    searchAndReplace.update({constantName : prefix + "_" + constantName})
     fp.close()
     return searchAndReplace
 
 # get replacements to do from list of file
 def getSearchAndReplace(files):
-    verilogSearchAndReplace = list()
-    vhdlSearchAndReplace = list()
-    fileRenames = list()
+    verilogSearchAndReplace = dict()
+    vhdlSearchAndReplace = dict()
+    fileRenames = dict()
     for f in files:
-        fileRenames.append([os.path.basename(f), parsedArgs.macro + "_" + os.path.basename(f)])
+        dst = parsedArgs.destination_dir + "/" + os.path.dirname(parsedArgs.destination_dir) + "/" + os.path.basename(f)
+        fileRenames[f] = dst
         if isVerilog(f):
             if parsedArgs.debug:
                 print "[getSearchAndReplace]: " + f + " is Verilog"
-            fileSearchAndReplace = getRenamesVerilog(f, parsedArgs.macro)
+            fileSearchAndReplace = getRenamesVerilog(f, macroName)
             if len(fileSearchAndReplace):
-                verilogSearchAndReplace += fileSearchAndReplace
+                verilogSearchAndReplace.update(fileSearchAndReplace)
         elif isVhdl(f):
             if parsedArgs.debug:
                 print "[getSearchAndReplace]: " + f + " is Vhdl"
-            fileSearchAndReplace = getRenamesVhdl(f, parsedArgs.macro)
+            fileSearchAndReplace = getRenamesVhdl(f, macroName)
             if len(fileSearchAndReplace):
-                vhdlSearchAndReplace += fileSearchAndReplace
+                vhdlSearchAndReplace.update(fileSearchAndReplace)
         else:
             if parsedArgs.debug:
                 print "[getSearchAndReplace]: Could not determine type of " + f
 
-    return (fileRenames, verilogSearchAndReplace, vhdlSearchAndReplace)
+    return (verilogSearchAndReplace, vhdlSearchAndReplace)
 
 
 
@@ -123,23 +125,55 @@ def prefixListElements(l, prefix):
         result.append(prefix + el)
     return result
 
+# Adds prefix in front of the basename of each file 
+def prefixFilenames(files, prefix):
+    result = list()
+    for f in files:
+        result.append(os.path.dirname(f) + "/" + prefix + os.path.basename(f))
+    return result
 
-def patchFile(srcFile, destFile, commonDir, destDir, searchesAndReplaces):
-    fileRenames =  searchesAndReplaces[0]
-    verilogSearchAndReplace = searchesAndReplaces[1]
-    vhdlSearchAndReplace = searchesAndReplaces[2]
+# Builds regex of the search pattern and return an hash table indexed by the regex
+def getWordsRegExp(searchAndReplace, flag=0):
+    result = dict()
+    for (search, replace) in searchAndReplace.iteritems():
+        regex = re.compile(r"\b" + search + r"\b", flag)
+        result[regex] = replace;
+    return result
+
+
+
+
+def patchFile(srcFile, destFile, searchesAndReplaces, mapCommonFilenames, mapBasenameFiles):
+    #fileRenames =  searchesAndReplaces[0]
+    verilogSearchAndReplace = searchesAndReplaces[0]
+    vhdlSearchAndReplace = searchesAndReplaces[1]
 
     if parsedArgs.debug:
         print "[patchFile]: " + verilogSearchAndReplace.__repr__()
         print "[patchFile]: " + vhdlSearchAndReplace.__repr__()
-        print "[patchFile]: " + fileRenames.__repr__()
-        print "[patchFile]: " + commonDir
-        print "[patchFile]: " + destDir
+        print "[patchFile]: src : " + src
+        print "[patchFile]: dst : " + dst
 
-    fdDst = open(destDir + "/" + destFile + ".new", 'w')
-    fdSrc = open(commonDir + "/" + srcFile, 'r')
+    fdDst = open(destFile + ".new", 'w')
+    fdSrc = open(srcFile, 'r')
     for line in fdSrc:
-        fdDst.write(line)
+        newLine = line
+        # 'r' preceding strings in re is used to take what is in quote as raw
+        # Verilog 
+        for (search,replace) in verilogSearchAndReplace.iteritems():
+            newLine = re.sub(search, replace, newLine)
+        # Vhdl
+        for (search,replace) in vhdlSearchAndReplace.iteritems():
+            newLine = re.sub(search, replace, newLine)
+        # filename with path
+        for (search,replace) in mapCommonFilenames.iteritems():
+            newLine = re.sub(search, replace, newLine)
+        # basename of file
+        for (search,replace) in mapBasenameFiles.iteritems():
+            newLine = re.sub(search, replace, newLine)
+
+        fdDst.write(newLine)
+
     fdDst.close()
     fdSrc.close()
 
@@ -163,7 +197,7 @@ parser.add_option(
     action  = "store",
     dest    = "common_dir",
     default = "not_set",
-    help    = "Path to common directory to be used for common macro modules"
+    help    = "Path to common directory to export common modules from"
     )
 
 parser.add_option(
@@ -172,7 +206,7 @@ parser.add_option(
     action  = "store",
     dest    = "destination_dir",
     default = "not_set",
-    help    = "Path to common directory of the macro"
+    help    = "Path to macro to import"
     )
 
 parser.add_option(
@@ -181,16 +215,7 @@ parser.add_option(
     action  = "store",
     dest    = "filelist",
     default = "not_set",
-    help    = "filelist containing the list of the common modules to import (as named in common directory"
-    )
-
-parser.add_option(
-    "-m",
-    "--macro",
-    action  = "store",
-    dest    = "macro",
-    default = "not_set",
-    help    = "macro name for which import of common modules is done"
+    help    = "filelist containing the list of the common modules to import (as named in common directory)"
     )
 
 
@@ -199,28 +224,64 @@ parser.add_option(
 if parsedArgs.debug:
     print "debug set"
 
+if parsedArgs.destination_dir == "not_set":
+    print "destination_dir not specified"
+    parser.print_help()
+    sys.exit(1)
+if parsedArgs.common_dir == "not_set":
+    print "common_dir not specified"
+    parser.print_help()
+    sys.exit(1)
+
+# retrieve macro name from destination directory
+macroName = os.path.basename(parsedArgs.destination_dir)
+
 # Check filelist accessible
 if not os.access(parsedArgs.filelist, os.F_OK|os.R_OK):
     print "filelist name : " + parsedArgs.filelist + " not accessible"
     sys.exit(1)
 
 
-filesInCommon = readFilelist(parsedArgs.filelist)
-files = prefixListElements(filesInCommon, parsedArgs.common_dir + "/")
+# path relatives to common and dest dirs
+srcCommonFiles = readFilelist(parsedArgs.filelist)
+dstCommonFiles = prefixFilenames(srcCommonFiles, macroName + "_")
+# path absolutes
+srcFiles = prefixListElements(srcCommonFiles, parsedArgs.common_dir + "/")
+dstFiles = prefixListElements(dstCommonFiles, parsedArgs.destination_dir + "/")
+# basenames
+srcBasenames = list()
+for f in srcCommonFiles:
+    srcBasenames.append(os.path.basename(f))
+dstBasenames = list()
+for f in dstCommonFiles:
+    dstBasenames.append(os.path.basename(f))
+
+
+# map with absolute paths
+mapFiles = dict(zip(srcFiles, dstFiles))
+# map with relatives paths from common_dir and dest_dir
+mapCommonFilenames = dict(zip(srcCommonFiles, dstCommonFiles))
+# map with basenames
+mapBasenameFiles = dict(zip(srcBasenames, dstBasenames))
+
 
 # check content of filelist is accessible
-if not checkFilesExist(files):
+if not checkFilesExist(srcFiles):
     sys.exit(1)
 else:
     if parsedArgs.debug:
         print "All files given in " + parsedArgs.filelist + " exists and readable"
 
 # Read Hdl to build replacement lists
-(fileRenames, verilogSearchAndReplace, vhdlSearchAndReplace) = getSearchAndReplace(files)
+(verilogSearchAndReplace, vhdlSearchAndReplace) = getSearchAndReplace(srcFiles)
 
-#print verilogSearchAndReplace
-#print vhdlSearchAndReplace
-#print fileRenames
+# hashes with regex instead of string for the search pattern (key)
+verilogRegexSaR = getWordsRegExp(verilogSearchAndReplace)
+vhdlRegexSaR = getWordsRegExp(vhdlSearchAndReplace, re.IGNORECASE)
+mapCommonFilenamesRegex = getWordsRegExp(mapCommonFilenames)
+mapBasenameFilesRegex = getWordsRegExp(mapBasenameFiles)
 
-searchesAndReplaces = [fileRenames, verilogSearchAndReplace, vhdlSearchAndReplace]
-patchFile(filesInCommon[0], parsedArgs.common_dir, parsedArgs.destination_dir, searchesAndReplaces)
+searchesAndReplaces = [verilogRegexSaR, vhdlRegexSaR]
+for (src,dst) in mapFiles.iteritems():
+    print src + " -> " + dst
+    patchFile(src, dst, searchesAndReplaces, mapCommonFilenamesRegex, mapBasenameFilesRegex)
