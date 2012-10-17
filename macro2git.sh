@@ -110,7 +110,7 @@ HDL_FILES=`${FILEPP} -e -kc "//#" ${FLAGS} ${FILELIST} | sed '/^$/d'`
 # sort result of filepp
 # Excludes asiclib, padlib, 32kosc as they are handled differently
 # (one repository shared with all macros)
-EXCLUDE_PATTERN="asiclib\|padlib\|32kosc"
+EXCLUDE_PATTERN="asiclib\|padlib\|32kosc\|memories"
 VHDL_FILES=`echo ${HDL_FILES} | sed 's/ /\n/g' | sort | uniq | grep '.vhdl\?$' | grep -v "${EXCLUDE_PATTERN}"`
 VERILOG_FILES=`echo ${HDL_FILES} | sed 's/ /\n/g' | sort | uniq | grep '.vh\?$' | grep -v "asiclib" | grep -v "${EXCLUDE_PATTERN}"`
 INCDIRS=`echo ${HDL_FILES} | sed 's/ /\n/g' | sort | uniq | grep incdir | sed 's/+incdir+//' | grep -v "${EXCLUDE_PATTERN}"`
@@ -286,6 +286,12 @@ for cf in ${COMMON_FILES}; do
       macro_module_name="${MACRO}_${m}"
       # record the module renaming
       echo "s/\\<${m}\\>/${macro_module_name}/g" >> ${SED_RENAME_MODULES}
+    done
+    defines_names=`grep $'\x60'define ${cf} | grep "^\s*.define" | sed 's/^\s*.define\s\+\(\w\+\)\s*.*$/\1'/`
+    for d in ${defines_names}; do
+      macro_define_name="${MACRO}_${d}"
+      # record the define renaming
+      echo "s/\\<${d}\\>/${macro_define_name}/g" >> ${SED_RENAME_MODULES}
     done
   fi
 
