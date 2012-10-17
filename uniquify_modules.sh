@@ -37,6 +37,12 @@ modules=`grep "\<module\>" $netlist | sed 's/module\s*\([[:alnum:]_]*\)\s*(.*/\1
 cp $netlist $netlist.bak
 
 # Search and replace module names
+SED_SCRIPT="${netlist}_uniquify.sed"
+echo "#!/bin/sed -f" > ${SED_SCRIPT}
+chmod +x ${SED_SCRIPT}
+
 for m in $modules; do
-  sed -i "s/\<${m}\>/${top}_${m}/" $netlist
+  #sed -i "s/\<${m}\>/${top}_${m}/" $netlist
+  echo "s/\<${m}\>/${top}_${m}/g" >> ${SED_SCRIPT}
 done
+${SED_SCRIPT} -i ${netlist}
