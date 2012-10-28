@@ -1,0 +1,9 @@
+#!/bin/sh
+
+dcop amarok > /dev/null 2>&1
+AMAROK_RUNNING=$?
+
+if [ $AMAROK_RUNNING -eq 0 ]; then
+  dcop amarok player showOSD
+  dcop amarok player title
+fi

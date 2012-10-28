@@ -1,0 +1,31 @@
+#!/bin/sh
+
+zfnum()
+{
+a=$1
+n=$2
+a_size=`echo "$a" | wc -m`
+a_size=$(($a_size - 1))
+i=0
+out=$a
+N=$(($n-$a_size))
+while [ $i -lt $N ]; do
+	out=0$out
+	i=$(($i+1));
+done
+echo $out
+}
+
+address=http://www.enst.fr/photos-rd/images/
+suffix="Remise diplomes 2006 ENST "
+i=0
+while [ $i -lt 464 ]; do 
+	number=`zfnum $i 3`
+	i=$(($i+1));
+	filename=$suffix"("$number").jpg"
+	echo $filename
+	full_addr=$address$filename
+	echo $full_addr
+#	wget "$full_addr"
+done
+

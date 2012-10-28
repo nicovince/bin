@@ -1,0 +1,232 @@
+#! /bin/sh
+
+#
+# Restore the original Firefox and/or Thunderbird icons.
+#
+
+#
+# If you're using Dapper, comment the next line and uncomment the second.
+#
+# TODO: Automatic detection of Ubuntu version
+#
+FIREFOX_LIB="/usr/lib/mozilla-firefox/" #Hoary, Breezy
+#FIREFOX_LIB="/usr/lib/firefox/" #Dapper
+
+FIREFOX_BIN="/usr/bin/mozilla-firefox"
+THUNDERBIRD_BIN="/usr/bin/mozilla-thunderbird"
+
+ICON_PACK_URL="http://ubuntu.globalvision.ch/mozilla_icons.tar.bz2"
+ICON_PACK_FILENAME="mozilla_icons.tar.bz2"
+TMP_DIR="/tmp/moz-icons"$$"/"
+
+
+#Ctrl-C trapping
+trap ctrlc INT
+ctrlc()
+{
+        echo -e "\nAborted by user."
+        rm -rf $TMP_DIR
+        exit 2
+}
+
+
+#Check if run as root
+if [ "$UID" -ne 0 ] ; then
+        echo "You must be root to do that!"
+        exit 1
+fi
+
+
+#Ask which icons to replace
+replace_ff="0"
+replace_ff_doc="0"
+replace_tb="0"
+replace_tb_pm="0"
+
+if [ -x "$FIREFOX_BIN" ] ; then
+        #Firefox
+        echo -n "Replace the Mozilla Firefox program icon (y/n)? [y] "
+        read input
+        if [ -z "$input" ] || [ "$input" == "y" ] || [ "$input" == "yes" ] || [ "$input" == "Y" ] || [ "$input" == "YES" ] ; then
+                replace_ff="1"
+        fi
+
+        #Firefox document
+        echo -n "Replace the Mozilla Firefox document icon (y/n)? [y] "
+        read input
+        if [ -z "$input" ] || [ "$input" == "y" ] || [ "$input" == "yes" ] || [ "$input" == "Y" ] || [ "$input" == "YES" ] ; then
+                replace_ff_doc="1"
+        fi
+fi
+
+if [ -x "$THUNDERBIRD_BIN" ] ; then
+        #Thunderbird
+        echo -n "Replace the Mozilla Thunderbird program icon (y/n)? [y] "
+        read input
+        if [ -z "$input" ] || [ "$input" == "y" ] || [ "$input" == "yes" ] || [ "$input" == "Y" ] || [ "$input" == "YES" ] ; then
+                replace_tb="1"
+        fi
+
+        #Thunderbird profile manager
+        echo -n "Replace the Mozilla Thunderbird profile manager icon (y/n)? [y] "
+        read input
+        if [ -z "$input" ] || [ "$input" == "y" ] || [ "$input" == "yes" ] || [ "$input" == "Y" ] || [ "$input" == "YES" ] ; then
+                replace_tb_pm="1"
+        fi
+fi
+
+if [ "$replace_ff" -eq "0" ] && [ "$replace_ff_doc" -eq "0" ] && [ "$replace_tb" -eq "0" ] && [ "$replace_tb_pm" -eq "0" ] ; then
+        echo "Nothing to do here."
+        exit 0
+fi
+
+
+#Ask for divert the original packaged files to alternate locations
+divert="0"
+
+echo -e "\nDo you want to divert the original packaged files to alternate locations"
+echo -n "(make the changes permanent) (y/n)? [y] "
+read input
+if [ -z "$input" ] || [ "$input" == "y" ] || [ "$input" == "yes" ] || [ "$input" == "Y" ] || [ "$input" == "YES" ] ; then
+        divert="1"
+fi
+
+
+#Downloading
+echo -en "\nDownloading and replacing icons. Please wait..."
+
+mkdir $TMP_DIR
+wget $ICON_PACK_URL -O $TMP_DIR$ICON_PACK_FILENAME >/dev/null 2>&1
+if [ ! -f $TMP_DIR$ICON_PACK_FILENAME ] ; then
+        echo -e "\nCannot download icons. Please check your internet connection."
+        rm -rf $TMP_DIR
+        exit 1
+fi
+tar xjf $TMP_DIR$ICON_PACK_FILENAME -C $TMP_DIR
+
+
+#Replace Firefox icon
+if [ "$replace_ff" -gt "0" ] ; then
+        if [ ! -f $TMP_DIR"mozilla-firefox.png" ] || [ ! -f $TMP_DIR"mozilla-firefox.xpm" ] ; then
+                echo "Cannot continue (unavailable Firefox icon file)"
+                rm -rf $TMP_DIR
+                exit 1
+        fi
+
+        #Backup
+        cp -f /usr/share/pixmaps/mozilla-firefox.png /usr/share/pixmaps/mozilla-firefox.old.png
+        cp -f /usr/share/pixmaps/mozilla-firefox.xpm /usr/share/pixmaps/mozilla-firefox.old.xpm
+        cp -f $FIREFOX_LIB"icons/default.xpm" $FIREFOX_LIB"icons/default.old.xpm"
+        cp -f $FIREFOX_LIB"chrome/icons/default/default.xpm" $FIREFOX_LIB"chrome/icons/default/default.old.xpm"
+
+        #Divert
+        if [ "$divert" -gt "0" ] ; then
+                dpkg-divert --rename /usr/share/pixmaps/mozilla-firefox.png >/dev/null
+                dpkg-divert --rename /usr/share/pixmaps/mozilla-firefox.xpm >/dev/null
+                dpkg-divert --rename $FIREFOX_LIB"icons/default.xpm" >/dev/null
+                dpkg-divert --rename $FIREFOX_LIB"chrome/icons/default/default.xpm" >/dev/null
+        fi
+
+        #Replace icons
+        cp $TMP_DIR"mozilla-firefox.png" /usr/share/pixmaps/mozilla-firefox.png
+        cp $TMP_DIR"mozilla-firefox.xpm" /usr/share/pixmaps/mozilla-firefox.xpm
+        cp $TMP_DIR"mozilla-firefox.xpm" $FIREFOX_LIB"icons/default.xpm"
+        cp $TMP_DIR"mozilla-firefox.xpm" $FIREFOX_LIB"chrome/icons/default/default.xpm"
+        echo -n "."
+fi
+
+
+#Replace Firefox document icon
+if [ "$replace_ff_doc" -gt "0" ] ; then
+        if [ ! -f $TMP_DIR"mozilla-firefox-doc.png" ] ; then
+                echo "Cannot continue (unavailable Firefox document icon file)"
+                rm -rf $TMP_DIR
+                exit 1
+        fi
+
+        #Backup
+        cp -f $FIREFOX_LIB"icons/document.png" $FIREFOX_LIB"icons/document.old.png"
+
+        #Divert
+        if [ "$divert" -gt "0" ] ; then
+                dpkg-divert --rename $FIREFOX_LIB"icons/document.png" >/dev/null
+        fi
+
+        #Replace icons
+        cp $TMP_DIR"mozilla-firefox-doc.png" $FIREFOX_LIB"icons/document.png"
+        echo -n "."
+fi
+
+
+#Replace Thunderbird icon
+if [ "$replace_tb" -gt "0" ] ; then
+        if [ ! -f $TMP_DIR"mozilla-thunderbird.xpm" ] ; then
+                echo "Cannot continue (unavailable Thunderbird icon file)"
+                rm -rf $TMP_DIR
+                exit 1
+        fi
+
+        #Backup
+        cp -f /usr/share/pixmaps/mozilla-thunderbird.xpm /usr/share/pixmaps/mozilla-thunderbird.old.xpm
+        cp -f /usr/share/pixmaps/mozilla-thunderbird-menu.xpm /usr/share/pixmaps/mozilla-thunderbird-menu.old.xpm
+        cp -f /usr/lib/mozilla-thunderbird/chrome/icons/default/mozilla-thunderbird.xpm /usr/lib/mozilla-thunderbird/chrome/icons/default/mozilla-thunderbird.old.xpm
+        cp -f /usr/lib/mozilla-thunderbird/chrome/icons/default/messengerWindow16.xpm /usr/lib/mozilla-thunderbird/chrome/icons/default/messengerWindow16.old.xpm
+        cp -f /usr/lib/mozilla-thunderbird/chrome/icons/default/messengerWindow.xpm /usr/lib/mozilla-thunderbird/chrome/icons/default/messengerWindow.old.xpm
+
+        #Divert
+        if [ "$divert" -gt "0" ] ; then
+                dpkg-divert --rename /usr/share/pixmaps/mozilla-thunderbird.xpm >/dev/null
+                dpkg-divert --rename /usr/share/pixmaps/mozilla-thunderbird-menu.xpm >/dev/null
+                dpkg-divert --rename /usr/lib/mozilla-thunderbird/chrome/icons/default/mozilla-thunderbird.xpm >/dev/null
+                dpkg-divert --rename /usr/lib/mozilla-thunderbird/chrome/icons/default/messengerWindow16.xpm >/dev/null
+                dpkg-divert --rename /usr/lib/mozilla-thunderbird/chrome/icons/default/messengerWindow.xpm >/dev/null
+        fi
+
+        #Replace icons
+        cp $TMP_DIR"mozilla-thunderbird.xpm" /usr/share/pixmaps/mozilla-thunderbird.xpm
+        cp $TMP_DIR"mozilla-thunderbird.xpm" /usr/share/pixmaps/mozilla-thunderbird-menu.xpm
+        cp $TMP_DIR"mozilla-thunderbird.xpm" /usr/lib/mozilla-thunderbird/chrome/icons/default/mozilla-thunderbird.xpm
+        cp $TMP_DIR"mozilla-thunderbird.xpm" /usr/lib/mozilla-thunderbird/chrome/icons/default/messengerWindow16.xpm
+        cp $TMP_DIR"mozilla-thunderbird.xpm" /usr/lib/mozilla-thunderbird/chrome/icons/default/messengerWindow.xpm
+        echo -n "."
+fi
+
+
+#Replace Thunderbird profile manager icon
+if [ "$replace_tb_pm" -gt "0" ] ; then
+        if [ ! -f $TMP_DIR"mozilla-thunderbird.xpm" ] ; then
+                echo "Cannot continue (unavailable Thunderbird icon file)"
+                rm -rf $TMP_DIR
+                exit 1
+        fi
+
+        #Backup
+        cp -f /usr/share/pixmaps/mozilla-thunderbird-pm-menu.xpm /usr/share/pixmaps/mozilla-thunderbird-pm-menu.old.xpm
+        cp -f /usr/lib/mozilla-thunderbird/chrome/icons/default/default.xpm /usr/lib/mozilla-thunderbird/chrome/icons/default/default.old.xpm
+
+        #Divert
+        if [ "$divert" -gt "0" ] ; then
+                dpkg-divert --rename /usr/share/pixmaps/mozilla-thunderbird-pm-menu.xpm >/dev/null
+                dpkg-divert --rename /usr/lib/mozilla-thunderbird/chrome/icons/default/default.xpm >/dev/null
+        fi
+
+        #Replace icons
+        cp $TMP_DIR"mozilla-thunderbird.xpm" /usr/share/pixmaps/mozilla-thunderbird-pm-menu.xpm
+        cp $TMP_DIR"mozilla-thunderbird.xpm" /usr/lib/mozilla-thunderbird/chrome/icons/default/default.xpm
+        echo -n "."
+fi
+
+
+echo " done !"
+
+
+#Reload gnome-panel
+echo -en "\nShall I reload gnome-panel to apply the changes (y/n)? [y] "
+read input
+if [ -z "$input" ] || [ "$input" == "y" ] || [ "$input" == "yes" ] || [ "$input" == "Y" ] || [ "$input" == "YES" ] ; then
+        killall gnome-panel
+fi
+
+
+rm -rf $TMP_DIR
+exit 0

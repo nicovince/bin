@@ -1,0 +1,4 @@
+#!/bin/bash
+
+i="$*"
+sox -t raw -s -w -c 2 -r 44100 "$i" "${i%.raw}.wav"

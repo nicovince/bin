@@ -1,0 +1,52 @@
+#!/bin/sh
+NAME="$0"
+quickcam_loaded=`lsmod | grep quickcam -c`
+VIDEODEV="/dev/video0"
+
+
+. /lib/lsb/init-functions
+
+## No longer useful since 2.6.20 /dev/video0 seems to be
+## created automaticly... Progress is nice !! 
+#echo Creating device node
+#if [ ! -e /dev/video0 ]; then
+#	mknod $VIDEODEV c 81 0
+#fi
+#if [ ! -e /dev/video1 ]; then
+#	mknod /dev/video1 c 81 1
+#fi
+#sleep 1
+#echo changing mode on $VIDEODEV
+#chmod a+rw $VIDEODEV
+#if [ ! -e /dev/video ]; then
+#	ln -s $VIDEODEV /dev/video
+#fi
+
+case $1 in 
+	start)
+		echo Starting Webcam 
+		if [ "$quickcam_loaded" != "0" ]; then
+			rmmod quickcam
+		fi
+		modprobe quickcam
+		log_begin_msg "Starting Webcam..."
+		;;
+	stop)
+		echo Stoping Webcam
+		if [ $quickcam_loaded -gt 0 ]; then
+			rmmod quickcam
+		fi
+		;;
+	restart)
+		echo Reloading Webcam
+		if [ $quickcam_loaded -gt 0 ]; then
+			rmmod quickcam
+		fi
+		modprobe quickcam	
+		;;
+	*)
+		echo "Usage : $NAME {start|stop|restart}"
+		exit 1
+esac
+
+exit 0

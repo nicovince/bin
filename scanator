@@ -1,0 +1,133 @@
+#!/bin/bash
+###############################################################################
+
+
+###############################################################################
+
+function is_integer()
+{
+  #printf "%d" $1 > /dev/null 2>&1
+  [ "$1" -eq "$1" ] > /dev/null 2>&1
+  return $?
+}
+
+scan_one_file()
+{
+  echo -n "filename : "
+  read filename
+  scan_image -f $filename -p $PRINTER
+}
+
+scan_batch_file()
+{
+  echo -n "filename prefix : "
+  read filename_prefix
+  echo -n "How many digits : "
+  read digits
+  echo -n "Startup index (0): "
+  read idx
+  scan_again=1
+  idx=${idx:=0}
+  while [ $scan_again -eq 1 ]; do
+    filename=`printf "%s_%0${digits}d" $filename_prefix $idx`
+    echo $filename
+    scan_image -f $filename #-p $PRINTER
+    idx=$((idx+1))
+    echo -n "Continue [Y/n]"
+    read -n 1 answer
+    if [ "$answer" = "n" ]; then
+      scan_again=0
+      echo
+    fi
+  done
+}
+
+scan_monthly_batch_file()
+{
+  echo -n "filename prefix : "
+  read filename_prefix
+
+  echo -n "year : "
+  read year
+  if [ `is_integer $year` ]; then
+    echo "Error : year must be integer"
+    exit 1
+  fi
+
+  echo -n "month : "
+  read month
+  if [ `is_integer $month` ]; then
+    echo "Error : month must be integer"
+    exit 1
+  fi
+
+  
+  scan_again=1
+  idx=1
+  while [ $scan_again -eq 1 ]; do
+    filename=`printf "%s_%d_%02d_%d" $filename_prefix $year $month $idx`
+    echo $filename
+    scan_image -f $filename #-p $PRINTER
+
+    # Continue ?
+    echo -n "Continue [Y/n]"
+    read answer
+    if [ "$answer" = "n" ]; then
+      scan_again=0
+      continue
+    fi
+
+    # Scan image for the following month ?
+    echo -n "Next month [Y/n]"
+    read next_month
+    if [ "$next_month" = "n" ]; then
+      idx=$(($idx+1))
+    else
+      idx=1
+      if [ $month -eq 12 ]; then
+        month=1
+        year=$(($year+1))
+      else
+        month=$(($month+1))
+      fi
+    fi
+  done
+  echo "If you scanned only one page per month run the following to remove _1 from filenames :"
+  echo "rename 's/_1.png/.png/' ${filename}*_1.png"
+}
+
+print_help()
+{
+  echo "Usage : scanator <option>"
+  echo "This script is a scan utility to make scan of a batch of files easy with clever naming pattern"
+  echo "Valid options are :"
+  echo "        -m, --monthly  : run a scan for monthly files. (prefix_year_month_idx.png)"
+  echo "        -b, --batch    : run a scan of batch files. (prefix_idx.png)"
+  echo "        -o, --one-file : run a scan of batch files. (filename.png)"
+  echo "        -h, --help     : display this help and exit"
+}
+
+if [ $# -eq 0 ]; then
+  print_help
+  exit 1
+fi
+
+# Get operation from command line arguments
+while [ $# -ne 0 ]; do
+  case $1 in
+    -m|--monthly)
+      scan_monthly_batch_file;;
+    -b|--batch)
+      scan_batch_file;;
+    -o|--one-file)
+      scan_one_file;;
+    -h|--help)
+      print_help
+      exit 0;;
+    *)
+      echo "Unknown option $1"
+      print_help
+      exit 1;;
+  esac
+  shift
+done

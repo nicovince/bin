@@ -1,0 +1,4 @@
+#!/bin/bash
+
+i="$*"
+lame --preset standard "$i" "${i%.wav}.mp3"

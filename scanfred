@@ -1,0 +1,116 @@
+#/bin/bash
+
+PRINTER_1200="hpaio:/usb/PSC_1200_series?serial=MY49EG10BXT0"
+PRINTER_750="hpaio:/usb/PSC_750?serial=ES168BH0MRWB"
+IMAILER="/home/nicolas/Documents/src/scripts/imailer.py"
+SMTP="smtp.orange.fr"
+FROM="nico.vince@gmail.com"
+TO="fred.gg@gmail.com"
+FILES=""
+
+scan_and_save()
+{
+  echo -n "Nom de l'image à scanner : "
+  read filename
+  DATE=`date +%Y-%m-%d`
+  filename=$DATE"_"$filename
+  while [ -f $filename ]; do
+    echo -n "$filename existe déjà, donner un autre nom : "
+    read filename
+    DATE=`date +%Y-%m-%d`
+    filename=$DATE"_"$filename
+  done
+  echo "Capture en cours..."
+  #scanimage -d hpaio:/usb/PSC_750?serial=ES168BH0MRWB --mode Color --resolution 75 > $filename.pnm
+  scanimage -d hpaio:/usb/PSC_1200_series?serial=MY49EG10BXT0 --mode Color --resolution 75 > $filename.pnm
+  echo "Sauvegarde de l'image $filename.png"
+  convert $filename.pnm $filename.png
+  rm $filename.pnm
+  FILES="$FILES $filename.png"
+}
+
+
+ask_new_scan()
+{
+  echo ""
+  echo -n "Scanner une nouvelle image ? [o/n] : "
+  read answer
+  while ( [ -z $answer ] || [ $answer != "o" -a $answer != "O" -a $answer != "y" -a $answer != "Y" -a $answer != "n" -a $answer != "N" ] ); do
+    read answer
+  done
+  if ( [ $answer = "n" ] || [ $answer = "N" ] ); then
+    return 0
+  else 
+    return 1
+  fi
+}
+
+send_mail()
+{
+  echo ""
+  echo -n "Sujet du mail : "
+  read SUBJECT
+  SUBJECT="[Courrier] $SUBJECT"
+  echo -n "Arrivé le : "
+  read CONTENT
+  CONTENT="Arrive le $CONTENT"
+  for i in $FILES; do
+    ATTACH="$ATTACH -j $i "
+  done
+  echo "$IMAILER" -t "$SMTP" -e "$FROM" -s "$SUBJECT" -m "$CONTENT" -d "$TO" $ATTACH
+  $IMAILER -t "$SMTP" -e "$FROM" -s "$SUBJECT" -m "$CONTENT" -d "$TO" $ATTACH
+}
+
+help_message()
+{
+  ret_val=$1
+  echo -p, --printer [750,1200] : select printer
+  echo -h, --help : display this help and quit
+  exit $ret_val
+}
+
+# Read arguments
+read_args()
+{
+  TEMP=`getopt -o hp:f: --long printer:,file:,help \
+  -n 'scan_image' -- "$@"`
+
+  if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
+
+  # Note the quotes around `$TEMP': they are essential!
+  eval set -- "$TEMP"
+
+  while true ; do
+    case "$1" in
+      -p|--printer) case "$2" in
+      "750") printer=$PRINTER_750;;
+      "1200") printer=$PRINTER_1200;;
+      *) printer=$2;;
+    esac
+    echo "select printer $printer"
+    shift 2 ;;
+    -h|--help) help_message 0; shift;;
+    -f|--file) filename="$2"; shift 2;;
+    --) shift ; break ;;
+    *) echo "parsing error";
+    help_message 1 ;;
+  esac
+done
+
+if [ -z $printer ]; then
+  echo "Select printer"
+  help_message 1
+fi
+}
+
+read_args $@
+cd /home/nicolas/Documents/fred/
+scan_and_save
+ask_new_scan
+donewscan=$?
+while [ $donewscan -ge 1 ]; do
+  scan_and_save
+  ask_new_scan
+  donewscan=$?
+done
+send_mail

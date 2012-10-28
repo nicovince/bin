@@ -1,0 +1,14 @@
+#!/bin/sh
+
+for i in *.mpc
+do
+	MPCFILE=$i
+	WAVFILE=${MPCFILE%mpc}wav
+	MP3FILE=${MPCFILE%mpc}mp3
+	 
+	mppdec "$MPCFILE" "$WAVFILE"
+	lame --preset standard "$WAVFILE" "$MP3FILE"
+	rm "$WAVFILE"
+done
+
+

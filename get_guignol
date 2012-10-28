@@ -1,0 +1,4 @@
+#!/bin/sh
+cd ~/Documents/LVideos/
+mimms mms://vipmms.canalplus.fr/canalplus/guignols_`date --date "1 days ago" +'%y%m%d'`_a.wmv
+echo Download finished

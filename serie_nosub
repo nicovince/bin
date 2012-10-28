@@ -1,0 +1,10 @@
+#!/bin/sh
+
+AVIFILE=`find . -regex .*$1.*avi | head -n 1`
+echo $AVIFILE
+
+
+cmdline="gmplayer \"$AVIFILE\""
+echo $cmdline
+
+eval $cmdline

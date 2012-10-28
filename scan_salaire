@@ -1,0 +1,135 @@
+#!/bin/bash
+
+PRINTER_1200="hpaio:/usb/PSC_1200_series?serial=MY49EG10BXT0"
+PRINTER_750="hpaio:/usb/PSC_750?serial=ES168BH0MRWB"
+PRINTER_4480="hpaio:/usb/Photosmart_C4400_series?serial=TH896H21V305BN"
+ENTERPRISE="Sequans"
+
+how_many_sheets()
+{
+  echo -n "How many Sheets (1): "
+  read user_nb_sheets
+  nb_sheets=${user_nb_sheets:-1}
+}
+
+scan_and_save()
+{
+  echo -n "Année (`date +%Y`) : "
+  read user_year
+  year=${user_year:-`date +%Y`}
+  current_month=`date +%m | sed 's/^0//'`
+  month=$(($current_month-1))
+  month=`zfnum $month 2`
+  echo -n "Mois ($month): "
+  read user_month
+  month=${user_month:-$month}
+  echo -n "Entreprise ($ENTERPRISE) : "
+  read user_enterprise
+  enterprise=${user_enterprise:-$ENTERPRISE}
+  filename=${year}-${month}_${enterprise// /_}
+  while [ -f $filename ]; do
+    echo "$filename existe déjà, vérifiez les informations ou supprimez l'ancien fichier : "
+    echo -n "Année (`date +%Y`) : "
+    read user_year
+    year=${user_year:-`date +%Y`}
+    month=$((`date +%m`-1))
+    month=`zfnum $month 2`
+    echo -n "Mois ($month): "
+    read user_month
+    month=${user_month:-$month}
+    echo -n "Entreprise ($ENTERPRISE) : "
+    read user_enterprise
+    enterprise=${user_enterprise:-$ENTERPRISE}
+    filename=${year}-${month}_${enterprise// /_}
+  done
+
+  for ((i=0; i<$nb_sheets; i++))
+  do
+    filename_i="${filename}_${i}"
+    if [ -f $filename_i.png ]; then
+      echo $filename_i.png already exists
+      echo abort
+      exit 1
+    fi
+
+    echo "Capture en cours..."
+    scanimage -d $printer --mode Color --resolution 75 > $filename_i.pnm
+    echo "Sauvegarde de l'image $filename_i.png"
+    convert $filename_i.pnm ${filename_i}.png
+    rm -f $filename_i.pnm
+    chmod 600 $filename_i.png
+    FILES="$FILES $filename_i.png"
+    if [ $(($i+1)) -ne $nb_sheets ]; then
+      echo "Insert new page and press enter"
+      read 
+    fi
+  done
+}
+
+
+ask_new_scan()
+{
+  echo ""
+  echo -n "Scanner une nouvelle image ? [o/n] : "
+  read answer
+  while ( [ -z $answer ] || [ $answer != "o" -a $answer != "O" -a $answer != "y" -a $answer != "Y" -a $answer != "n" -a $answer != "N" ] ); do
+    read answer
+  done
+  if ( [ $answer = "n" ] || [ $answer = "N" ] ); then
+    return 0
+  else 
+    return 1
+  fi
+}
+
+help_message()
+{
+  ret_val=$1
+  echo -p, --printer [750,1200,4480] : select printer
+  echo -h, --help : display this help and quit
+  exit $ret_val
+}
+
+TEMP=`getopt -o hp: --long printer:,help \
+-n 'scan_salaire' -- "$@"`
+
+if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
+
+# Note the quotes around `$TEMP': they are essential!
+eval set -- "$TEMP"
+
+#default printer
+printer=$PRINTER_4480
+while true ; do
+  case "$1" in
+    -p|--printer) 
+      case "$2" in
+        "750") printer=$PRINTER_750;;
+        "1200") printer=$PRINTER_1200;;
+        "4480") printer=$PRINTER_4480;;
+        *) printer=$2;;
+      esac
+      echo "select printer $printer"
+      shift 2 ;;
+    -h|--help) help_message 0; shift;;
+    --) shift ; break ;;
+    *) echo "parsing error";
+      help_message 1 ;;
+  esac
+done
+
+if [ -z $printer ]; then
+  echo "Select printer"
+  help_message 1
+fi
+
+cd /home/nicolas/Documents/misc/salaires/
+how_many_sheets
+scan_and_save $nb_sheets
+#ask_new_scan
+#donewscan=$?
+#while [ $donewscan -ge 1 ]; do
+#  scan_and_save
+#  ask_new_scan
+#  donewscan=$?
+#done

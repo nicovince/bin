@@ -1,0 +1,3 @@
+#!/bin/sh
+mimms mms://vipmms.canalplus.fr/canalplus/zapping_`date --date "1 days ago" +'%y%m%d'`_a.wmv
+echo Download finished

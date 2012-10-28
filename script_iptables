@@ -1,0 +1,42 @@
+#!/bin/sh
+# This script should be launched at startup once network is up
+
+. /lib/lsb/init-functions
+
+start_iptables()
+{
+	# flush the table entry
+	iptables -F
+
+	# Block the IP for 60 seconds after three failed ssh connections
+	iptables -A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --set --name SSH --rsource
+	iptables -A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 4 --rttl --name SSH --rsource -j DROP
+
+	# Block the IP for 60 seconds after three failed ftp connections
+	iptables -A INPUT -p tcp -m tcp --dport 21 -m state --state NEW -m recent --set --name FTP --rsource
+	iptables -A INPUT -p tcp -m tcp --dport 21 -m state --state NEW -m recent --update --seconds 60 --hitcount 4 --rttl --name FTP --rsource -j DROP
+}
+
+case "$1" in
+	start)
+		log_begin_msg "Setting iptable basic rules"
+		start_iptables
+		log_end_msg 0
+		;;
+	stop)
+		log_begin_msg "Reset iptables rules"
+		stop_iptable
+		log_end_msg 0
+		;;
+	restart)
+		log_begin_msg "Restart iptables rules"
+		start_iptables
+		log_end_msg 0
+		;;
+	*)
+		log_success_msg "Usage :/etc/init.d/iptables {start|stop|restart}"
+		;;
+esac
+
+exit 0
+

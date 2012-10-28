@@ -1,0 +1,17 @@
+#!/bin/sh
+#Zero Fill Number
+#zfnum.sh a n : transform number a in order to make it a number on n digits
+
+a=$1
+n=$2
+a_size=`echo "$a" | wc -m`
+a_size=$(($a_size - 1))
+i=0
+out=$a
+N=$(($n-$a_size))
+while [ $i -lt $N ]; do
+	out=0$out
+	i=$(($i+1));
+done
+echo $out
+

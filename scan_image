@@ -1,0 +1,85 @@
+#!/bin/bash
+###############################################################################
+# Filename : scan_image
+# Description : This script scan an image... 
+# You could have guessed from the filename...
+# The user can select the printer, the filename. The script will make sure the
+# filename is not already used
+# Date : 25/10/2010
+###############################################################################
+
+# User functions
+print_help()
+{
+  echo "Usage : scan_image <options>"
+  echo "Valid options are :"
+  echo "-v, --verbose : The script will make smalltalk"
+  echo "-p, --printer <printer> : Select the printer to use"
+  echo "-f, --filename <filename> : Specify a filename (default is output.png)" 
+  echo "-h, --help : display this help and quit"
+}
+
+# echo conditionned under a verbose option
+echov()
+{
+  if [ $1 -eq 1 ]; then
+    echo $2
+  fi
+}
+
+PRINTER_4480="hpaio:/usb/Photosmart_C4400_series?serial=TH896H21V305BN"
+PRINTER_1200="hpaio:/usb/PSC_1200_series?serial=MY49EG10BXT0"
+PRINTER_750="hpaio:/usb/PSC_750?serial=ES168BH0MRWB"
+
+# Default printer
+printer=$PRINTER_4480
+# Default output filename for the scan
+filename="output"
+verbose=0
+
+# Read args
+while [ $# -ne 0 ]; do
+  case "$1" in 
+    -v|--verbose)
+    verbose=1
+    ;;
+    -f|--file)
+    filename=$2
+    shift
+    ;;
+    -p|--printer)
+    printer=$2
+    shift
+    ;;
+    -h|--help)
+    print_help
+    exit 0
+    ;;
+    *)
+    echo "Unknown option $1"
+    print_help
+    exit 1
+    ;;
+  esac
+  shift
+done
+
+# Check if the file already exists
+if [ -e $filename.png ] || [ -e $filename.pnm ]; then
+  echo "Error $filename is already used in the current directory"
+  exit 1
+fi
+
+
+# Rock'n Roll
+echov $verbose "Scan in progress..."
+echo "scanimage -d $printer --mode Color --resolution 75 > $filename.pnm"
+scanimage -d $printer --mode Color --resolution 75 > $filename.pnm
+
+echov $verbose "Saving $filename.png"
+echo "convert $filename.pnm $filename.png"
+convert $filename.pnm $filename.png
+
+rm $filename.pnm
+echov $verbose "Finished"
+

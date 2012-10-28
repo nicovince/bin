@@ -1,0 +1,10 @@
+#!/bin/bash
+cd /tmp
+WRNX_PAGE="wrnx_index"
+wget http://www.wrnx.com/cc-common/streaming_new/index.html?refreshed=yes -O $WRNX_PAGE
+GENASX_URL=`grep genasx $WRNX_PAGE | grep VALUE | sed 's/.*http/http/' | sed 's/\">$//'`
+rm $GENASX_PAGE 
+GENASX_PAGE="genasx"
+wget $GENASX_URL -O $GENASX_PAGE
+grep REF $GENASX_PAGE -m 1 | sed 's/.*mms/mms/' | sed 's/\".*//'
+rm $WRNX_PAGE
