@@ -1,0 +1,18 @@
+#!/usr/bin/bc -l
+define rotator(i,q, cos, sin) {
+  
+  auto i_x_cos, q_x_sin, add, i_out
+  i_x_cos = i*cos;
+  q_x_sin = q*sin;
+  add = i_x_cos - q_x_sin;
+  i_out = (add + 128)/256;
+
+  print "i_x_cos = ", i_x_cos, "\n";
+  print "q_x_sin = ", q_x_sin, "\n";
+  print "add = ", add, "\n";
+  print "i_out = ", i_out, "\n";
+
+}
+
+
+

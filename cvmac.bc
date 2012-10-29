@@ -1,0 +1,26 @@
+#!/usr/bin/bc -l
+define cvmac(a1,b1, a2,b2) {
+  
+  auto add_re, mult_re_1, mult_re_2, mult_im_1, mult_im_2, add_im
+  mult_re_1 = a1*a2;
+  mult_re_2 = b1*b2;
+  add_re = mult_re_1 - mult_re_2;
+
+  mult_im_1 = b1*a2;
+  mult_im_2 = a1*b2;
+  add_im = mult_im_1 + mult_im_2;
+
+  print "mult_re_1 = ", mult_re_1, "\n";
+  print "mult_re_2 = ", mult_re_2, "\n";
+  print "mult_im_1 = ", mult_im_1, "\n";
+  print "mult_im_2 = ", mult_im_2, "\n";
+
+  print "add_re = ", add_re, "\n";
+  print "add_im = ", add_im, "\n\n";
+}
+
+
+cvmac(247,-1575,247,1575)
+cvmac(4,933,230,-1085)
+quit
+
