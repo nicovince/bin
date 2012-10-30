@@ -59,9 +59,9 @@ this_session=`echo $KONSOLE_DCOP_SESSION | sed 's/.*,\(.*\))/\1/'`
 # Open tabs
 svn_id=`open_tab "svn$SUFFIX"`
 vim_id=`open_tab "vim$SUFFIX"`
-sim_id=`open_tab "sim$SUFFIX"`
 confregs_id=`open_tab "config_regs$SUFFIX"`
 scapa_id=`open_tab "scapa$SUFFIX"`
+sim_id=`open_tab "sim$SUFFIX"`
 
 sleep 2
 

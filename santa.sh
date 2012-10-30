@@ -186,13 +186,13 @@ sessions=(
 setup_win 8
 
 ######################################################################
-## digrf 2 carriers
+## Trunk
 sessions=(
-    "svn.2C"     "" "" "cd ~/work/SQN3210/SQN3210_2CARRIERS/"
-    "vim.2C"     "" "" "cd ~/work/SQN3210/SQN3210_2CARRIERS/"
-    "regs.2C"    "" "" "cd ~/work/SQN3210/SQN3210_2CARRIERS/srcv/common/config_regs"
-    "foo.2C"     "" "" "cd ~/work/SQN3210/SQN3210_2CARRIERS"
-    "sim.2C"     "" "" "cd ~/work/SQN3210/SQN3210_2CARRIERS/simv/tops/shiva_top/digrf_scenarios/sceSysC1"
+    "svn.2C"     "" "" "cd ~/work/SQN3210/SQN3210_trunk"
+    "vim.2C"     "" "" "cd ~/work/SQN3210/SQN3210_trunk"
+    "regs.2C"    "" "" "cd ~/work/SQN3210/SQN3210_trunk/srcv/common/config_regs"
+    "foo.2C"     "" "" "cd ~/work/SQN3210/SQN3210_trunk"
+    "sim.2C"     "" "" "cd ~/work/SQN3210/SQN3210_trunk"
 )
 setup_win 7
 
