@@ -186,13 +186,16 @@ sessions=(
 setup_win 8
 
 ######################################################################
-## Trunk
+## delivEnv
 sessions=(
-    "svn.2C"     "" "" "cd ~/work/SQN3210/SQN3210_trunk"
-    "vim.2C"     "" "" "cd ~/work/SQN3210/SQN3210_trunk"
-    "regs.2C"    "" "" "cd ~/work/SQN3210/SQN3210_trunk/srcv/common/config_regs"
-    "foo.2C"     "" "" "cd ~/work/SQN3210/SQN3210_trunk"
-    "sim.2C"     "" "" "cd ~/work/SQN3210/SQN3210_trunk"
+    "deliv.envC"      "" "" "cd ~/work/ENV/delivery/envC"
+    "deliv.Swenv"     "" "" "cd ~/work/ENV/delivery/swenv"
+    "compil.envC"     "" "montrecul" "cd ~/work/ENV/delivery/envC"
+    "compil.Swenv"    "" "montrecul" "cd ~/work/ENV/delivery/swenv"
+    "vim.envC"        "" "" "cd ~/work/ENV/delivery/envC"
+    "vim.Swenv"       "" "" "cd ~/work/ENV/delivery/swenv"
+    "Scapa.rel"       "" "" "cd ~/work/nobackup/reg2/SQN3210/simv"
+    "foo"             "" "" "echo https://s3lte.sequans.com/doku.php?id=private:ic-bb:envlibdelivery"
 )
 setup_win 7
 
