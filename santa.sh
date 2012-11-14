@@ -199,4 +199,13 @@ sessions=(
 )
 setup_win 7
 
-
+######################################################################
+## trunk
+sessions=(
+    "svn"        "" "" "cd ~/work/SQN3210/SQN3210_trunk"
+    "vim"        "" "" "cd ~/work/SQN3210/SQN3210_trunk"
+    "scapa"      "" "" "cd ~/work/SQN3210/SQN3210_trunk/simv"
+    "foo"        "" "" "cd ~/work/SQN3210/SQN3210_trunk"
+    "sim"        "" "" "cd ~/work/SQN3210/SQN3210_trunk/simv"
+)
+setup_win 8
