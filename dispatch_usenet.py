@@ -33,10 +33,11 @@ print "parMessage : " + parMessage
 videosPath='/mnt/disk1/share/videos/'
 
 regexes=dict([(videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
-            ,(videosPath + 'Boardwalk.Empire_S03', '.*boardwalk.*empire.*s[0-9]?3.*')
-            ,(videosPath + 'How_I_Met_Your_Mother_S8', '.*how.*i.*met.*your.*mother.*s[0-9]?8.*')
-            ,(videosPath + 'The_Big_Bang_Theory_S6', '.*the.*big.*bang.*theory.*s[0-9]?6.*')
-            ,(videosPath + 'Dexter_S7', '.*dexter.*s[0-9]?7.*')])
+              ,(videosPath + 'Boardwalk.Empire_S03', '.*boardwalk.*empire.*s[0-9]?3.*')
+              ,(videosPath + 'How_I_Met_Your_Mother_S8', '.*how.*i.*met.*your.*mother.*s[0-9]?8.*')
+              ,(videosPath + 'The_Big_Bang_Theory_S6', '.*the.*big.*bang.*theory.*s[0-9]?6.*')
+              ,(videosPath + 'Dexter_S7', '.*dexter.*s[0-9]?7.*')
+              ])
 
 # loop through regexes to find a match for the download
 for (videoDestDir,videoRegex) in regexes.items():
