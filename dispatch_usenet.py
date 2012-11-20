@@ -55,8 +55,12 @@ def getDestination(usenetDestDir, videoRegexes):
 # @return List of videos successfully copied to destination folder
 def moveVideosToDestination(videoList, videoDestDir):
     #TODO: To be completed
+    fd = open("/home/admin/hellanzb_pp.log",'a')
     for f in videoList:
-        print f + " would be copied to" + videoDestDir
+        log = f + " would be copied to" + videoDestDir
+        fd.write(log+"\n")
+        print log
+    fd.close()
 
 ## Start of script ##
 print "### Start of post processing script"
