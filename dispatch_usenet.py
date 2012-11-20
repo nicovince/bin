@@ -46,6 +46,18 @@ def getDestination(usenetDestDir, videoRegexes):
             return videoDestDir
 
 
+##
+# @brief Move the videos to the target folder
+#
+# @param videoList List of videos to be moved
+# @param videoDestDir Destination folder for the videos
+#
+# @return List of videos successfully copied to destination folder
+def moveVideosToDestination(videoList, videoDestDir):
+    #TODO: To be completed
+    for f in videoList:
+        print f + " would be copied to" + videoDestDir
+
 ## Start of script ##
 print "### Start of post processing script"
 
@@ -82,8 +94,8 @@ regexes=dict([(videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
 
 videoDestDir = getDestination(destDir, regexes)
 videos = getVideos(os.listdir(destDir))
-print videos
-print "Would be copied to " + videoDestDir
+
+moveVideosToDestination(videos, videoDestDir)
 
 #TODO: Split into more functions : 
 # moveVideosToDestination(videoList, videoDestinationDir) return list of video copied
