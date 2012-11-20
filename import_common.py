@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+# Example of use :
+# pwd = /home/nvincent/tmp/test_import_common
+# command : import_common.py -f common_filelist --common-dir ~/work/SQN3210_product/importFrom3210/common --destination-dir ~/work/SQN3210_product/importFrom3210/ulp
+# 
 
 import os
 import re
@@ -141,6 +145,17 @@ def getWordsRegExp(searchAndReplace, flag=0):
     return result
 
 
+# Create directory recursively
+def createDirIfNotExist(path):
+    if (path == ""):
+        return
+    print "create ", path
+    if not(os.path.isdir(path)):
+        # Test parent, and create it
+        if not(os.path.isdir(os.path.dirname(path))):
+            print "parent does not exists"
+            createDirIfNotExist(os.path.dirname(path))
+        os.mkdir(path)
 
 
 def patchFile(srcFile, destFile, searchesAndReplaces, mapCommonFilenames, mapBasenameFiles):
@@ -154,6 +169,7 @@ def patchFile(srcFile, destFile, searchesAndReplaces, mapCommonFilenames, mapBas
         print "[patchFile]: src : " + src
         print "[patchFile]: dst : " + dst
 
+    createDirIfNotExist(os.path.dirname(destFile))
     fdDst = open(destFile + ".new", 'w')
     fdSrc = open(srcFile, 'r')
     for line in fdSrc:
