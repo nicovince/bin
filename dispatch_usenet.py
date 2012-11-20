@@ -10,8 +10,9 @@
 import os, sys
 import re
 
-# Retrieve video from list of files
-def getVideos(files):
+# Retrieve video from folder
+def getVideos(folder):
+    files = os.listdir(folder)
     videoList = list()
     videoRegex=".*(mp4)|(avi)$"
     # iterate over files
@@ -20,7 +21,7 @@ def getVideos(files):
         result = re.search(videoRegex,f, re.I)
         if result != None:
             # Append the file to the videoList to be returned
-            videoList.append(f)
+            videoList.append(folder + "/" + f)
             print "Candidate : " + f
     return videoList
 
@@ -57,7 +58,7 @@ def moveVideosToDestination(videoList, videoDestDir):
     #TODO: To be completed
     fd = open("/home/admin/hellanzb_pp.log",'a')
     for f in videoList:
-        log = f + " would be copied to" + videoDestDir
+        log = "mv \"" + f + "\" " + videoDestDir
         fd.write(log+"\n")
         print log
     fd.close()
@@ -97,7 +98,7 @@ regexes=dict([(videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
               ])
 
 videoDestDir = getDestination(destDir, regexes)
-videos = getVideos(os.listdir(destDir))
+videos = getVideos(destDir)
 
 moveVideosToDestination(videos, videoDestDir)
 
