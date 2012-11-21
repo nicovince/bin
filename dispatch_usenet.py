@@ -122,6 +122,9 @@ regexes=dict([(videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
 
 # Retrieve where the downloaded thing should go
 videoDestDir = getDestination(destDir, regexes)
+if (videoDestDir == None):
+    logger.error("Could not determine destination for download : " + destDir)
+    sys.exit(0)
 # Get the videos out of the downloaded stuff
 videos = getVideos(destDir)
 
