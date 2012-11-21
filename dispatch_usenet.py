@@ -58,6 +58,10 @@ def getDestination(usenetDestDir, videoRegexes):
 # @return List of videos successfully copied to destination folder
 def moveVideosToDestination(videoList, videoDestDir):
     res = list()
+    # Test if destination exists, create it if necessary
+    if not(os.path.isdir(videoDestDir)):
+        logger.info("Create dir " + videoDestDir)
+        os.mkdir(videoDestDir, 0755)
     for f in videoList:
         video = os.path.basename(f)
         if os.path.exists(videoDestDir + "/" + video):
@@ -118,6 +122,7 @@ regexes=dict([(videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
               ,(videosPath + 'How_I_Met_Your_Mother_S8', '.*how.*i.*met.*your.*mother.*s[0-9]?8.*')
               ,(videosPath + 'The_Big_Bang_Theory_S6', '.*the.*big.*bang.*theory.*s[0-9]?6.*')
               ,(videosPath + 'Dexter_S7', '.*dexter.*s[0-9]?7.*')
+              ,(videosPath + 'Homeland_S2', '.*homeland.*s[0-9]?2.*')
               ])
 
 # Retrieve where the downloaded thing should go
