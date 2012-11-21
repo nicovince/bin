@@ -165,8 +165,8 @@ def patchFile(srcFile, destFile, searchesAndReplaces, mapCommonFilenames, mapBas
     verilogSearchAndReplace = searchesAndReplaces[0]
     vhdlSearchAndReplace = searchesAndReplaces[1]
 
-    logger.debug(verilogSearchAndReplace.__repr__())
-    logger.debug(vhdlSearchAndReplace.__repr__())
+    logger.log(0,verilogSearchAndReplace.__repr__())
+    logger.log(0,vhdlSearchAndReplace.__repr__())
     logger.debug("src : " + src)
     logger.debug("dst : " + dst)
 
@@ -240,7 +240,7 @@ logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(name)-40s %(levelname)-8s %(message)s',
                     datefmt='%Y/%m/%d %H:%M:%s',
                     filename='./import.log',
-                    filemode='w')
+                    filemode='a')
 # Log to console as well
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)
