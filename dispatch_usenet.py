@@ -9,6 +9,7 @@
 
 import os, sys
 import re
+import logging
 
 # Retrieve video from folder
 def getVideos(folder):
@@ -22,7 +23,7 @@ def getVideos(folder):
         if result != None:
             # Append the file to the videoList to be returned
             videoList.append(folder + "/" + f)
-            print "Candidate : " + f
+            logger.debug("Candidate : " + f)
     return videoList
 
 ##
@@ -38,11 +39,11 @@ def getVideos(folder):
 def getDestination(usenetDestDir, videoRegexes):
     # loop through regexes to find a match for the download
     for (videoDestDir, videoRegex) in videoRegexes.iteritems():
-        print videoDestDir + "-" + videoRegex
+        logger.debug(videoDestDir + "-" + videoRegex)
         # Does regex matches to usenetDestDir?
         result = re.search(videoRegex,destDir,re.I)
         if result != None:
-            print "Matching for " + videoDestDir
+            logger.debug("Matching for " + videoDestDir)
             # do not go further through regexes after a match has been found
             return videoDestDir
 
@@ -56,22 +57,34 @@ def getDestination(usenetDestDir, videoRegexes):
 # @return List of videos successfully copied to destination folder
 def moveVideosToDestination(videoList, videoDestDir):
     #TODO: To be completed
-    fd = open("/home/admin/hellanzb_pp.log",'a')
     for f in videoList:
         log = "mv \"" + f + "\" " + videoDestDir
-        fd.write(log+"\n")
-        print log
-    fd.close()
+        logger.info(log)
 
 ## Start of script ##
-print "### Start of post processing script"
 
-print "### Args :"
+# Setup logging capability
+# Setup logging
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(name)-10s %(levelname)-8s %(message)s',
+                    datefmt='%Y/%m/%d %H:%M:%S',
+                    filename='/home/admin/dispatchHellanzb.log',
+                    filemode='a')
+# Log to console as well
+console = logging.StreamHandler()
+console.setLevel(logging.DEBUG)
+consoleFormatter = logging.Formatter('%(name)s: %(levelname)s %(message)s')
+console.setFormatter(consoleFormatter)
+logging.getLogger('').addHandler(console)
+logger = logging.getLogger('dispatch')
+
+logger.info("### Start of post processing script")
+
+logger.debug("Args :")
 if len(sys.argv) != 6:
-    print "Wrong number or arguments"
-    print "Got " + str(len(sys.argv))
+    logger.error( "Wrong number or arguments. Got " + str(len(sys.argv)))
     for arg in sys.argv:
-        print arg
+        logger.error(arg)
     sys.exit(1)
 
 type = sys.argv[1]
@@ -80,12 +93,11 @@ destDir = sys.argv[3]
 elapsedTime = sys.argv[4]
 parMessage = sys.argv[5]
 
-print "type : " + type
-print "archiveName : " + archiveName
-print "destDir : " + destDir
-print "elapsedTime : " + elapsedTime
-print "parMessage : " + parMessage
-print "###"
+logger.debug("type : " + type)
+logger.debug("archiveName : " + archiveName)
+logger.debug("destDir : " + destDir)
+logger.debug("elapsedTime : " + elapsedTime)
+logger.debug("parMessage : " + parMessage)
 
 
 videosPath='/mnt/disk1/share/videos/'
