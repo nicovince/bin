@@ -79,8 +79,7 @@ def getRenamesVhdl(filename, prefix):
     for line in fp:
         if regexEntityName.match(line) != None:
             entityName = regexEntityName.match(line).group(1)
-            if parsedArgs.debug:
-                logger.debug("entity match : " + entityName + " [" + line.strip() +"]")
+            logger.debug("entity match : " + entityName + " [" + line.strip() +"]")
             searchAndReplace.update({entityName : prefix + "_" + entityName})
         elif regexPackageName.match(line) != None:
             packageName = regexPackageName.match(line).group(2)
@@ -295,8 +294,7 @@ mapBasenameFiles = dict(zip(srcBasenames, dstBasenames))
 if not checkFilesExist(srcFiles):
     sys.exit(1)
 else:
-    if parsedArgs.debug:
-        logger.debug("All files given in " + parsedArgs.filelist + " exists and readable")
+    logger.debug("All files given in " + parsedArgs.filelist + " exists and readable")
 
 # Read Hdl to build replacement lists
 (verilogSearchAndReplace, vhdlSearchAndReplace) = getSearchAndReplace(srcFiles)
