@@ -7,6 +7,7 @@
 import os
 import re
 import sys
+import logging
 
 from optparse import OptionParser
 
@@ -27,7 +28,7 @@ def readFilelist(filename):
 def checkFilesExist(files):
     for f in files:
         if not os.access(f, os.F_OK|os.R_OK):
-            print f + " does not exists"
+            logger.warning(f + " does not exists")
             return False
     return True
 
@@ -55,13 +56,11 @@ def getRenamesVerilog(filename, prefix):
     for line in fp:
         if regexModuleName.match(line) != None:
             moduleName = regexModuleName.match(line).group(1)
-            if parsedArgs.debug:
-                print "[getRenamesVerilog]: module match : " + moduleName
+            logger.debug("[getRenamesVerilog]: module match : " + moduleName)
             searchAndReplace.update({moduleName : prefix + "_" + moduleName});
         elif regexDefine.match(line) != None:
             defineName = regexDefine.match(line).group(1)
-            if parsedArgs.debug:
-                print "[getRenamesVerilog]: define match : " + defineName
+            logger.debug("[getRenamesVerilog]: define match : " + defineName)
             searchAndReplace.update({defineName : prefix.upper() + "_" + defineName});
 
     fp.close()
@@ -78,12 +77,11 @@ def getRenamesVhdl(filename, prefix):
         if regexEntityName.match(line) != None:
             entityName = regexEntityName.match(line).group(1)
             if parsedArgs.debug:
-                print "[getRenamesVhdl]: entity match : " + entityName + "[" + line +"]"
+                logger.debug("[getRenamesVhdl]: entity match : " + entityName + " [" + line.strip() +"]")
             searchAndReplace.update({entityName : prefix + "_" + entityName})
         elif regexPackageName.match(line) != None:
             packageName = regexPackageName.match(line).group(2)
-            if parsedArgs.debug:
-                print "[getRenamesVhdl]: Package match : " + packageName + "[" + line +"]"
+            logger.debug("[getRenamesVhdl]: Package match : " + packageName + " [" + line.strip() +"]")
             searchAndReplace.update({packageName : prefix + "_" + packageName})
         # Do not replace constants as they are protected by vhdl namespace
         #elif regexConstantName.match(line) != None:
@@ -103,8 +101,7 @@ def getSearchAndReplace(files):
         dst = parsedArgs.destination_dir + "/" + os.path.dirname(parsedArgs.destination_dir) + "/" + os.path.basename(f)
         fileRenames[f] = dst
         if isVerilog(f):
-            if parsedArgs.debug:
-                print "[getSearchAndReplace]: " + f + " is Verilog"
+            logger.debug("[getSearchAndReplace]: " + f + " is Verilog")
             fileSearchAndReplace = getRenamesVerilog(f, macroName)
             if len(fileSearchAndReplace):
                 verilogSearchAndReplace.update(fileSearchAndReplace)
@@ -149,11 +146,9 @@ def getWordsRegExp(searchAndReplace, flag=0):
 def createDirIfNotExist(path):
     if (path == ""):
         return
-    print "create ", path
     if not(os.path.isdir(path)):
         # Test parent, and create it
         if not(os.path.isdir(os.path.dirname(path))):
-            print "parent does not exists"
             createDirIfNotExist(os.path.dirname(path))
         os.mkdir(path)
 
@@ -234,18 +229,31 @@ parser.add_option(
     help    = "filelist containing the list of the common modules to import (as named in common directory)"
     )
 
+# Setup logging
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                    datefmt='%Y/%m/%d %H:%M:%s',
+                    filename='./import.log',
+                    filemode='w')
+# Log to console as well
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+consoleFormatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+console.setFormatter(consoleFormatter)
+logging.getLogger('').addHandler(console)
+logger = logging.getLogger('importCommon')
 
 (parsedArgs, args) = parser.parse_args()
 
 if parsedArgs.debug:
-    print "debug set"
+    console.setLevel(logging.DEBUG)
 
 if parsedArgs.destination_dir == "not_set":
-    print "destination_dir not specified"
+    logger.error("destination_dir not specified")
     parser.print_help()
     sys.exit(1)
 if parsedArgs.common_dir == "not_set":
-    print "common_dir not specified"
+    logger.error("common_dir not specified")
     parser.print_help()
     sys.exit(1)
 
@@ -286,7 +294,7 @@ if not checkFilesExist(srcFiles):
     sys.exit(1)
 else:
     if parsedArgs.debug:
-        print "All files given in " + parsedArgs.filelist + " exists and readable"
+        logger.debug("All files given in " + parsedArgs.filelist + " exists and readable")
 
 # Read Hdl to build replacement lists
 (verilogSearchAndReplace, vhdlSearchAndReplace) = getSearchAndReplace(srcFiles)
@@ -299,5 +307,5 @@ mapBasenameFilesRegex = getWordsRegExp(mapBasenameFiles)
 
 searchesAndReplaces = [verilogRegexSaR, vhdlRegexSaR]
 for (src,dst) in mapFiles.iteritems():
-    print src + " -> " + dst
+    logger.info(src + " copied to " + dst)
     patchFile(src, dst, searchesAndReplaces, mapCommonFilenamesRegex, mapBasenameFilesRegex)
