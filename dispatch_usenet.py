@@ -63,7 +63,7 @@ def moveVideosToDestination(videoList, videoDestDir):
         if os.path.exists(videoDestDir + "/" + video):
             logger.error(video + " already exists in " + videoDestDir + ". Copy not done")
         else:
-            #shutil(f,videoDestDir)
+            shutil(f,videoDestDir)
             log = "mv \"" + f + "\" " + videoDestDir
             logger.info(log)
             res.append(videoDestDir + "/" + f)
