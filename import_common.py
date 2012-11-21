@@ -26,7 +26,8 @@ def readFilelist(filename):
 
 # Check files exists
 def checkFilesExist(files):
-    logger = logging.getLogger('importCommon.checkFilesExist')
+    funcName = sys._getframe().f_code.co_name
+    logger = logging.getLogger('importCommon.' + funcName)
     for f in files:
         if not os.access(f, os.F_OK|os.R_OK):
             logger.warning(f + " does not exists")
@@ -50,7 +51,8 @@ def isVhdl(fileName):
 
 # Get module and constant renaming for verilog
 def getRenamesVerilog(filename, prefix):
-    logger = logging.getLogger('importCommon.getRenamesVerilog')
+    funcName = sys._getframe().f_code.co_name
+    logger = logging.getLogger('importCommon.' + funcName)
     fp = open(filename)
     regexModuleName = re.compile("^ *module *(\w+) *.*$")
     regexDefine = re.compile("^ *`define *(\w+) *.*$")
@@ -70,7 +72,8 @@ def getRenamesVerilog(filename, prefix):
 
 # Retrieve list of renaming to do for vhdl
 def getRenamesVhdl(filename, prefix):
-    logger = logging.getLogger('importCommon.getRenamesVhdl')
+    funcName = sys._getframe().f_code.co_name
+    logger = logging.getLogger('importCommon.' + funcName)
     fp = open(filename)
     regexEntityName = re.compile("^ *entity *(\w+) *.*$", re.IGNORECASE)
     regexPackageName = re.compile("^ *package *(body)? *(\w+) *.*$", re.IGNORECASE)
@@ -96,7 +99,8 @@ def getRenamesVhdl(filename, prefix):
 
 # get replacements to do from list of file
 def getSearchAndReplace(files):
-    logger = logging.getLogger('importCommon.getSearchAndReplace')
+    funcName = sys._getframe().f_code.co_name
+    logger = logging.getLogger('importCommon.' + funcName)
     verilogSearchAndReplace = dict()
     vhdlSearchAndReplace = dict()
     fileRenames = dict()
@@ -155,7 +159,8 @@ def createDirIfNotExist(path):
 
 
 def patchFile(srcFile, destFile, searchesAndReplaces, mapCommonFilenames, mapBasenameFiles):
-    logger = logging.getLogger('importCommon.patchFile')
+    funcName = sys._getframe().f_code.co_name
+    logger = logging.getLogger('importCommon.' + funcName)
 
     verilogSearchAndReplace = searchesAndReplaces[0]
     vhdlSearchAndReplace = searchesAndReplaces[1]
