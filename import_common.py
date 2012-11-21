@@ -26,6 +26,7 @@ def readFilelist(filename):
 
 # Check files exists
 def checkFilesExist(files):
+    logger = logging.getLogger('importCommon.checkFilesExist')
     for f in files:
         if not os.access(f, os.F_OK|os.R_OK):
             logger.warning(f + " does not exists")
@@ -49,6 +50,7 @@ def isVhdl(fileName):
 
 # Get module and constant renaming for verilog
 def getRenamesVerilog(filename, prefix):
+    logger = logging.getLogger('importCommon.getRenamesVerilog')
     fp = open(filename)
     regexModuleName = re.compile("^ *module *(\w+) *.*$")
     regexDefine = re.compile("^ *`define *(\w+) *.*$")
@@ -56,11 +58,11 @@ def getRenamesVerilog(filename, prefix):
     for line in fp:
         if regexModuleName.match(line) != None:
             moduleName = regexModuleName.match(line).group(1)
-            logger.debug("[getRenamesVerilog]: module match : " + moduleName)
+            logger.debug("module match : " + moduleName)
             searchAndReplace.update({moduleName : prefix + "_" + moduleName});
         elif regexDefine.match(line) != None:
             defineName = regexDefine.match(line).group(1)
-            logger.debug("[getRenamesVerilog]: define match : " + defineName)
+            logger.debug("define match : " + defineName)
             searchAndReplace.update({defineName : prefix.upper() + "_" + defineName});
 
     fp.close()
@@ -68,6 +70,7 @@ def getRenamesVerilog(filename, prefix):
 
 # Retrieve list of renaming to do for vhdl
 def getRenamesVhdl(filename, prefix):
+    logger = logging.getLogger('importCommon.getRenamesVhdl')
     fp = open(filename)
     regexEntityName = re.compile("^ *entity *(\w+) *.*$", re.IGNORECASE)
     regexPackageName = re.compile("^ *package *(body)? *(\w+) *.*$", re.IGNORECASE)
@@ -77,11 +80,11 @@ def getRenamesVhdl(filename, prefix):
         if regexEntityName.match(line) != None:
             entityName = regexEntityName.match(line).group(1)
             if parsedArgs.debug:
-                logger.debug("[getRenamesVhdl]: entity match : " + entityName + " [" + line.strip() +"]")
+                logger.debug("entity match : " + entityName + " [" + line.strip() +"]")
             searchAndReplace.update({entityName : prefix + "_" + entityName})
         elif regexPackageName.match(line) != None:
             packageName = regexPackageName.match(line).group(2)
-            logger.debug("[getRenamesVhdl]: Package match : " + packageName + " [" + line.strip() +"]")
+            logger.debug("Package match : " + packageName + " [" + line.strip() +"]")
             searchAndReplace.update({packageName : prefix + "_" + packageName})
         # Do not replace constants as they are protected by vhdl namespace
         #elif regexConstantName.match(line) != None:
@@ -94,6 +97,7 @@ def getRenamesVhdl(filename, prefix):
 
 # get replacements to do from list of file
 def getSearchAndReplace(files):
+    logger = logging.getLogger('importCommon.getSearchAndReplace')
     verilogSearchAndReplace = dict()
     vhdlSearchAndReplace = dict()
     fileRenames = dict()
@@ -101,19 +105,17 @@ def getSearchAndReplace(files):
         dst = parsedArgs.destination_dir + "/" + os.path.dirname(parsedArgs.destination_dir) + "/" + os.path.basename(f)
         fileRenames[f] = dst
         if isVerilog(f):
-            logger.debug("[getSearchAndReplace]: " + f + " is Verilog")
+            logger.debug(f + " is Verilog")
             fileSearchAndReplace = getRenamesVerilog(f, macroName)
             if len(fileSearchAndReplace):
                 verilogSearchAndReplace.update(fileSearchAndReplace)
         elif isVhdl(f):
-            if parsedArgs.debug:
-                print "[getSearchAndReplace]: " + f + " is Vhdl"
+            logger.debug(f + " is Vhdl")
             fileSearchAndReplace = getRenamesVhdl(f, macroName)
             if len(fileSearchAndReplace):
                 vhdlSearchAndReplace.update(fileSearchAndReplace)
         else:
-            if parsedArgs.debug:
-                print "[getSearchAndReplace]: Could not determine type of " + f
+            logger.debug("[getSearchAndReplace]: Could not determine type of " + f)
 
     return (verilogSearchAndReplace, vhdlSearchAndReplace)
 
@@ -154,15 +156,15 @@ def createDirIfNotExist(path):
 
 
 def patchFile(srcFile, destFile, searchesAndReplaces, mapCommonFilenames, mapBasenameFiles):
-    #fileRenames =  searchesAndReplaces[0]
+    logger = logging.getLogger('importCommon.patchFile')
+
     verilogSearchAndReplace = searchesAndReplaces[0]
     vhdlSearchAndReplace = searchesAndReplaces[1]
 
-    if parsedArgs.debug:
-        print "[patchFile]: " + verilogSearchAndReplace.__repr__()
-        print "[patchFile]: " + vhdlSearchAndReplace.__repr__()
-        print "[patchFile]: src : " + src
-        print "[patchFile]: dst : " + dst
+    logger.debug(verilogSearchAndReplace.__repr__())
+    logger.debug(vhdlSearchAndReplace.__repr__())
+    logger.debug("src : " + src)
+    logger.debug("dst : " + dst)
 
     createDirIfNotExist(os.path.dirname(destFile))
     fdDst = open(destFile + ".new", 'w')
@@ -231,14 +233,14 @@ parser.add_option(
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                    format='%(asctime)s %(name)-40s %(levelname)-8s %(message)s',
                     datefmt='%Y/%m/%d %H:%M:%s',
                     filename='./import.log',
                     filemode='w')
 # Log to console as well
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)
-consoleFormatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+consoleFormatter = logging.Formatter('%(name)s: %(levelname)s %(message)s')
 console.setFormatter(consoleFormatter)
 logging.getLogger('').addHandler(console)
 logger = logging.getLogger('importCommon')
@@ -262,7 +264,7 @@ macroName = os.path.basename(parsedArgs.destination_dir)
 
 # Check filelist accessible
 if not os.access(parsedArgs.filelist, os.F_OK|os.R_OK):
-    print "filelist name : " + parsedArgs.filelist + " not accessible"
+    logger.error("filelist name : " + parsedArgs.filelist + " not accessible")
     sys.exit(1)
 
 
