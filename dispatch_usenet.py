@@ -10,6 +10,7 @@
 import os, sys
 import re
 import logging
+import shutil
 
 # Retrieve video from folder
 def getVideos(folder):
@@ -56,15 +57,21 @@ def getDestination(usenetDestDir, videoRegexes):
 #
 # @return List of videos successfully copied to destination folder
 def moveVideosToDestination(videoList, videoDestDir):
-    #TODO: To be completed
+    res = list()
     for f in videoList:
-        log = "mv \"" + f + "\" " + videoDestDir
-        logger.info(log)
+        video = os.path.basename(f)
+        if os.path.exists(videoDestDir + "/" + video):
+            logger.error(video + " already exists in " + videoDestDir + ". Copy not done")
+        else:
+            #shutil(f,videoDestDir)
+            log = "mv \"" + f + "\" " + videoDestDir
+            logger.info(log)
+            res.append(videoDestDir + "/" + f)
+    return res
 
 ## Start of script ##
 
 # Setup logging capability
-# Setup logging
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(name)-10s %(levelname)-8s %(message)s',
                     datefmt='%Y/%m/%d %H:%M:%S',
@@ -80,6 +87,7 @@ logger = logging.getLogger('dispatch')
 
 logger.info("### Start of post processing script")
 
+# Check args count
 logger.debug("Args :")
 if len(sys.argv) != 6:
     logger.error( "Wrong number or arguments. Got " + str(len(sys.argv)))
@@ -87,12 +95,14 @@ if len(sys.argv) != 6:
         logger.error(arg)
     sys.exit(1)
 
+# Retrieve args in meaningfull variables
 type = sys.argv[1]
 archiveName = sys.argv[2]
 destDir = sys.argv[3]
 elapsedTime = sys.argv[4]
 parMessage = sys.argv[5]
 
+# Display args
 logger.debug("type : " + type)
 logger.debug("archiveName : " + archiveName)
 logger.debug("destDir : " + destDir)
@@ -100,6 +110,7 @@ logger.debug("elapsedTime : " + elapsedTime)
 logger.debug("parMessage : " + parMessage)
 
 
+# Setup regexes and path for each kind of download
 videosPath='/mnt/disk1/share/videos/'
 
 regexes=dict([(videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
@@ -109,11 +120,13 @@ regexes=dict([(videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
               ,(videosPath + 'Dexter_S7', '.*dexter.*s[0-9]?7.*')
               ])
 
+# Retrieve where the downloaded thing should go
 videoDestDir = getDestination(destDir, regexes)
+# Get the videos out of the downloaded stuff
 videos = getVideos(destDir)
 
-moveVideosToDestination(videos, videoDestDir)
-
-#TODO: Split into more functions : 
-# moveVideosToDestination(videoList, videoDestinationDir) return list of video copied
-#   -> no copy when target already exists
+# Move if we got anything
+if len(videos) > 0:
+    moveVideosToDestination(videos, videoDestDir)
+else:
+    logger.warning("No video were found in " + videoDestDir)
