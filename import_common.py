@@ -271,6 +271,7 @@ if not os.access(parsedArgs.filelist, os.F_OK|os.R_OK):
     logger.error("filelist name : " + parsedArgs.filelist + " not accessible")
     sys.exit(1)
 
+logger.info("Read filelist to retrieve common files to be patched")
 
 # path relatives to common and dest dirs
 srcCommonFiles = readFilelist(parsedArgs.filelist)
@@ -301,6 +302,7 @@ if not checkFilesExist(srcFiles):
 else:
     logger.debug("All files given in " + parsedArgs.filelist + " exists and readable")
 
+logger.info("Read hdl to get the substitutions to be done")
 # Read Hdl to build replacement lists
 (verilogSearchAndReplace, vhdlSearchAndReplace) = getSearchAndReplace(srcFiles)
 
@@ -310,7 +312,8 @@ vhdlRegexSaR = getWordsRegExp(vhdlSearchAndReplace, re.IGNORECASE)
 mapCommonFilenamesRegex = getWordsRegExp(mapCommonFilenames)
 mapBasenameFilesRegex = getWordsRegExp(mapBasenameFiles)
 
+logger.info("Apply substitutions to hdl")
 searchesAndReplaces = [verilogRegexSaR, vhdlRegexSaR]
 for (src,dst) in mapFiles.iteritems():
-    logger.info(src + " copied to " + dst)
+    logger.debug(src + " copied to " + dst)
     patchFile(src, dst, searchesAndReplaces, mapCommonFilenamesRegex, mapBasenameFilesRegex)
