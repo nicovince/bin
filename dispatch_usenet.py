@@ -11,6 +11,8 @@ import os, sys
 import re
 import logging
 import shutil
+import smtplib
+from email.mime.text import MIMEText
 
 # Retrieve video from folder
 def getVideos(folder):
@@ -42,11 +44,15 @@ def getDestination(usenetDestDir, videoRegexes):
     for (videoDestDir, videoRegex) in videoRegexes.iteritems():
         logger.debug(videoDestDir + "-" + videoRegex)
         # Does regex matches to usenetDestDir?
-        result = re.search(videoRegex,destDir,re.I)
+        result = re.search(videoRegex,usenetDestDir,re.I)
         if result != None:
             logger.debug("Matching for " + videoDestDir)
+            logger.debug("result.string : " + result.string)
+            logger.debug("result.re : " + str(result.re))
+            logger.debug("result.group : " + result.group())
             # do not go further through regexes after a match has been found
             return videoDestDir
+    return ""
 
 
 ##
@@ -72,6 +78,61 @@ def moveVideosToDestination(videoList, videoDestDir):
             logger.info(log)
             res.append(videoDestDir + "/" + f)
     return res
+
+# Send mail, subject is prefixed with "[Hella Nzb] "
+def sendMail(subject, content):
+    dest = "nico.vince@gmail.com"
+    sender = "nico.vince@gmail.com"
+    # setup mail
+    msg = MIMEText(content)
+    msg['From'] = sender
+    msg['To'] = dest
+    msg['Subject'] = "[HellaNzb] " + subject
+    # setup smtp
+    s = smtplib.SMTP('smtp.free.fr')
+    s.sendmail(sender, [dest], msg.as_string())
+    s.quit()
+
+# set the mail's body depending on what was found and downloaded
+def setMailBody(videos, videosMoved, destDir, videoDestDir):
+    body = ""
+    if (len(videoDestDir) == 0):
+        body += "Destination folder could not be determined.\n"
+        if (len(videos) > 0):
+            body += "The following videos were found :\n"
+            for v in videos:
+                body += " * " + v + "\n"
+    # No videos found
+    elif (len(videos) == 0):
+        body += "No videos were found in " + destDir + " :\n"
+        for f in os.listdir(destDir):
+            body += f + "\n"
+    # No videos moved
+    elif (len(videosMoved) == 0):
+        body += "The following videos : \n"
+        for v in videos:
+            body += " * " + os.path.basename(v) + "\n"
+        body += "could not be moved to destination folder :\n"
+        body += destDir + "\n"
+    # Videos moved
+    elif (len(videosMoved) > 0):
+        body += "The following videos :\n"
+        for v in videosMoved:
+            body += " * " + os.path.basename(v) + "\n"
+        body += "have been moved to destination folder :\n"
+        body += videoDestDir + "\n"
+        # Display videos not moved if any
+        if (len(videosMoved) != len(videos)):
+            body += "The following videos : \n"
+            for v in videos:
+                if v not in videosMoved:
+                    body += " * " + os.path.basename(v) + "\n"
+            body += "could not be moved to destination folder"
+
+    return body
+
+
+
 
 ## Start of script ##
 
@@ -100,18 +161,19 @@ if len(sys.argv) != 6:
     sys.exit(1)
 
 # Retrieve args in meaningfull variables
-type = sys.argv[1]
-archiveName = sys.argv[2]
-destDir = sys.argv[3]
-elapsedTime = sys.argv[4]
-parMessage = sys.argv[5]
+args = dict()
+args['type']        = sys.argv[1]
+args['archiveName'] = sys.argv[2]
+args['destDir']     = sys.argv[3]
+args['elapsedTime'] = sys.argv[4]
+args['parMessage']  = sys.argv[5]
 
 # Display args
-logger.debug("type : " + type)
-logger.debug("archiveName : " + archiveName)
-logger.debug("destDir : " + destDir)
-logger.debug("elapsedTime : " + elapsedTime)
-logger.debug("parMessage : " + parMessage)
+logger.debug("type        : " + args['type'])
+logger.debug("archiveName : " + args['archiveName'])
+logger.debug("destDir     : " + args['destDir'])
+logger.debug("elapsedTime : " + args['elapsedTime'])
+logger.debug("parMessage  : " + args['parMessage'])
 
 
 # Setup regexes and path for each kind of download
@@ -123,18 +185,24 @@ regexes=dict([(videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
               ,(videosPath + 'The_Big_Bang_Theory_S6', '.*the.*big.*bang.*theory.*s[0-9]?6.*')
               ,(videosPath + 'Dexter_S7', '.*dexter.*s[0-9]?7.*')
               ,(videosPath + 'Homeland_S2', '.*homeland.*s[0-9]?2.*')
+              ,('/home/admin/dev/testing/dummy', '.*dummy.*')
               ])
 
 # Retrieve where the downloaded thing should go
-videoDestDir = getDestination(destDir, regexes)
-if (videoDestDir == None):
-    logger.error("Could not determine destination for download : " + destDir)
-    sys.exit(0)
+videoDestDir = getDestination(args['destDir'], regexes)
+if (len(videoDestDir) == 0):
+    logger.error("Could not determine destination for download : " + args['destDir'])
 # Get the videos out of the downloaded stuff
-videos = getVideos(destDir)
-
-# Move if we got anything
-if len(videos) > 0:
-    moveVideosToDestination(videos, videoDestDir)
-else:
+videos = getVideos(args['destDir'])
+if (len(videos) == 0):
     logger.warning("No video were found in " + videoDestDir)
+
+# Move if we got anything and a destination
+videosMoved = list()
+if (len(videos) > 0) and (len(videoDestDir) > 0):
+    videosMoved = moveVideosToDestination(videos, videoDestDir)
+
+
+# Send status mail
+mailBody = setMailBody(videos, videosMoved, args['destDir'], videoDestDir)
+sendMail(args['archiveName'],mailBody)
