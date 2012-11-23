@@ -42,14 +42,10 @@ def getVideos(folder):
 def getDestination(usenetDestDir, videoRegexes):
     # loop through regexes to find a match for the download
     for (videoDestDir, videoRegex) in videoRegexes.iteritems():
-        logger.debug(videoDestDir + "-" + videoRegex)
         # Does regex matches to usenetDestDir?
         result = re.search(videoRegex,usenetDestDir,re.I)
         if result != None:
             logger.debug("Matching for " + videoDestDir)
-            logger.debug("result.string : " + result.string)
-            logger.debug("result.re : " + str(result.re))
-            logger.debug("result.group : " + result.group())
             # do not go further through regexes after a match has been found
             return videoDestDir
     return ""
@@ -169,11 +165,11 @@ args['elapsedTime'] = sys.argv[4]
 args['parMessage']  = sys.argv[5]
 
 # Display args
-logger.debug("type        : " + args['type'])
-logger.debug("archiveName : " + args['archiveName'])
+#logger.debug("type        : " + args['type'])
+#logger.debug("archiveName : " + args['archiveName'])
 logger.debug("destDir     : " + args['destDir'])
-logger.debug("elapsedTime : " + args['elapsedTime'])
-logger.debug("parMessage  : " + args['parMessage'])
+#logger.debug("elapsedTime : " + args['elapsedTime'])
+#logger.debug("parMessage  : " + args['parMessage'])
 
 
 # Setup regexes and path for each kind of download
@@ -204,5 +200,6 @@ if (len(videos) > 0) and (len(videoDestDir) > 0):
 
 
 # Send status mail
+logger.info("Sending status mail")
 mailBody = setMailBody(videos, videosMoved, args['destDir'], videoDestDir)
 sendMail(args['archiveName'],mailBody)
