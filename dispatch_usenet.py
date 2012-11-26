@@ -181,6 +181,7 @@ regexes=dict([(videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
               ,(videosPath + 'The_Big_Bang_Theory_S6', '.*the.*big.*bang.*theory.*s[0-9]?6.*')
               ,(videosPath + 'Dexter_S7', '.*dexter.*s[0-9]?7.*')
               ,(videosPath + 'Homeland_S2', '.*homeland.*s[0-9]?2.*')
+              ,(videosPath + 'Falling.Skies_S02', '.*falling.*skies.*s[0-9]?2.*')
               ,('/home/admin/dev/testing/dummy', '.*dummy.*')
               ])
 
