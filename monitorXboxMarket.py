@@ -3,15 +3,17 @@
 import os, sys, re
 import urllib2
 import smtplib
+import logging
 from email.mime.text import MIMEText
 from HTMLParser import HTMLParser
 from htmlentitydefs import name2codepoint
 
+# Parser for xbox market html pages
 class XboxMarketHtmlParser(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
         self.match = False
-        self.price = 0
+        self.price = list()
     def handle_starttag(self, tag, attrs):
         if tag == "span":
             for attr in attrs:
@@ -19,7 +21,7 @@ class XboxMarketHtmlParser(HTMLParser):
                     self.match = True
     def handle_data(self, data):
         if self.match:
-            self.price = data.replace(',','')
+            self.price.append(data.replace(',',''))
             self.match = False
     def getPrice(self):
         return self.price
@@ -62,15 +64,26 @@ def getPage(url):
 
 url = "http://marketplace.xbox.com/en-US/Product/Gears-of-War-3-Season-Pass/b38b82ce-1dc6-4028-a69b-514babca6db0"
 
+
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(name)-10s %(levelname)-8s %(message)s',
+                    datefmt='%Y/%m/%d %H:%M:%S',
+                    filename='/home/admin/monitorXboxMarket.log',
+                    filemode='a')
+logger = logging.getLogger('XboxMarket')
+
 #fd = open('gow3SeasonPass.html')
 #data = fd.read()
 data = getPage(url)
-price = getPrice(data)
+#price = getPrice(data)
 currentPrice="2400"
 parser = XboxMarketHtmlParser()
 parser.feed(data)
 price2 = parser.getPrice()
-print price2
-for p in price:
+prices = ""
+for p in price2:
+    prices += p + " "
     if p < currentPrice:
-        sendMail("Gow3 Season Pass","Price of Season pass is " + p + "\n" + str(price))
+        sendMail("Gow3 Season Pass","Price of Season pass is " + p + "\n" + str(price2))
+logger.info("Gow Season Pass : " + prices)
