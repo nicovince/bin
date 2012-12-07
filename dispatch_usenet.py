@@ -1,4 +1,4 @@
-#!/opt/bin/env /opt/bin/python2.6
+#!/usr/bin/env /usr/bin/python
 
 #type        : post processing result, either 'SUCCESS' or 'ERROR'
 #archiveName : name of the archive, e.g. 'Usenet_Post5'
@@ -13,6 +13,7 @@ import logging
 import shutil
 import smtplib
 from email.mime.text import MIMEText
+from optparse import OptionParser
 
 # Retrieve video from folder
 def getVideos(folder):
@@ -131,23 +132,47 @@ def setMailBody(videos, videosMoved, destDir, videoDestDir):
 
 
 ## Start of script ##
+# default log file
+logFile=os.getenv('HOME') + '/dispatchHellanzb.log'
+# default video folder
+videosPath='/mnt/disk1/share/videos/'
+# default verbosity : do not print on stdout
+verbose=False
 
+optionsParser = OptionParser("%prog [options]")
+optionsParser.add_option("-l", "--logFile", dest='logFile', default=logFile,
+                         help="log file (default : " + logFile + ")")
+optionsParser.add_option("-d", "--videosFolder",
+                         dest='videosPath', default=videosPath,
+                         help="Video folder where the downloaded videos will be moved to. (default : " + videosPath + ")")
+optionsParser.add_option("-n", "--dry-run",
+                         dest="dryRun", action="store_true", default=False,
+                         help="Do not move anything, do no send mail, just pretend it happened")
+optionsParser.add_option("-v", "--verbose",
+                         dest="verbose", action="store_true", default=verbose,
+                         help="Will display log message to console in addition to store them in logFile")
+
+
+(options, args) = optionsParser.parse_args()
 # Setup logging capability
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(name)-10s %(levelname)-8s %(message)s',
                     datefmt='%Y/%m/%d %H:%M:%S',
-                    filename='/home/admin/dispatchHellanzb.log',
+                    filename=logFile,
                     filemode='a')
 # Log to console as well
 console = logging.StreamHandler()
 console.setLevel(logging.DEBUG)
 consoleFormatter = logging.Formatter('%(name)s: %(levelname)s %(message)s')
 console.setFormatter(consoleFormatter)
-logging.getLogger('').addHandler(console)
+if options.verbose:
+    logging.getLogger('').addHandler(console)
 logger = logging.getLogger('dispatch')
 
 logger.info("### Start of post processing script")
 
+print options.verbose 
+sys.exit(1)
 # Check args count
 logger.debug("Args :")
 if len(sys.argv) != 6:
@@ -173,7 +198,6 @@ logger.debug("destDir     : " + args['destDir'])
 
 
 # Setup regexes and path for each kind of download
-videosPath='/mnt/disk1/share/videos/'
 
 regexes=dict([(videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
               ,(videosPath + 'Boardwalk.Empire_S03', '.*boardwalk.*empire.*s[0-9]?3.*')
