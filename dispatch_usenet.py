@@ -14,6 +14,7 @@ import shutil
 import smtplib
 from email.mime.text import MIMEText
 from optparse import OptionParser
+from optparse import OptionGroup
 
 # Retrieve video from folder
 def getVideos(folder):
@@ -139,21 +140,41 @@ videosPath='/mnt/disk1/share/videos/'
 # default verbosity : do not print on stdout
 verbose=False
 
-optionsParser = OptionParser("%prog [options]")
-optionsParser.add_option("-l", "--logFile", dest='logFile', default=logFile,
-                         help="log file (default : " + logFile + ")")
-optionsParser.add_option("-d", "--videosFolder",
-                         dest='videosPath', default=videosPath,
-                         help="Video folder where the downloaded videos will be moved to. (default : " + videosPath + ")")
-optionsParser.add_option("-n", "--dry-run",
-                         dest="dryRun", action="store_true", default=False,
-                         help="Do not move anything, do no send mail, just pretend it happened")
-optionsParser.add_option("-v", "--verbose",
-                         dest="verbose", action="store_true", default=verbose,
-                         help="Will display log message to console in addition to store them in logFile")
+parser = OptionParser("%prog [options]")
+parser.add_option("-l", "--logFile", dest='logFile', default=logFile,
+                  help="log file (default : %default)")
+parser.add_option("-d", "--videosFolder",
+                  dest='videosPath', default=videosPath,
+                  help="Video folder where the downloaded videos will be moved to. (default : %default)")
+parser.add_option("-n", "--dry-run",
+                  dest="dryRun", action="store_true", default=False,
+                  help="Do not move anything, do no send mail, just pretend it happened")
+parser.add_option("-v", "--verbose",
+                  dest="verbose", action="store_true", default=verbose,
+                  help="Will display log message to console in addition to store them in logFile")
+
+# those options are passed to post processing script by hellanzb as positional args
+ppOptions = OptionGroup (parser, "Positionnal options of Hellanzb's post-processing script",
+                              "Those options are passed from post-processing script of Hellanzb to this script")
+ppOptions.add_option("--type", dest="type",
+                     help="Arg 1 passed by post process script."
+                     "Post processing result, either 'SUCCESS' or 'ERROR'")
+ppOptions.add_option("--archiveName", dest="archiveName",
+                     help="Arg 2 passed by post process script."
+                     "Name of the archive, e.g. 'Usenet_Post5'")
+ppOptions.add_option("--destDir", dest="destDir",
+                     help="Arg 3 passed by post process script."
+                     "Where the archive ended up, e.g. '/mnt/disk1/share/hellanzb/usenet'")
+ppOptions.add_option("--elapsedTime", dest="elapsedTime",
+                     help="Arg 4 passed by post process script."
+                     "A pretty string showing how long post processing took, e.g. '10m 37s'")
+ppOptions.add_option("--parMessage", dest="parMessage",
+                     help="Arg 5 passed by post process script."
+                     "optional post processing message. e.g. '(No Pars)'")
+parser.add_option_group(ppOptions)
 
 
-(options, args) = optionsParser.parse_args()
+(options, args) = parser.parse_args()
 # Setup logging capability
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(name)-10s %(levelname)-8s %(message)s',
@@ -171,7 +192,6 @@ logger = logging.getLogger('dispatch')
 
 logger.info("### Start of post processing script")
 
-print options.verbose 
 sys.exit(1)
 # Check args count
 logger.debug("Args :")

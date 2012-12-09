@@ -6,10 +6,14 @@
 #args['elapsedTime'] = sys.argv[4]
 #args['parMessage']  = sys.argv[5]
 
-type=$1
-archiveName=$2
-destDir=$3
-elapstedTime=$4
-parMessage=$5
+typeOpt=$1
+archiveNameOpt=$2
+destDirOpt=$3
+elapstedTimeOpt=$4
+parMessageOpt=$5
 
-dispatch_usenet.py $type $archiveName $destDir $elapsedTime $parMessage
+dispatch_usenet.py --type $typeOpt \
+                   --archiveName $archiveNameOpt \
+                   --destDir $destDirOpt \
+                   --elapsedTime $elapsedTimeOpt \
+                   --parMessage $parMessageOpt
