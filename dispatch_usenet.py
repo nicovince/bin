@@ -152,6 +152,10 @@ def main():
     parser.add_option("-n", "--dry-run",
                       dest="dryRun", action="store_true", default=False,
                       help="Do not move anything, do no send mail, just pretend it happened")
+    parser.add_option("--send-mail", dest="forceSendMail", action="store_true",
+                      default=False, help="Send mail, even if --dry-run options has been set")
+    parser.add_option("--no-mail", dest="sendMail", action="store_false",
+                      default=True, help="Do not send status mail (default : %default)")
     parser.add_option("-v", "--verbose",
                       dest="verbose", action="store_true", default=verbose,
                       help="Will display log message to console in addition to store them in logFile")
@@ -194,6 +198,9 @@ def main():
     logger = logging.getLogger('dispatch')
 
     logger.info("### Start of post processing script")
+
+    if options.dryRun and not(options.forceSendMail):
+        options.sendMail = False
 
     # Check destDir and archiveName options has been set
     if (options.destDir == "UNSET") or (options.archiveName == "UNSET"):
@@ -243,7 +250,8 @@ def main():
     # Send status mail
     logger.info("Sending status mail")
     mailBody = setMailBody(videos, videosMoved, options.destDir, videoDestDir)
-    sendMail(options.archiveName,mailBody)
+    if options.sendMail:
+        sendMail(options.archiveName,mailBody)
 
 logger = logging.getLogger('dispatch')
 if __name__ == "__main__":
