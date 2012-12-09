@@ -15,7 +15,7 @@ touch nzb_nomatch/bambi.avi
 echo "--- Should move video_dummy.mp4 to ${videosFolder}/dummy ---"
 $DISPATCH_USENET --type "SUCCESS" \
                  --archiveName "nzb_dummy" \
-                 --destDir "/home/admin/dev/testing/nzb_dummy" \
+                 --destDir "${PWD}/nzb_dummy" \
                  --elapsedTime "2m 43s" \
                  --parMessage "" \
                  --videosFolder "${videosFolder}" \
@@ -24,7 +24,7 @@ $DISPATCH_USENET --type "SUCCESS" \
 echo "--- Should find nothing ---"
 $DISPATCH_USENET --type "SUCCESS" \
                  --archiveName "nzb_dummy" \
-                 --destDir "/home/admin/dev/testing/nzb_dummy" \
+                 --destDir "${PWD}/nzb_dummy" \
                  --elapsedTime "2m 43s" \
                  --parMessage "" \
                  --videosFolder "${videosFolder}" \
@@ -34,7 +34,7 @@ echo "--- Should move nothing ---"
 touch nzb_dummy/video_dummy.mp4
 $DISPATCH_USENET --type "SUCCESS" \
                  --archiveName "nzb_dummy" \
-                 --destDir "/home/admin/dev/testing/nzb_dummy" \
+                 --destDir "${PWD}/nzb_dummy" \
                  --elapsedTime "2m 43s" \
                  --parMessage "" \
                  --videosFolder "${videosFolder}" \
@@ -45,7 +45,7 @@ touch nzb_dummy/video_dummy.mp4
 touch nzb_dummy/sample_dummy.mp4
 $DISPATCH_USENET --type "SUCCESS" \
                  --archiveName "nzb_dummy" \
-                 --destDir "/home/admin/dev/testing/nzb_dummy" \
+                 --destDir "${PWD}/nzb_dummy" \
                  --elapsedTime "2m 43s" \
                  --parMessage "" \
                  --videosFolder "${videosFolder}" \
@@ -54,7 +54,7 @@ $DISPATCH_USENET --type "SUCCESS" \
 echo "--- should not move anything ---"
 $DISPATCH_USENET --type "SUCCESS" \
                  --archiveName "nzb_nomatch" \
-                 --destDir "/home/admin/dev/testing/nzb_nomatch" \
+                 --destDir "${PWD}/nzb_nomatch" \
                  --elapsedTime "2m 43s" \
                  --parMessage "" \
                  --videosFolder "${videosFolder}" \
