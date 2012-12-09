@@ -132,119 +132,123 @@ def setMailBody(videos, videosMoved, destDir, videoDestDir):
 
 
 
-## Start of script ##
-# default log file
-logFile=os.getenv('HOME') + '/dispatchHellanzb.log'
-# default video folder
-videosPath='/mnt/disk1/share/videos/'
-# default verbosity : do not print on stdout
-verbose=False
+def main():
+    # default log file
+    logFile=os.getenv('HOME') + '/dispatchHellanzb.log'
+    # default video folder
+    videosPath='/mnt/disk1/share/videos/'
+    # default verbosity : do not print on stdout
+    verbose=False
 
-parser = OptionParser("%prog [options]")
-parser.add_option("-l", "--logFile", dest='logFile', default=logFile,
-                  help="log file (default : %default)")
-parser.add_option("-d", "--videosFolder",
-                  dest='videosPath', default=videosPath,
-                  help="Video folder where the downloaded videos will be moved to. (default : %default)")
-parser.add_option("-n", "--dry-run",
-                  dest="dryRun", action="store_true", default=False,
-                  help="Do not move anything, do no send mail, just pretend it happened")
-parser.add_option("-v", "--verbose",
-                  dest="verbose", action="store_true", default=verbose,
-                  help="Will display log message to console in addition to store them in logFile")
+    parser = OptionParser("%prog [options]")
+    parser.add_option("-l", "--logFile", dest='logFile', default=logFile,
+                      help="log file (default : %default)")
+    parser.add_option("-d", "--videosFolder",
+                      dest='videosPath', default=videosPath,
+                      help="Video folder where the downloaded videos will be moved to. (default : %default)")
+    parser.add_option("-n", "--dry-run",
+                      dest="dryRun", action="store_true", default=False,
+                      help="Do not move anything, do no send mail, just pretend it happened")
+    parser.add_option("-v", "--verbose",
+                      dest="verbose", action="store_true", default=verbose,
+                      help="Will display log message to console in addition to store them in logFile")
 
-# those options are passed to post processing script by hellanzb as positional args
-ppOptions = OptionGroup (parser, "Positionnal options of Hellanzb's post-processing script",
-                              "Those options are passed from post-processing script of Hellanzb to this script")
-ppOptions.add_option("--type", dest="type",
-                     help="Arg 1 passed by post process script."
-                     "Post processing result, either 'SUCCESS' or 'ERROR'")
-ppOptions.add_option("--archiveName", dest="archiveName",
-                     help="Arg 2 passed by post process script."
-                     "Name of the archive, e.g. 'Usenet_Post5'")
-ppOptions.add_option("--destDir", dest="destDir",
-                     help="Arg 3 passed by post process script."
-                     "Where the archive ended up, e.g. '/mnt/disk1/share/hellanzb/usenet'")
-ppOptions.add_option("--elapsedTime", dest="elapsedTime",
-                     help="Arg 4 passed by post process script."
-                     "A pretty string showing how long post processing took, e.g. '10m 37s'")
-ppOptions.add_option("--parMessage", dest="parMessage",
-                     help="Arg 5 passed by post process script."
-                     "optional post processing message. e.g. '(No Pars)'")
-parser.add_option_group(ppOptions)
+    # those options are passed to post processing script by hellanzb as positional args
+    ppOptions = OptionGroup (parser, "Positionnal options of Hellanzb's post-processing script",
+                                  "Those options are passed from post-processing script of Hellanzb to this script")
+    ppOptions.add_option("--type", dest="type",
+                         help="Arg 1 passed by post process script."
+                         "Post processing result, either 'SUCCESS' or 'ERROR'")
+    ppOptions.add_option("--archiveName", dest="archiveName",
+                         help="Arg 2 passed by post process script."
+                         "Name of the archive, e.g. 'Usenet_Post5'")
+    ppOptions.add_option("--destDir", dest="destDir",
+                         help="Arg 3 passed by post process script."
+                         "Where the archive ended up, e.g. '/mnt/disk1/share/hellanzb/usenet'")
+    ppOptions.add_option("--elapsedTime", dest="elapsedTime",
+                         help="Arg 4 passed by post process script."
+                         "A pretty string showing how long post processing took, e.g. '10m 37s'")
+    ppOptions.add_option("--parMessage", dest="parMessage",
+                         help="Arg 5 passed by post process script."
+                         "optional post processing message. e.g. '(No Pars)'")
+    parser.add_option_group(ppOptions)
 
 
-(options, args) = parser.parse_args()
-# Setup logging capability
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(name)-10s %(levelname)-8s %(message)s',
-                    datefmt='%Y/%m/%d %H:%M:%S',
-                    filename=logFile,
-                    filemode='a')
-# Log to console as well
-console = logging.StreamHandler()
-console.setLevel(logging.DEBUG)
-consoleFormatter = logging.Formatter('%(name)s: %(levelname)s %(message)s')
-console.setFormatter(consoleFormatter)
-if options.verbose:
-    logging.getLogger('').addHandler(console)
-logger = logging.getLogger('dispatch')
+    (options, args) = parser.parse_args()
+    # Setup logging capability
+    logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)s %(name)-10s %(levelname)-8s %(message)s',
+                        datefmt='%Y/%m/%d %H:%M:%S',
+                        filename=logFile,
+                        filemode='a')
+    # Log to console as well
+    console = logging.StreamHandler()
+    console.setLevel(logging.DEBUG)
+    consoleFormatter = logging.Formatter('%(name)s: %(levelname)s %(message)s')
+    console.setFormatter(consoleFormatter)
+    if options.verbose:
+        logging.getLogger('').addHandler(console)
+    logger = logging.getLogger('dispatch')
 
-logger.info("### Start of post processing script")
+    logger.info("### Start of post processing script")
 
-sys.exit(1)
-# Check args count
-logger.debug("Args :")
-if len(sys.argv) != 6:
-    logger.error( "Wrong number or arguments. Got " + str(len(sys.argv)))
-    for arg in sys.argv:
-        logger.error(arg)
     sys.exit(1)
+    # Check args count
+    logger.debug("Args :")
+    if len(sys.argv) != 6:
+        logger.error( "Wrong number or arguments. Got " + str(len(sys.argv)))
+        for arg in sys.argv:
+            logger.error(arg)
+        sys.exit(1)
 
-# Retrieve args in meaningfull variables
-args = dict()
-args['type']        = sys.argv[1]
-args['archiveName'] = sys.argv[2]
-args['destDir']     = sys.argv[3]
-args['elapsedTime'] = sys.argv[4]
-args['parMessage']  = sys.argv[5]
+    # Retrieve args in meaningfull variables
+    args = dict()
+    args['type']        = sys.argv[1]
+    args['archiveName'] = sys.argv[2]
+    args['destDir']     = sys.argv[3]
+    args['elapsedTime'] = sys.argv[4]
+    args['parMessage']  = sys.argv[5]
 
-# Display args
-#logger.debug("type        : " + args['type'])
-#logger.debug("archiveName : " + args['archiveName'])
-logger.debug("destDir     : " + args['destDir'])
-#logger.debug("elapsedTime : " + args['elapsedTime'])
-#logger.debug("parMessage  : " + args['parMessage'])
-
-
-# Setup regexes and path for each kind of download
-
-regexes=dict([(videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
-              ,(videosPath + 'Boardwalk.Empire_S03', '.*boardwalk.*empire.*s[0-9]?3.*')
-              ,(videosPath + 'How_I_Met_Your_Mother_S8', '.*how.*i.*met.*your.*mother.*s[0-9]?8.*')
-              ,(videosPath + 'The_Big_Bang_Theory_S6', '.*the.*big.*bang.*theory.*s[0-9]?6.*')
-              ,(videosPath + 'Dexter_S7', '.*dexter.*s[0-9]?7.*')
-              ,(videosPath + 'Homeland_S2', '.*homeland.*s[0-9]?2.*')
-              ,(videosPath + 'Falling.Skies_S02', '.*falling.*skies.*s[0-9]?2.*')
-              ,('/home/admin/dev/testing/dummy', '.*dummy.*')
-              ])
-
-# Retrieve where the downloaded thing should go
-videoDestDir = getDestination(args['destDir'], regexes)
-if (len(videoDestDir) == 0):
-    logger.error("Could not determine destination for download : " + args['destDir'])
-# Get the videos out of the downloaded stuff
-videos = getVideos(args['destDir'])
-if (len(videos) == 0):
-    logger.warning("No video were found in " + videoDestDir)
-
-# Move if we got anything and a destination
-videosMoved = list()
-if (len(videos) > 0) and (len(videoDestDir) > 0):
-    videosMoved = moveVideosToDestination(videos, videoDestDir)
+    # Display args
+    #logger.debug("type        : " + args['type'])
+    #logger.debug("archiveName : " + args['archiveName'])
+    logger.debug("destDir     : " + args['destDir'])
+    #logger.debug("elapsedTime : " + args['elapsedTime'])
+    #logger.debug("parMessage  : " + args['parMessage'])
 
 
-# Send status mail
-logger.info("Sending status mail")
-mailBody = setMailBody(videos, videosMoved, args['destDir'], videoDestDir)
-sendMail(args['archiveName'],mailBody)
+    # Setup regexes and path for each kind of download
+
+    regexes=dict([(videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
+                  ,(videosPath + 'Boardwalk.Empire_S03', '.*boardwalk.*empire.*s[0-9]?3.*')
+                  ,(videosPath + 'How_I_Met_Your_Mother_S8', '.*how.*i.*met.*your.*mother.*s[0-9]?8.*')
+                  ,(videosPath + 'The_Big_Bang_Theory_S6', '.*the.*big.*bang.*theory.*s[0-9]?6.*')
+                  ,(videosPath + 'Dexter_S7', '.*dexter.*s[0-9]?7.*')
+                  ,(videosPath + 'Homeland_S2', '.*homeland.*s[0-9]?2.*')
+                  ,(videosPath + 'Falling.Skies_S02', '.*falling.*skies.*s[0-9]?2.*')
+                  ,('/home/admin/dev/testing/dummy', '.*dummy.*')
+                  ])
+
+    # Retrieve where the downloaded thing should go
+    videoDestDir = getDestination(args['destDir'], regexes)
+    if (len(videoDestDir) == 0):
+        logger.error("Could not determine destination for download : " + args['destDir'])
+    # Get the videos out of the downloaded stuff
+    videos = getVideos(args['destDir'])
+    if (len(videos) == 0):
+        logger.warning("No video were found in " + videoDestDir)
+
+    # Move if we got anything and a destination
+    videosMoved = list()
+    if (len(videos) > 0) and (len(videoDestDir) > 0):
+        videosMoved = moveVideosToDestination(videos, videoDestDir)
+
+
+    # Send status mail
+    logger.info("Sending status mail")
+    mailBody = setMailBody(videos, videosMoved, args['destDir'], videoDestDir)
+    sendMail(args['archiveName'],mailBody)
+
+if __name__ == "__main__":
+    main()
+
