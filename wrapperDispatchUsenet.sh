@@ -1,10 +1,10 @@
 #!/bin/bash
-
-#args['type']        = sys.argv[1]
-#args['archiveName'] = sys.argv[2]
-#args['destDir']     = sys.argv[3]
-#args['elapsedTime'] = sys.argv[4]
-#args['parMessage']  = sys.argv[5]
+#type        : post processing result, either 'SUCCESS' or 'ERROR'
+#archiveName : name of the archive, e.g. 'Usenet_Post5'
+#destDir     : where the archive ended up, e.g. '/ext2/usenet/Usenet_Post5'
+#elapsedTime : a pretty string showing how long post processing took, e.g.
+#             '10m 37s'
+#parMessage  : optional post processing message. e.g. '(No Pars)'
 
 typeOpt=$1
 archiveNameOpt=$2
