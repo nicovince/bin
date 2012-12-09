@@ -18,6 +18,9 @@ from optparse import OptionGroup
 
 # Retrieve video from folder
 def getVideos(folder):
+    if not os.path.exists(folder):
+        logger.error("folder " + folder + " does not exists")
+        sys.exit(1)
     files = os.listdir(folder)
     videoList = list()
     videoRegex=".*(mp4)|(avi)$"
@@ -136,7 +139,7 @@ def main():
     # default log file
     logFile=os.getenv('HOME') + '/dispatchHellanzb.log'
     # default video folder
-    videosPath='/mnt/disk1/share/videos/'
+    defaultVideosPath='/mnt/disk1/share/videos/'
     # default verbosity : do not print on stdout
     verbose=False
 
@@ -144,7 +147,7 @@ def main():
     parser.add_option("-l", "--logFile", dest='logFile', default=logFile,
                       help="log file (default : %default)")
     parser.add_option("-d", "--videosFolder",
-                      dest='videosPath', default=videosPath,
+                      dest='videosPath', default=defaultVideosPath,
                       help="Video folder where the downloaded videos will be moved to. (default : %default)")
     parser.add_option("-n", "--dry-run",
                       dest="dryRun", action="store_true", default=False,
@@ -156,13 +159,13 @@ def main():
     # those options are passed to post processing script by hellanzb as positional args
     ppOptions = OptionGroup (parser, "Positionnal options of Hellanzb's post-processing script",
                                   "Those options are passed from post-processing script of Hellanzb to this script")
-    ppOptions.add_option("--type", dest="type",
+    ppOptions.add_option("--type", dest="processingResult",
                          help="Arg 1 passed by post process script."
                          "Post processing result, either 'SUCCESS' or 'ERROR'")
-    ppOptions.add_option("--archiveName", dest="archiveName",
+    ppOptions.add_option("--archiveName", dest="archiveName", default="UNSET",
                          help="Arg 2 passed by post process script."
                          "Name of the archive, e.g. 'Usenet_Post5'")
-    ppOptions.add_option("--destDir", dest="destDir",
+    ppOptions.add_option("--destDir", dest="destDir", default="UNSET",
                          help="Arg 3 passed by post process script."
                          "Where the archive ended up, e.g. '/mnt/disk1/share/hellanzb/usenet'")
     ppOptions.add_option("--elapsedTime", dest="elapsedTime",
@@ -192,49 +195,42 @@ def main():
 
     logger.info("### Start of post processing script")
 
-    sys.exit(1)
-    # Check args count
-    logger.debug("Args :")
-    if len(sys.argv) != 6:
-        logger.error( "Wrong number or arguments. Got " + str(len(sys.argv)))
-        for arg in sys.argv:
-            logger.error(arg)
+    # Check destDir and archiveName options has been set
+    if (options.destDir == "UNSET") or (options.archiveName == "UNSET"):
+        if options.destDir == "UNSET":
+            missingOption = "destDir"
+        elif options.archiveName == "UNSET":
+            missingOption = "archiveName"
+        logger.error(missingOption + " option has not been specified")
+        parser.print_help()
         sys.exit(1)
 
-    # Retrieve args in meaningfull variables
-    args = dict()
-    args['type']        = sys.argv[1]
-    args['archiveName'] = sys.argv[2]
-    args['destDir']     = sys.argv[3]
-    args['elapsedTime'] = sys.argv[4]
-    args['parMessage']  = sys.argv[5]
-
     # Display args
-    #logger.debug("type        : " + args['type'])
-    #logger.debug("archiveName : " + args['archiveName'])
-    logger.debug("destDir     : " + args['destDir'])
-    #logger.debug("elapsedTime : " + args['elapsedTime'])
-    #logger.debug("parMessage  : " + args['parMessage'])
+    logger.debug("type : " + options.processingResult + " - "
+                 "archiveName : " + options.archiveName + " - "
+                 "destDir : " + options.destDir + " - "
+                 "elapsedTime : " + options.elapsedTime + " - "
+                 "parMessage : " + options.parMessage)
 
 
     # Setup regexes and path for each kind of download
 
-    regexes=dict([(videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
-                  ,(videosPath + 'Boardwalk.Empire_S03', '.*boardwalk.*empire.*s[0-9]?3.*')
-                  ,(videosPath + 'How_I_Met_Your_Mother_S8', '.*how.*i.*met.*your.*mother.*s[0-9]?8.*')
-                  ,(videosPath + 'The_Big_Bang_Theory_S6', '.*the.*big.*bang.*theory.*s[0-9]?6.*')
-                  ,(videosPath + 'Dexter_S7', '.*dexter.*s[0-9]?7.*')
-                  ,(videosPath + 'Homeland_S2', '.*homeland.*s[0-9]?2.*')
-                  ,(videosPath + 'Falling.Skies_S02', '.*falling.*skies.*s[0-9]?2.*')
-                  ,('/home/admin/dev/testing/dummy', '.*dummy.*')
+    regexes=dict([(options.videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
+                  ,(options.videosPath + 'Boardwalk.Empire_S03', '.*boardwalk.*empire.*s[0-9]?3.*')
+                  ,(options.videosPath + 'How_I_Met_Your_Mother_S8', '.*how.*i.*met.*your.*mother.*s[0-9]?8.*')
+                  ,(options.videosPath + 'The_Big_Bang_Theory_S6', '.*the.*big.*bang.*theory.*s[0-9]?6.*')
+                  ,(options.videosPath + 'Dexter_S7', '.*dexter.*s[0-9]?7.*')
+                  ,(options.videosPath + 'Homeland_S2', '.*homeland.*s[0-9]?2.*')
+                  ,(options.videosPath + 'Falling.Skies_S02', '.*falling.*skies.*s[0-9]?2.*')
+                  ,(options.videosPath + 'dummy', '.*dummy.*')
                   ])
 
     # Retrieve where the downloaded thing should go
-    videoDestDir = getDestination(args['destDir'], regexes)
+    videoDestDir = getDestination(options.destDir, regexes)
     if (len(videoDestDir) == 0):
-        logger.error("Could not determine destination for download : " + args['destDir'])
+        logger.error("Could not determine destination for download : " + options.destDir)
     # Get the videos out of the downloaded stuff
-    videos = getVideos(args['destDir'])
+    videos = getVideos(options.destDir)
     if (len(videos) == 0):
         logger.warning("No video were found in " + videoDestDir)
 
@@ -246,9 +242,10 @@ def main():
 
     # Send status mail
     logger.info("Sending status mail")
-    mailBody = setMailBody(videos, videosMoved, args['destDir'], videoDestDir)
-    sendMail(args['archiveName'],mailBody)
+    mailBody = setMailBody(videos, videosMoved, options.destDir, videoDestDir)
+    sendMail(options.archiveName,mailBody)
 
+logger = logging.getLogger('dispatch')
 if __name__ == "__main__":
     main()
 
