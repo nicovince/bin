@@ -222,14 +222,14 @@ def main():
 
     # Setup regexes and path for each kind of download
 
-    regexes=dict([(options.videosPath + 'Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
-                  ,(options.videosPath + 'Boardwalk.Empire_S03', '.*boardwalk.*empire.*s[0-9]?3.*')
-                  ,(options.videosPath + 'How_I_Met_Your_Mother_S8', '.*how.*i.*met.*your.*mother.*s[0-9]?8.*')
-                  ,(options.videosPath + 'The_Big_Bang_Theory_S6', '.*the.*big.*bang.*theory.*s[0-9]?6.*')
-                  ,(options.videosPath + 'Dexter_S7', '.*dexter.*s[0-9]?7.*')
-                  ,(options.videosPath + 'Homeland_S2', '.*homeland.*s[0-9]?2.*')
-                  ,(options.videosPath + 'Falling.Skies_S02', '.*falling.*skies.*s[0-9]?2.*')
-                  ,(options.videosPath + 'dummy', '.*dummy.*')
+    regexes=dict([ (options.videosPath + '/Walking_Dead_S3', '.*walking.*dead.*s[0-9]?3.*')
+                  ,(options.videosPath + '/Boardwalk.Empire_S03', '.*boardwalk.*empire.*s[0-9]?3.*')
+                  ,(options.videosPath + '/How_I_Met_Your_Mother_S8', '.*how.*i.*met.*your.*mother.*s[0-9]?8.*')
+                  ,(options.videosPath + '/The_Big_Bang_Theory_S6', '.*the.*big.*bang.*theory.*s[0-9]?6.*')
+                  ,(options.videosPath + '/Dexter_S7', '.*dexter.*s[0-9]?7.*')
+                  ,(options.videosPath + '/Homeland_S2', '.*homeland.*s[0-9]?2.*')
+                  ,(options.videosPath + '/Falling.Skies_S02', '.*falling.*skies.*s[0-9]?2.*')
+                  ,(options.videosPath + '/dummy', '.*dummy.*')
                   ])
 
     # Retrieve where the downloaded thing should go

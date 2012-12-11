@@ -3,8 +3,12 @@
 
 DISPATCH_USENET="../dispatch_usenet.py"
 videosFolder="${PWD}/videosFolder"
+OPTIONS="--verbose --no-mail"
 rm -Rf nzb_*
 rm -Rf dummy/
+rm -Rf ${videosFolder}
+
+mkdir ${videosFolder}
 
 mkdir nzb_dummy
 touch nzb_dummy/video_dummy.mp4
@@ -19,7 +23,7 @@ $DISPATCH_USENET --type "SUCCESS" \
                  --elapsedTime "2m 43s" \
                  --parMessage "" \
                  --videosFolder "${videosFolder}" \
-                 --verbose
+                 ${OPTIONS}
 
 echo "--- Should find nothing ---"
 $DISPATCH_USENET --type "SUCCESS" \
@@ -28,7 +32,7 @@ $DISPATCH_USENET --type "SUCCESS" \
                  --elapsedTime "2m 43s" \
                  --parMessage "" \
                  --videosFolder "${videosFolder}" \
-                 --verbose
+                 ${OPTIONS}
 
 echo "--- Should move nothing ---"
 touch nzb_dummy/video_dummy.mp4
@@ -38,7 +42,7 @@ $DISPATCH_USENET --type "SUCCESS" \
                  --elapsedTime "2m 43s" \
                  --parMessage "" \
                  --videosFolder "${videosFolder}" \
-                 --verbose
+                 ${OPTIONS}
 
 echo "--- Should move sample_dummy.mp4 to ${videosFolder}/dummy ---"
 touch nzb_dummy/video_dummy.mp4
@@ -49,7 +53,7 @@ $DISPATCH_USENET --type "SUCCESS" \
                  --elapsedTime "2m 43s" \
                  --parMessage "" \
                  --videosFolder "${videosFolder}" \
-                 --verbose
+                 ${OPTIONS}
 
 echo "--- should not move anything ---"
 $DISPATCH_USENET --type "SUCCESS" \
@@ -58,4 +62,4 @@ $DISPATCH_USENET --type "SUCCESS" \
                  --elapsedTime "2m 43s" \
                  --parMessage "" \
                  --videosFolder "${videosFolder}" \
-                 --verbose
+                 ${OPTIONS}
