@@ -26,7 +26,7 @@ def getVideos(folder):
     videoRegex=".*(mp4)|(avi)$"
     # iterate over files
     for f in files:
-        # Does filename matches video regex 
+        # Does filename matches video regex
         result = re.search(videoRegex,f, re.I)
         if result != None:
             # Append the file to the videoList to be returned
@@ -36,7 +36,7 @@ def getVideos(folder):
 
 ##
 # @brief Get the path where the video should be copied to
-# It retrieve the destination from regexes given as first argument which is a dictionnary 
+# It retrieve the destination from regexes given as first argument which is a dictionnary
 # for which the key is the destination folder and the value is the regex.
 # The regex is used to match against the hellanzb destination folder
 #
@@ -63,19 +63,26 @@ def getDestination(usenetDestDir, videoRegexes):
 # @param videoDestDir Destination folder for the videos
 #
 # @return List of videos successfully copied to destination folder
-def moveVideosToDestination(videoList, videoDestDir):
+def moveVideosToDestination(videoList, videoDestDir, dryRun):
     res = list()
     # Test if destination exists, create it if necessary
     if not(os.path.isdir(videoDestDir)):
-        logger.info("Create dir " + videoDestDir)
-        os.mkdir(videoDestDir, 0755)
+        if not(dryRun):
+            os.mkdir(videoDestDir, 0755)
+            logger.info("Create dir " + videoDestDir)
+        else:
+            logger.info("dryRun is set, " + videoDestDir +
+                        " would be created")
     for f in videoList:
         video = os.path.basename(f)
         if os.path.exists(videoDestDir + "/" + video):
             logger.error(video + " already exists in " + videoDestDir + ". Copy not done")
         else:
-            shutil.move(f,videoDestDir)
-            log = "mv \"" + f + "\" " + videoDestDir
+            if not(dryRun):
+                shutil.move(f,videoDestDir)
+                log = "mv \"" + f + "\" " + videoDestDir
+            else:
+                log = "dryRun is set, would mv " + f + " " + videoDestDir
             logger.info(log)
             res.append(videoDestDir + "/" + f)
     return res
@@ -183,19 +190,22 @@ def main():
 
     (options, args) = parser.parse_args()
     # Setup logging capability
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s %(name)-10s %(levelname)-8s %(message)s',
-                        datefmt='%Y/%m/%d %H:%M:%S',
-                        filename=logFile,
-                        filemode='a')
+    logger = logging.getLogger('dispatch')
+    logger.setLevel(logging.DEBUG)
+    fileHandler = logging.FileHandler(filename=logFile,
+                                      mode='a')
+    fileHandler.setLevel(logging.INFO)
+    fileFormatter = logging.Formatter(fmt='%(asctime)s %(name)-10s %(levelname)-8s %(message)s',
+                                      datefmt='%Y/%m/%d %H:%M:%S')
+    fileHandler.setFormatter(fileFormatter)
+    logger.addHandler(fileHandler)
     # Log to console as well
     console = logging.StreamHandler()
     console.setLevel(logging.DEBUG)
     consoleFormatter = logging.Formatter('%(name)s: %(levelname)s %(message)s')
     console.setFormatter(consoleFormatter)
     if options.verbose:
-        logging.getLogger('').addHandler(console)
-    logger = logging.getLogger('dispatch')
+        logger.addHandler(console)
 
     logger.info("### Start of post processing script")
 
@@ -244,13 +254,14 @@ def main():
     # Move if we got anything and a destination
     videosMoved = list()
     if (len(videos) > 0) and (len(videoDestDir) > 0):
-        videosMoved = moveVideosToDestination(videos, videoDestDir)
+        videosMoved = moveVideosToDestination(videos, videoDestDir,
+                                              options.dryRun)
 
 
     # Send status mail
-    logger.info("Sending status mail")
-    mailBody = setMailBody(videos, videosMoved, options.destDir, videoDestDir)
     if options.sendMail:
+        logger.info("Sending status mail")
+        mailBody = setMailBody(videos, videosMoved, options.destDir, videoDestDir)
         sendMail(options.archiveName,mailBody)
 
 logger = logging.getLogger('dispatch')
