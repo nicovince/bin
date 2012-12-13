@@ -114,32 +114,32 @@ setup_win 1
 
 ######################################################################
 # palladium
-sessions=(
+palladium_sessions1=(
     "svn"        "" "" "cd ~/work/SQN3210/SQN3210_palladium/"
     "vim"        "" "" "cd ~/work/SQN3210/SQN3210_palladium"
     "gen_palla"  "" "montrecul" "cd ~/work/SQN3210/SQN3210_palladium/simv/tops/palladium/pi_test/titanic/sce0"
     "foo"        "" "" "cd ~/work/SQN3210/SQN3210_palladium"
 )
-setup_win 2
+#setup_win 2
 
-sessions=(
+palladimu_sessions2=(
     "regs"        "" "" "cd /home/nvincent/work/SQN3210/SQN3210_palladium/srcv/common/config_regs"
     "sail"        "" "" "cd ~/work/SQN3210/SQN3210_palladium/srcv/common/config_regs/sail"
     "vim"        "" "" "cd ~/work/SQN3210/SQN3210_palladium"
     "foo"        "" "" "cd ~/work/SQN3210/SQN3210_palladium"
 )
-setup_win 2
+#setup_win 2
 
 ######################################################################
 # lpctrl
-sessions=(
+lpctrl_sessions=(
     "svn.lp"     "" "" "cd ~/work/SQN3210/SQN3210_integration/"
     "vim.lp"     "" "" "cd ~/work/SQN3210/SQN3210_integration/"
     "regs.lp"    "" "" "cd ~/work/SQN3210/SQN3210_integration/srcv/common/config_regs"
     "foo.lp"     "" "" "cd ~/work/SQN3210/SQN3210_integration"
     "sim.lp"     "" "" "cd ~/work/SQN3210/SQN3210_integration/simv"
 )
-setup_win 3
+#setup_win 3
 
 ######################################################################
 # fpga
@@ -150,19 +150,18 @@ sessions=(
     "foo.fpga"     "" "" "cd ~/work/SQN3210/SQN3210_FPGA"
     "sim.fpga"     "" "" "cd ~/work/SQN3210/SQN3210_FPGA/simv"
 )
-setup_win 4
+setup_win 8
 
 ######################################################################
 # Env
 sessions=(
     "git.envC"           ""  ""       "cd ~/work/ENV/git/envC"
     "git.swenv"          ""  ""       "cd ~/work/ENV/git/swenv"
-    "3210"               ""  ""       "cd ~/work/SQN3210/SQN3210_integration"
-    "compil.envC"        ""  "irancy" "cd ~/work/ENV/git/envC && echo compileEnvC.sh -lib draftNvincent2"
-    "compil.swenv"       ""  "irancy" "cd ~/work/ENV/git/swenv/../ && echo 'compileSwenv.sh -lib draftNvincent2'"
-    "foo "               ""  ""       "cd ~/work/SQN3210/SQN3210_integration"
-    "cleanup.regs "      ""  ""       "cd ~/work/SQN3210/SQN3210_integration/srcv/common/config_regs"
-    "cleanup.sail "      ""  ""       "cd ~/work/SQN3210/SQN3210_integration/srcv/common/config_regs/sail"
+    "3210"               ""  ""       "cd ~/work/SQN3210/SQN3210_trunk"
+    "foo"                ""  ""       "ce ~/work/ENV/git/"
+    "compil.envC"        ""  "montrecul" "cd ~/work/ENV/git/envC && echo compileEnvC.sh -lib draftNvincent"
+    "compil.swenv"       ""  "montrecul" "cd ~/work/ENV/git/swenv/../ && echo 'compileSwenv.sh -lib draftNvincent'"
+    "sim.SceMi"          ""  ""       "cd ~/work/ENV/git/swenv/simv/testSceMi/sce0"
 )
 setup_win 6
 sessions=(
@@ -171,19 +170,22 @@ sessions=(
     "vim.envC"           ""  "" "cd ~/work/ENV/git/envC"
     "vim.swenv"          ""  "" "cd ~/work/ENV/git/swenv"
     "3210"               ""  "" "cd ~/work/SQN3210/SQN3210_integration"
+    "draft"              ""  "" "cd /delivery/lib/draftNvincent/"
+    "foo"                ""  "" "cd ~/work/env/git/"
+    "sim.SceMi"          ""  "" "cd ~/work/ENV/git/swenv/simv/testSceMi/sce0"
 )
 setup_win 6
 
 ######################################################################
 ## integration
-sessions=(
+integration_sessions=(
     "svn"        "" "" "cd ~/work/SQN3210/SQN3210_integration"
     "vim"        "" "" "cd ~/work/SQN3210/SQN3210_integration"
     "scapa"      "" "" "cd ~/work/SQN3210/SQN3210_integration/simv"
     "foo"        "" "" "cd ~/work/SQN3210/SQN3210_integration"
     "sim"        "" "" "cd ~/work/SQN3210/SQN3210_integration/simv"
 )
-setup_win 8
+#setup_win 8
 
 ######################################################################
 ## delivEnv
@@ -208,4 +210,4 @@ sessions=(
     "foo"        "" "" "cd ~/work/SQN3210/SQN3210_trunk"
     "sim"        "" "" "cd ~/work/SQN3210/SQN3210_trunk/simv"
 )
-setup_win 8
+setup_win 5
