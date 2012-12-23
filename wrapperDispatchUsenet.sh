@@ -9,9 +9,14 @@
 typeOpt=$1
 archiveNameOpt=$2
 destDirOpt=$3
-elapstedTimeOpt=$4
+elapsedTimeOpt=$4
 parMessageOpt=$5
 
+echo "dispatch_usenet.py --type $typeOpt \
+                   --archiveName $archiveNameOpt \
+                   --destDir $destDirOpt \
+                   --elapsedTime $elapsedTimeOpt \
+                   --parMessage $parMessageOpt" >> ~/dbgWrapper.log
 dispatch_usenet.py --type $typeOpt \
                    --archiveName $archiveNameOpt \
                    --destDir $destDirOpt \
