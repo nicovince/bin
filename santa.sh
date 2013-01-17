@@ -211,3 +211,15 @@ sessions=(
     "sim"        "" "" "cd ~/work/SQN3210/SQN3210_trunk/simv"
 )
 setup_win 5
+
+######################################################################
+## tfcp
+sessions=(
+    "repo"       "" "" "cd ~/work/Project_Mongoose/Mongoose"
+    "git.dsproc" "" "" "cd ~/work/Project_Mongoose/Mongoose/lte_top_dsproc"
+    "vim"        "" "" "cd ~/work/Project_Mongoose/Mongoose"
+    "dsproc"     "" "" "cd ~/work/Project_Mongoose/Mongoose/lte_top_dsproc"
+    "sim"        "" "" "cd ~/work/Project_Mongoose/Mongoose/lte_top_dsproc/simv"
+)
+setup_win 2
+setup_win 2
