@@ -238,6 +238,7 @@ def main():
                   ,(options.videosPath + '/The_Big_Bang_Theory_S6', '.*the.*big.*bang.*theory.*s[0-9]?6.*')
                   ,(options.videosPath + '/Dexter_S7', '.*dexter.*s[0-9]?7.*')
                   ,(options.videosPath + '/Homeland_S2', '.*homeland.*s[0-9]?2.*')
+                  ,(options.videosPath + '/Maison_Close_S02', '.*maison.*close.*s[0-9]?2.*')
                   ,(options.videosPath + '/Falling.Skies_S02', '.*falling.*skies.*s[0-9]?2.*')
                   ,(options.videosPath + '/dummy', '.*dummy.*')
                   ])
