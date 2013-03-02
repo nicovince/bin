@@ -23,7 +23,7 @@ def getVideos(folder):
         sys.exit(1)
     files = os.listdir(folder)
     videoList = list()
-    videoRegex=".*(mp4)|(avi)$"
+    videoRegex=".*(mp4)|(avi)|(mkv)$"
     # iterate over files
     for f in files:
         # Does filename matches video regex
