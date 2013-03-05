@@ -19,6 +19,8 @@ class XboxMarketHtmlParser(HTMLParser):
             for attr in attrs:
                 if (attr[0] == "class" and attr[1] == "MSPoints SilverPrice ProductPrice"):
                     self.match = True
+                elif (attr[0] == "class" and attr[1] == "MSPoints GoldPrice ProductPrice"):
+                    self.match = True
     def handle_data(self, data):
         if self.match:
             self.price.append(data.replace(',',''))
@@ -82,6 +84,7 @@ parser = XboxMarketHtmlParser()
 parser.feed(data)
 price2 = parser.getPrice()
 prices = ""
+print price2
 for p in price2:
     prices += p + " "
     if p < currentPrice:
