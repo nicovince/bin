@@ -23,8 +23,8 @@ class AmazonHtmlParser(HTMLParser):
         self.matchPriceLarge = False
         self.price = list()
     def handle_starttag(self, tag, attrs):
-        print tag
-        print attrs
+        #print tag
+        #print attrs
         if tag == "span":
             for attr in attrs:
                 if (attr[0] == "id" and attr[1] == "actualPriceValue"):
@@ -36,7 +36,7 @@ class AmazonHtmlParser(HTMLParser):
 
     def handle_data(self, data):
         if (self.matchActualPriceValue and self.matchPriceLarge):
-            self.price.append(data.replace(',',''))
+            self.price.append(data.replace(',','.').replace("EUR ",""))
             self.matchActualPriceValue = False
             self.matchPriceLarge = False
     def getPrice(self):
@@ -49,8 +49,14 @@ url="http://www.amazon.fr/gp/product/B0088O0JQK/ref=oh_details_o00_s00_i00?ie=UT
 #data = getPage(url)
 fd = open('amazon.html','r')
 data = fd.read()
-dataclean = data.replace("è","e")
+#dataclean = data.replace("è","e")
+dataclean = data.decode('utf-8','ignore')
+fd_clean = open('clean.html','w')
+fd_clean.write(dataclean)
+fd_clean.close()
 parser = AmazonHtmlParser()
 parser.feed(dataclean)
 price2 = parser.getPrice()
 print price2
+for price in price2:
+    print price
