@@ -242,6 +242,7 @@ def main():
                   ,(options.videosPath + '/Borgia_S02', '.*the.*borgia.*s[0-9]?2.*')
                   ,(options.videosPath + '/Modern.Family/Season.04', '.*modern.*family.*s[0-9]?4.*')
                   ,(options.videosPath + '/Falling.Skies_S02', '.*falling.*skies.*s[0-9]?2.*')
+                  ,(options.videosPath + '/Game.of.Throne/Season_03', '.*game.*throne.*s[0-9]?3.*')
                   ,(options.videosPath + '/dummy', '.*dummy.*')
                   ])
 
