@@ -29,7 +29,7 @@ def main():
     parser.add_option("-u", "--url", dest='url', default=url,
                       help="Amazon url of the object to monitor (default : %default)")
     parser.add_option("-p", "--price", dest='trigger_price',
-                      default=0,
+                      default=0, type=float,
                       help="Price below which a notification is sent (default %default)")
     parser.add_option("-t", "--to", dest='dest_email', default='nico.vince@gmail.com',
                       help="Email address to whom notification is sent (default %default)")
