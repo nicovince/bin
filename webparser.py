@@ -19,7 +19,7 @@ class XboxMarketHtmlParser(HTMLParser):
         if self.match:
             self.price.append(data.replace(',',''))
             self.match = False
-    def getPrice(self):
+    def get_price(self):
         return self.price
 
 # Parser for amazon html pages
@@ -59,13 +59,14 @@ class AmazonHtmlParser(HTMLParser):
             self.title = data
             self.matchTitle = False
 
-    def getPrice(self):
+    def get_price(self):
         return self.price
-    def getTitle(self):
+
+    def get_title(self):
         return self.title
         
 # retrieve html content of url
-def getPage(url):
+def get_page(url):
     usock = urllib2.urlopen(url)
     data = usock.read()
     usock.close()

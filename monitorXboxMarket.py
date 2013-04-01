@@ -6,7 +6,7 @@ import smtplib
 import logging
 from email.mime.text import MIMEText
 from webparser import XboxMarketHtmlParser
-from webparser import getPage
+from webparser import get_page
 
 
 
@@ -25,7 +25,7 @@ def sendMail(subject, content):
     s.sendmail(sender, [dest], msg.as_string())
     s.quit()
 
-def getPrice(data):
+def get_price(data):
     price = list()
     pattern="^\s*<span class=\"ProductPrices\"><span class=\"MSPoints SilverPrice ProductPrice\">(?P<price>[,0-9]+)</span></span>\s*$"
     regex=re.compile(pattern)
@@ -50,12 +50,12 @@ logger = logging.getLogger('XboxMarket')
 
 #fd = open('gow3SeasonPass.html')
 #data = fd.read()
-data = getPage(url)
-#price = getPrice(data)
+data = get_page(url)
+#price = get_price(data)
 currentPrice="2400"
 parser = XboxMarketHtmlParser()
 parser.feed(data)
-price2 = parser.getPrice()
+price2 = parser.get_price()
 prices = ""
 print price2
 for p in price2:
