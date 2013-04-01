@@ -1,5 +1,6 @@
 from HTMLParser import HTMLParser
 from htmlentitydefs import name2codepoint
+import urllib2
 
 # Parser for xbox market html pages
 class XboxMarketHtmlParser(HTMLParser):
@@ -63,4 +64,10 @@ class AmazonHtmlParser(HTMLParser):
     def getTitle(self):
         return self.title
         
+# retrieve html content of url
+def getPage(url):
+    usock = urllib2.urlopen(url)
+    data = usock.read()
+    usock.close()
+    return data
 

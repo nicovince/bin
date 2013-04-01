@@ -2,11 +2,11 @@
 #!/opt/bin/env /opt/bin/python2.6
 
 import os, sys, re
-import urllib2
 import smtplib
 import logging
 from email.mime.text import MIMEText
 from webparser import XboxMarketHtmlParser
+from webparser import getPage
 
 
 
@@ -35,13 +35,6 @@ def getPrice(data):
             price.append(result.groupdict()['price'].replace(',',''))
     return price
 
-
-
-def getPage(url):
-    usock = urllib2.urlopen(url)
-    data = usock.read()
-    usock.close()
-    return data
 
 
 url = "http://marketplace.xbox.com/en-US/Product/Gears-of-War-3-Season-Pass/b38b82ce-1dc6-4028-a69b-514babca6db0"
