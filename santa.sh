@@ -159,8 +159,8 @@ sessions=(
     "git.swenv"          ""  ""       "cd ~/work/ENV/git/swenv"
     "3210"               ""  ""       "cd ~/work/SQN3210/SQN3210_trunk"
     "foo"                ""  ""       "ce ~/work/ENV/git/"
-    "compil.envC"        ""  "montrecul" "cd ~/work/ENV/git/envC && echo compileEnvC.sh -lib draftNvincent"
-    "compil.swenv"       ""  "montrecul" "cd ~/work/ENV/git/swenv/../ && echo 'compileSwenv.sh -lib draftNvincent'"
+    "compil.envC"        ""  "montrecul" "cd ~/work/ENV/git/envC && sc gcc64_ccss2009_ius12_1 && echo compileEnvC.sh -lib draftNvincent"
+    "compil.swenv"       ""  "montrecul" "cd ~/work/ENV/git/swenv && sc gcc64_ccss2009_ius12_1 && echo 'compileSwenv.sh -lib draftNvincent'"
     "sim.SceMi"          ""  ""       "cd ~/work/ENV/git/swenv/simv/testSceMi/sce0"
 )
 setup_win 6
@@ -173,6 +173,7 @@ sessions=(
     "draft"              ""  "" "cd /delivery/lib/draftNvincent/"
     "foo"                ""  "" "cd ~/work/env/git/"
     "sim.SceMi"          ""  "" "cd ~/work/ENV/git/swenv/simv/testSceMi/sce0"
+    "sim.reg"            ""  "" "cd ~/work/ENV/git/swenv/simv/genreg/macros/city"
 )
 setup_win 6
 
@@ -223,3 +224,15 @@ sessions=(
 )
 setup_win 2
 setup_win 2
+
+######################################################################
+## iopad mux
+sessions=(
+    "repo"        "" "" "cd ~/work/Project_Mongoose/Mongoose"
+    "git.scripts" "" "" "cd ~/work/Project_Mongoose/Mongoose/scripts"
+    "vim"         "" "" "cd ~/work/Project_Mongoose/Mongoose"
+    "shiva_top"   "" "" "cd ~/work/Project_Mongoose/Mongoose/shiva_top"
+    "iopadmux"    "" "" "cd ~/work/Project_Mongoose/Mongoose/scripts/iopadmux"
+)
+setup_win 3
+setup_win 3
