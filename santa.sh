@@ -150,7 +150,7 @@ sessions=(
     "foo.fpga"     "" "" "cd ~/work/SQN3210/SQN3210_FPGA"
     "sim.fpga"     "" "" "cd ~/work/SQN3210/SQN3210_FPGA/simv"
 )
-setup_win 8
+#setup_win 8
 
 ######################################################################
 # Env
@@ -161,6 +161,7 @@ sessions=(
     "foo"                ""  ""       "ce ~/work/ENV/git/"
     "compil.envC"        ""  "montrecul" "cd ~/work/ENV/git/envC && sc gcc64_ccss2009_ius12_1 && echo compileEnvC.sh -lib draftNvincent"
     "compil.swenv"       ""  "montrecul" "cd ~/work/ENV/git/swenv && sc gcc64_ccss2009_ius12_1 && echo 'compileSwenv.sh -lib draftNvincent'"
+    "testCase"           ""  ""       "~/work/ENV/TestCaseCadence45393898"
     "sim.SceMi"          ""  ""       "cd ~/work/ENV/git/swenv/simv/testSceMi/sce0"
 )
 setup_win 6
@@ -200,7 +201,7 @@ sessions=(
     "Scapa.rel"       "" "" "cd ~/work/nobackup/reg2/SQN3210/simv"
     "foo"             "" "" "echo https://s3lte.sequans.com/doku.php?id=private:ic-bb:envlibdelivery"
 )
-setup_win 7
+#setup_win 7
 
 ######################################################################
 ## trunk
@@ -236,3 +237,36 @@ sessions=(
 )
 setup_win 3
 setup_win 3
+
+
+######################################################################
+## uart
+sessions=(
+    "repo"        "" "" "cd ~/work/Project_Mongoose/Mongoose"
+    "git.top"     "" "" "cd ~/work/Project_Mongoose/Mongoose/top"
+    "vim"         "" "" "cd ~/work/Project_Mongoose/Mongoose"
+    "envC"        "" "" "cd ~/work/ENV/git/envC"
+    "swenv"       "" "" "cd ~/work/ENV/git/swenv"
+    "foo"         "" "" "cd ~/work/Project_Mongoose/Mongoose"
+)
+setup_win 8
+
+sessions=(
+    "repo"        "" "" "cd ~/work/Project_Mongoose/Mongoose"
+    "git.top"     "" "" "cd ~/work/Project_Mongoose/Mongoose/top"
+    "vim"         "" "" "cd ~/work/Project_Mongoose/Mongoose"
+    "envC"        "" "" "cd ~/work/ENV/git/envC"
+    "swenv"       "" "" "cd ~/work/ENV/git/swenv"
+    "simv"        "" "" "cd ~/work/Project_Mongoose/Mongoose/top/simv/tops/shiva_top/uart_scenarios/sce_uart0_basic && echo 'make -f ../../GNUmakefile VERLIB=rel5-2.2p0 all'"
+)
+setup_win 8
+
+
+######################################################################
+# palladium
+sessions=(
+    "repo"        "" "" "cd ~/work/Project_Mongoose/Mongoose_Palladium"
+    "git.top"     "" "" "cd ~/work/Project_Mongoose/Mongoose_Palladium/top"
+    "vim"         "" "" "cd ~/work/Project_Mongoose/Mongoose_Palladium"
+    "gen"         "" "mazis" "sc janus && cd ~/work/Project_Mongoose/Mongoose_Palladium/top/simv/tops/palladium/pi_test/titanic/sce0"
+)
