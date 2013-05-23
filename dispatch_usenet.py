@@ -1,4 +1,4 @@
-#!/opt/bin/env /opt/bin/python2.6
+#!/usr/bin/env python
 
 #type        : post processing result, either 'SUCCESS' or 'ERROR'
 #archiveName : name of the archive, e.g. 'Usenet_Post5'
