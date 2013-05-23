@@ -1,0 +1,26 @@
+<root>
+  <serie>
+
+    <name>True Blood</name>
+    <path>True_Blood</path>
+
+    <season>
+      <regex case="insensitive">true.blood.*s?01</regex>
+      <number>1</number>
+
+      <episode>
+        <number>1</number>
+        <date>30/06/2013</date>
+      </episode>
+    </season>
+
+    <season>
+      <number>2</number>
+      <regex case="insensitive">true.blood.*s?02</regex>
+      <episode>
+
+      </episode>
+    </season>
+
+  </serie>
+</root>
