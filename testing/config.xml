@@ -6,6 +6,7 @@
 
     <season>
       <regex case="insensitive">true.blood.*s?01</regex>
+      <path>Season_01</path>
       <number>1</number>
 
       <episode>
@@ -16,11 +17,28 @@
 
     <season>
       <number>2</number>
+      <path>Season_02</path>
       <regex case="insensitive">true.blood.*s?02</regex>
       <episode>
 
       </episode>
     </season>
 
+  </serie>
+
+  <serie>
+    <name>Walking Dead</name>
+    <season>
+      <number>3</number>
+      <regex case="insensitive">walking.dead.*s0?3</regex>
+    </season>
+  </serie>
+
+  <serie>
+    <name>Dummy</name>
+    <path>dummy</path>
+    <season>
+      <regex case="insensitive">dummy</regex>
+    </season>
   </serie>
 </root>
