@@ -204,13 +204,13 @@ sessions=(
 #setup_win 7
 
 ######################################################################
-## trunk
+## viterbi
 sessions=(
-    "svn"        "" "" "cd ~/work/SQN3210/SQN3210_trunk"
-    "vim"        "" "" "cd ~/work/SQN3210/SQN3210_trunk"
-    "scapa"      "" "" "cd ~/work/SQN3210/SQN3210_trunk/simv"
-    "foo"        "" "" "cd ~/work/SQN3210/SQN3210_trunk"
-    "sim"        "" "" "cd ~/work/SQN3210/SQN3210_trunk/simv"
+    "repo"       "" "" "cd ~/work/Project_Mongoose/MongooseFix"
+    "git"        "" "" "cd ~/work/Project_Mongoose/MongooseFix/downlink"
+    "vim"        "" "" "cd ~/work/Project_Mongoose/MongooseFix/downlink"
+    "foo"        "" "" "cd ~/work/Project_Mongoose/MongooseFix"
+    "sim"        "" "" "cd ~/work/Project_Mongoose/MongooseFix/downlink"
 )
 setup_win 5
 
@@ -235,8 +235,8 @@ sessions=(
     "shiva_top"   "" "" "cd ~/work/Project_Mongoose/Mongoose/shiva_top"
     "iopadmux"    "" "" "cd ~/work/Project_Mongoose/Mongoose/scripts/iopadmux"
 )
-setup_win 3
-setup_win 3
+#setup_win 3
+#setup_win 3
 
 
 ######################################################################
@@ -257,7 +257,7 @@ sessions=(
     "vim"         "" "" "cd ~/work/Project_Mongoose/Mongoose"
     "envC"        "" "" "cd ~/work/ENV/git/envC"
     "swenv"       "" "" "cd ~/work/ENV/git/swenv"
-    "simv"        "" "" "cd ~/work/Project_Mongoose/Mongoose/top/simv/tops/shiva_top/uart_scenarios/sce_uart0_basic && echo 'make -f ../../GNUmakefile VERLIB=rel5-2.2p0 all'"
+    "simv"        "" "" "cd ~/work/Project_Mongoose/Mongoose/top/simv/tops/shiva_top/uart_scenarios/sce_uart0_basic && echo 'make -f ../../GNUmakefile VERLIB=rel5-2.2p2 all'"
 )
 setup_win 8
 
