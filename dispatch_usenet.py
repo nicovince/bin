@@ -256,6 +256,8 @@ def main():
                   ,(options.videosPath + '/Falling.Skies_S02', '.*falling.*skies.*s[0-9]?2.*')
                   ,(options.videosPath + '/Game.of.Throne/Season_03', '.*game.*throne.*s[0-9]?3.*')
                   ,(options.videosPath + '/Defiance/Season_01', '.*defiance.*s[0-9]?1.*')
+                  ,(options.videosPath + '/Falling.Skies_S03', '.*falling.skies.*s[0-9]?3.*')
+                  ,(options.videosPath + '/True_Blood_S06', '.*true.blood.*s[0-9]?6.*')
                   ,(options.videosPath + '/dummy', '.*dummy.*')
                   ])
 
