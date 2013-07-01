@@ -11,13 +11,15 @@ archiveNameOpt=$2
 destDirOpt=$3
 elapsedTimeOpt=$4
 parMessageOpt=$5
-
-echo "dispatch_usenet.py --type $typeOpt \
+BON_TEMPS="/home/admin/dev/Bon_Temps"
+CONFIG_FILE="${BON_TEMPS}/test/config.xml"
+JESSICA="${BON_TEMPS}/src/jessica.py --logFile BonTempsJessica.log --config $CONFIG_FILE"
+echo "$JESSICA --type $typeOpt \
                    --archiveName $archiveNameOpt \
                    --destDir $destDirOpt \
                    --elapsedTime $elapsedTimeOpt \
                    --parMessage $parMessageOpt" >> ~/dbgWrapper.log
-dispatch_usenet.py --type $typeOpt \
+$JESSICA --type $typeOpt \
                    --archiveName "$archiveNameOpt" \
                    --destDir "$destDirOpt" \
                    --elapsedTime "$elapsedTimeOpt" \
