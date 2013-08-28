@@ -29,5 +29,5 @@ if __name__ == "__main__":
     deps = get_included_files(sys.argv[1])
     str_deps = ""
     for i in deps:
-        str_deps += i
+        str_deps += i + " "
     print str_deps
