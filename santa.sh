@@ -212,16 +212,16 @@ sessions=(
     "foo"        "" "" "cd ~/work/Project_Mongoose/MongooseFix"
     "sim"        "" "" "cd ~/work/Project_Mongoose/MongooseFix/downlink"
 )
-setup_win 5
+#setup_win 5
 
 ######################################################################
 ## tfcp
 sessions=(
-    "repo"       "" "" "cd ~/work/Project_Mongoose/Mongoose"
-    "git.dsproc" "" "" "cd ~/work/Project_Mongoose/Mongoose/lte_top_dsproc"
-    "vim"        "" "" "cd ~/work/Project_Mongoose/Mongoose"
-    "dsproc"     "" "" "cd ~/work/Project_Mongoose/Mongoose/lte_top_dsproc"
-    "sim"        "" "" "cd ~/work/Project_Mongoose/Mongoose/lte_top_dsproc/simv"
+    "repo"       "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs"
+    "git"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs"
+    "vim"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs"
+    "sim"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs/top/simv"
+    "foo"        "" "" ""
 )
 setup_win 2
 setup_win 2
@@ -249,7 +249,7 @@ sessions=(
     "swenv"       "" "" "cd ~/work/ENV/git/swenv"
     "foo"         "" "" "cd ~/work/Project_Mongoose/Mongoose"
 )
-setup_win 8
+#setup_win 8
 
 sessions=(
     "repo"        "" "" "cd ~/work/Project_Mongoose/Mongoose"
@@ -259,7 +259,7 @@ sessions=(
     "swenv"       "" "" "cd ~/work/ENV/git/swenv"
     "simv"        "" "" "cd ~/work/Project_Mongoose/Mongoose/top/simv/tops/shiva_top/uart_scenarios/sce_uart0_basic && echo 'make -f ../../GNUmakefile VERLIB=rel5-2.2p2 all'"
 )
-setup_win 8
+#setup_win 8
 
 
 ######################################################################
