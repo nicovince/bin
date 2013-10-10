@@ -105,7 +105,7 @@ function setup_win()
 ## Mail
 sessions=(
     "tb"                ""  "" "thunderbird"
-    "chrome"            ""  "richebourg" "google-chrome"
+    "chrome"            ""  "richebourg" "unsetenv LD_LIBRARY_PATH && google-chrome"
     "weekly"            ""  "" "vimweekly"
     "sap"               ""  "" ""
     "foo"               ""  "" ""
@@ -115,20 +115,13 @@ setup_win 1
 ######################################################################
 # palladium
 palladium_sessions1=(
-    "svn"        "" "" "cd ~/work/SQN3210/SQN3210_palladium/"
-    "vim"        "" "" "cd ~/work/SQN3210/SQN3210_palladium"
-    "gen_palla"  "" "montrecul" "cd ~/work/SQN3210/SQN3210_palladium/simv/tops/palladium/pi_test/titanic/sce0"
-    "foo"        "" "" "cd ~/work/SQN3210/SQN3210_palladium"
+    "repo"        "" "" "cd ~/work/Project_Mongoose/Mongoose_palladium"
+    "Palladium9"         "" "mazis" "cd ~/work/Project_Mongoose/Mongoose_palladium/top/simv/tops/palladium/pi_test/titanic/9_domains"
+    "Palladium6A"        "" "mazis" "cd ~/work/Project_Mongoose/Mongoose_palladium/top/simv/tops/palladium/pi_test/titanic/6A_domains"
+    "Palladium6B"        "" "mazis" "cd ~/work/Project_Mongoose/Mongoose_palladium/top/simv/tops/palladium/pi_test/titanic/6B_domains"
 )
-#setup_win 2
-
-palladimu_sessions2=(
-    "regs"        "" "" "cd /home/nvincent/work/SQN3210/SQN3210_palladium/srcv/common/config_regs"
-    "sail"        "" "" "cd ~/work/SQN3210/SQN3210_palladium/srcv/common/config_regs/sail"
-    "vim"        "" "" "cd ~/work/SQN3210/SQN3210_palladium"
-    "foo"        "" "" "cd ~/work/SQN3210/SQN3210_palladium"
-)
-#setup_win 2
+sessions=palladium_sessions1
+setup_win 3
 
 ######################################################################
 # lpctrl
@@ -220,7 +213,8 @@ sessions=(
     "repo"       "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs"
     "git"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs"
     "vim"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs"
-    "sim"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs/top/simv"
+    "sim"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs/top/simv/tops/shiva_top/dlp_scenarios/sce_max_size_cat4"
+    "log"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs/top/simv/tops/shiva_top/dlp_scenarios/sce_max_size_cat4"
     "foo"        "" "" ""
 )
 setup_win 2
