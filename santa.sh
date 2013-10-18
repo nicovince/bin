@@ -104,8 +104,9 @@ function setup_win()
 
 ## Mail
 sessions=(
-    "tb"                ""  "" "thunderbird"
+    "tb"                ""  "" "setenv NEWT 1 && source ~/.mycshrc && thunderbird"
     "chrome"            ""  "richebourg" "unsetenv LD_LIBRARY_PATH && google-chrome"
+    "firefox"           ""  "" "setenv NEWT 1 && source ~/.mycshrc && firefox"
     "weekly"            ""  "" "vimweekly"
     "sap"               ""  "" ""
     "foo"               ""  "" ""
@@ -115,7 +116,7 @@ setup_win 1
 ######################################################################
 # palladium
 palladium_sessions1=(
-    "repo"        "" "" "cd ~/work/Project_Mongoose/Mongoose_palladium"
+    "repo"        "" "" "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/Project_Mongoose/Mongoose_palladium"
     "Palladium9"         "" "mazis" "cd ~/work/Project_Mongoose/Mongoose_palladium/top/simv/tops/palladium/pi_test/titanic/9_domains"
     "Palladium6A"        "" "mazis" "cd ~/work/Project_Mongoose/Mongoose_palladium/top/simv/tops/palladium/pi_test/titanic/6A_domains"
     "Palladium6B"        "" "mazis" "cd ~/work/Project_Mongoose/Mongoose_palladium/top/simv/tops/palladium/pi_test/titanic/6B_domains"
@@ -148,10 +149,9 @@ sessions=(
 ######################################################################
 # Env
 sessions=(
-    "git.envC"           ""  ""       "cd ~/work/ENV/git/envC"
-    "git.swenv"          ""  ""       "cd ~/work/ENV/git/swenv"
-    "3210"               ""  ""       "cd ~/work/SQN3210/SQN3210_trunk"
-    "foo"                ""  ""       "ce ~/work/ENV/git/"
+    "git.envC"           ""  ""       "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/ENV/git/envC"
+    "git.swenv"          ""  ""       "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/ENV/git/swenv"
+    "foo"                ""  ""       "cd ~/work/ENV/git/"
     "compil.envC"        ""  "montrecul" "cd ~/work/ENV/git/envC && sc gcc64_ccss2009_ius12_1 && echo compileEnvC.sh -lib draftNvincent"
     "compil.swenv"       ""  "montrecul" "cd ~/work/ENV/git/swenv && sc gcc64_ccss2009_ius12_1 && echo 'compileSwenv.sh -lib draftNvincent'"
     "testCase"           ""  ""       "~/work/ENV/TestCaseCadence45393898"
@@ -159,11 +159,10 @@ sessions=(
 )
 setup_win 6
 sessions=(
-    "git.envC"           ""  "" "cd ~/work/ENV/git/envC"
-    "git.swenv"          ""  "" "cd ~/work/ENV/git/swenv"
+    "git.envC"           ""  "" "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/ENV/git/envC"
+    "git.swenv"          ""  "" "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/ENV/git/swenv"
     "vim.envC"           ""  "" "cd ~/work/ENV/git/envC"
     "vim.swenv"          ""  "" "cd ~/work/ENV/git/swenv"
-    "3210"               ""  "" "cd ~/work/SQN3210/SQN3210_integration"
     "draft"              ""  "" "cd /delivery/lib/draftNvincent/"
     "foo"                ""  "" "cd ~/work/env/git/"
     "sim.SceMi"          ""  "" "cd ~/work/ENV/git/swenv/simv/testSceMi/sce0"
@@ -185,8 +184,8 @@ integration_sessions=(
 ######################################################################
 ## delivEnv
 sessions=(
-    "deliv.envC"      "" "" "cd ~/work/ENV/delivery/envC"
-    "deliv.Swenv"     "" "" "cd ~/work/ENV/delivery/swenv"
+    "deliv.envC"      "" "" "setenv NEWT 1 && source ~/.mycshrc && d ~/work/ENV/delivery/envC"
+    "deliv.Swenv"     "" "" "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/ENV/delivery/swenv"
     "compil.envC"     "" "montrecul" "cd ~/work/ENV/delivery/envC"
     "compil.Swenv"    "" "montrecul" "cd ~/work/ENV/delivery/swenv"
     "vim.envC"        "" "" "cd ~/work/ENV/delivery/envC"
@@ -210,8 +209,8 @@ sessions=(
 ######################################################################
 ## tfcp
 sessions=(
-    "repo"       "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs"
-    "git"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs"
+    "repo"       "" "" "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/Project_Mongoose/Mongoose_csirs"
+    "git"        "" "" "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/Project_Mongoose/Mongoose_csirs"
     "vim"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs"
     "sim"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs/top/simv/tops/shiva_top/dlp_scenarios/sce_max_size_cat4"
     "log"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs/top/simv/tops/shiva_top/dlp_scenarios/sce_max_size_cat4"
