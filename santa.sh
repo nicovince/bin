@@ -156,6 +156,7 @@ sessions=(
     "compil.swenv"       ""  "montrecul" "cd ~/work/ENV/git/swenv && sc gcc64_ccss2009_ius12_1 && echo 'compileSwenv.sh -lib draftNvincent'"
     "testCase"           ""  ""       "~/work/ENV/TestCaseCadence45393898"
     "sim.SceMi"          ""  ""       "cd ~/work/ENV/git/swenv/simv/testSceMi/sce0"
+    "edith"              ""  "montrecul" "cd ~/work/Project_Mongoose/Mongoose_csirs/top/simv/tops/shiva_top/dlp_scenarios/sce_csirs"
 )
 setup_win 6
 sessions=(
