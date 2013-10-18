@@ -390,6 +390,18 @@ define bessel(n,x){
 	return(j(n,x))
 }
 
+define round(n)
+{
+  oldscale = scale
+  if (n > 0)
+    value = n + 0.5
+  if (n < 0)
+      value = n - 0.5
+  scale = 0
+  rounded = value / 1
+  scale = oldscale
+  return rounded
+}
 define help(){
 print "--I--	constants\n"
 print "1.-	pi			:	defined as 4*atan(1)\n"
@@ -440,5 +452,6 @@ print "4.-	factorial(n),f(n)	:	returns n factorial\n"
 print "5.-	gcd(a,b)		:	returns the greatest common divisor of a and b\n"
 print "6.-	lcm(a,b)		:	returns the least common multiple of a and b\n"
 print "7.-	bessel(n,x)		:	returns the Bessel function order n of x\n"
+print "8.-	round(n)                :       returns rounded value of x to nearest integer\n"
 
 }
