@@ -4,9 +4,12 @@ EPISODE=$1
 SEASON=`basename $PWD | grep -o "[0-9]*"`
 
 REGEX=".*${SEASON}.*${EPISODE}.*\(avi\|mp4\)"
+SUBREGEX=".*${SEASON}.*${EPISODE}.*srt"
+echo $SUBREGEX
+
 VIDFILE=`find . -regex "${REGEX}" | head -n 1`
 echo $VIDFILE
-SUBFILE=`find . -regex .*$1.*srt | head -n 1`
+SUBFILE=`find . -regex .*${SUBREGEX} | head -n 1`
 echo $SUBFILE
 
 echo mplayer "$VIDFILE" -sub "$SUBFILE"
