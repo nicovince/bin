@@ -104,9 +104,9 @@ function setup_win()
 
 ## Mail
 sessions=(
-    "tb"                ""  "" "setenv NEWT 1 && source ~/.mycshrc && thunderbird"
+    "tb"                ""  "" "setenv VERTOOLS 'default' && setenv RELTOOLS 'draftTools' && source /tools/tools_env/draftTools/source_tools.csh && thunderbird"
     "chrome"            ""  "richebourg" "unsetenv LD_LIBRARY_PATH && google-chrome"
-    "firefox"           ""  "" "setenv NEWT 1 && source ~/.mycshrc && firefox"
+    "firefox"           ""  "" "setenv VERTOOLS 'default' && setenv RELTOOLS 'draftTools' && source /tools/tools_env/draftTools/source_tools.csh && firefox"
     "weekly"            ""  "" "vimweekly"
     "sap"               ""  "" ""
     "foo"               ""  "" ""
@@ -116,12 +116,12 @@ setup_win 1
 ######################################################################
 # palladium
 palladium_sessions1=(
-    "repo"        "" "" "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/Project_Mongoose/Mongoose_palladium"
+    "repo"        "" "" "setenv VERTOOLS 'default' && setenv RELTOOLS 'draftTools' && source /tools/tools_env/draftTools/source_tools.csh && cd ~/work/Project_Mongoose/Mongoose_palladium"
     "Palladium9"         "" "mazis" "cd ~/work/Project_Mongoose/Mongoose_palladium/top/simv/tops/palladium/pi_test/titanic/9_domains"
     "Palladium6A"        "" "mazis" "cd ~/work/Project_Mongoose/Mongoose_palladium/top/simv/tops/palladium/pi_test/titanic/6A_domains"
     "Palladium6B"        "" "mazis" "cd ~/work/Project_Mongoose/Mongoose_palladium/top/simv/tops/palladium/pi_test/titanic/6B_domains"
 )
-sessions=palladium_sessions1
+sessions=$palladium_sessions1
 setup_win 3
 
 ######################################################################
@@ -149,19 +149,19 @@ sessions=(
 ######################################################################
 # Env
 sessions=(
-    "git.envC"           ""  ""       "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/ENV/git/envC"
-    "git.swenv"          ""  ""       "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/ENV/git/swenv"
+    "git.envC"           ""  ""       "setenv VERTOOLS 'default' && setenv RELTOOLS 'draftTools' && source /tools/tools_env/draftTools/source_tools.csh && cd ~/work/ENV/git/envC"
+    "git.swenv"          ""  ""       "setenv VERTOOLS 'default' && setenv RELTOOLS 'draftTools' && source /tools/tools_env/draftTools/source_tools.csh && cd ~/work/ENV/git/swenv"
     "foo"                ""  ""       "cd ~/work/ENV/git/"
-    "compil.envC"        ""  "montrecul" "cd ~/work/ENV/git/envC && sc gcc64_ccss2009_ius12_1 && echo compileEnvC.sh -lib draftNvincent"
-    "compil.swenv"       ""  "montrecul" "cd ~/work/ENV/git/swenv && sc gcc64_ccss2009_ius12_1 && echo 'compileSwenv.sh -lib draftNvincent'"
+    "compil.envC"        ""  "aloxe" "cd ~/work/ENV/git/envC && sc gcc64_ccss2009_ius12_1 && ./deliverCompile.csh -r draftNvincent"
+    "compil.swenv"       ""  "aloxe" "cd ~/work/ENV/git/swenv && sc gcc64_ccss2009_ius12_1 && ./deliverCompile.csh -r draftNvincent"
     "testCase"           ""  ""       "~/work/ENV/TestCaseCadence45393898"
     "sim.SceMi"          ""  ""       "cd ~/work/ENV/git/swenv/simv/testSceMi/sce0"
-    "edith"              ""  "montrecul" "cd ~/work/Project_Mongoose/Mongoose_csirs/top/simv/tops/shiva_top/dlp_scenarios/sce_csirs"
+    "edith"              ""  "aloxe" "cd ~/work/Project_Mongoose/Mongoose/top/simv/tops/shiva_top/dlp_scenarios/sce_csirs"
 )
 setup_win 6
 sessions=(
-    "git.envC"           ""  "" "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/ENV/git/envC"
-    "git.swenv"          ""  "" "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/ENV/git/swenv"
+    "git.envC"           ""  "" "setenv VERTOOLS 'default' && setenv RELTOOLS 'draftTools' && source /tools/tools_env/draftTools/source_tools.csh && cd ~/work/ENV/git/envC"
+    "git.swenv"          ""  "" "setenv VERTOOLS 'default' && setenv RELTOOLS 'draftTools' && source /tools/tools_env/draftTools/source_tools.csh && cd ~/work/ENV/git/swenv"
     "vim.envC"           ""  "" "cd ~/work/ENV/git/envC"
     "vim.swenv"          ""  "" "cd ~/work/ENV/git/swenv"
     "draft"              ""  "" "cd /delivery/lib/draftNvincent/"
@@ -185,10 +185,10 @@ integration_sessions=(
 ######################################################################
 ## delivEnv
 sessions=(
-    "deliv.envC"      "" "" "setenv NEWT 1 && source ~/.mycshrc && d ~/work/ENV/delivery/envC"
-    "deliv.Swenv"     "" "" "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/ENV/delivery/swenv"
-    "compil.envC"     "" "montrecul" "cd ~/work/ENV/delivery/envC"
-    "compil.Swenv"    "" "montrecul" "cd ~/work/ENV/delivery/swenv"
+    "deliv.envC"      "" "" "setenv VERTOOLS 'default' && setenv RELTOOLS 'draftTools' && source /tools/tools_env/draftTools/source_tools.csh && cd ~/work/ENV/delivery/envC"
+    "deliv.Swenv"     "" "" "setenv VERTOOLS 'default' && setenv RELTOOLS 'draftTools' && source /tools/tools_env/draftTools/source_tools.csh && cd ~/work/ENV/delivery/swenv"
+    "compil.envC"     "" "aloxe" "cd ~/work/ENV/delivery/envC"
+    "compil.Swenv"    "" "aloxe" "cd ~/work/ENV/delivery/swenv"
     "vim.envC"        "" "" "cd ~/work/ENV/delivery/envC"
     "vim.Swenv"       "" "" "cd ~/work/ENV/delivery/swenv"
     "Scapa.rel"       "" "" "cd ~/work/nobackup/reg2/SQN3210/simv"
@@ -210,11 +210,11 @@ sessions=(
 ######################################################################
 ## tfcp
 sessions=(
-    "repo"       "" "" "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/Project_Mongoose/Mongoose_csirs"
-    "git"        "" "" "setenv NEWT 1 && source ~/.mycshrc && cd ~/work/Project_Mongoose/Mongoose_csirs"
-    "vim"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs"
-    "sim"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs/top/simv/tops/shiva_top/dlp_scenarios/sce_max_size_cat4"
-    "log"        "" "" "cd ~/work/Project_Mongoose/Mongoose_csirs/top/simv/tops/shiva_top/dlp_scenarios/sce_max_size_cat4"
+    "repo"       "" "" "setenv VERTOOLS 'default' && setenv RELTOOLS 'draftTools' && source /tools/tools_env/draftTools/source_tools.csh && cd ~/work/Project_Mongoose/Mongoose"
+    "git"        "" "" "setenv VERTOOLS 'default' && setenv RELTOOLS 'draftTools' && source /tools/tools_env/draftTools/source_tools.csh && cd ~/work/Project_Mongoose/Mongoose"
+    "vim"        "" "" "cd ~/work/Project_Mongoose/Mongoose"
+    "sim"        "" "" "cd ~/work/Project_Mongoose/Mongoose/top/simv/tops/shiva_top/dlp_scenarios/sce_max_size_cat4"
+    "log"        "" "" "cd ~/work/Project_Mongoose/Mongoose/top/simv/tops/shiva_top/dlp_scenarios/sce_max_size_cat4"
     "foo"        "" "" ""
 )
 setup_win 2

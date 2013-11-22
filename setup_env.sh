@@ -52,6 +52,7 @@ this_session=`echo $KONSOLE_DCOP_SESSION | sed 's/.*,\(.*\))/\1/'`
 dcop $kid $this_session renameSession "envC"
 swenv_id=`open_tab "swenv"`
 dcop $kid konsole activateSession $this_session
+sleep 0.1
 
 GITDIR="~/work/ENV/git"
 ENVC_DIR="$GITDIR/envC/"
