@@ -115,13 +115,12 @@ setup_win 1
 
 ######################################################################
 # palladium
-palladium_sessions1=(
+sessions=(
     "repo"        "" "" "setenv VERTOOLS 'default' && setenv RELTOOLS 'draftTools' && source /tools/tools_env/draftTools/source_tools.csh && cd ~/work/Project_Mongoose/Mongoose_palladium"
     "Palladium9"         "" "mazis" "cd ~/work/Project_Mongoose/Mongoose_palladium/top/simv/tops/palladium/pi_test/titanic/9_domains"
     "Palladium6A"        "" "mazis" "cd ~/work/Project_Mongoose/Mongoose_palladium/top/simv/tops/palladium/pi_test/titanic/6A_domains"
     "Palladium6B"        "" "mazis" "cd ~/work/Project_Mongoose/Mongoose_palladium/top/simv/tops/palladium/pi_test/titanic/6B_domains"
 )
-sessions=$palladium_sessions1
 setup_win 3
 
 ######################################################################
