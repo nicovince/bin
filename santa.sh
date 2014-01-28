@@ -121,7 +121,7 @@ sessions=(
     "Palladium6A"        "" "mazis" "cd ~/work/Project_Mongoose/Mongoose_palladium/top/simv/tops/palladium/pi_test/titanic/6A_domains"
     "Palladium6B"        "" "mazis" "cd ~/work/Project_Mongoose/Mongoose_palladium/top/simv/tops/palladium/pi_test/titanic/6B_domains"
 )
-setup_win 3
+#setup_win 3
 
 ######################################################################
 # lpctrl
@@ -216,8 +216,8 @@ sessions=(
     "log"        "" "" "cd ~/work/Project_Mongoose/Mongoose/top/simv/tops/shiva_top/dlp_scenarios/sce_max_size_cat4"
     "foo"        "" "" ""
 )
-setup_win 2
-setup_win 2
+#setup_win 2
+#setup_win 2
 
 ######################################################################
 ## iopad mux
@@ -254,12 +254,31 @@ sessions=(
 )
 #setup_win 8
 
-
 ######################################################################
-# palladium
+# Mongoose_trunk
 sessions=(
-    "repo"        "" "" "cd ~/work/Project_Mongoose/Mongoose_Palladium"
-    "git.top"     "" "" "cd ~/work/Project_Mongoose/Mongoose_Palladium/top"
-    "vim"         "" "" "cd ~/work/Project_Mongoose/Mongoose_Palladium"
+    "repo"        "" "" "cd ~/work/Project_Mongoose/Mongoose_trunk"
+    "git"         "" "" "cd ~/work/Project_Mongoose/Mongoose_trunk/top"
+    "vim"         "" "" "cd ~/work/Project_Mongoose/Mongoose_trunk"
     "gen"         "" "mazis" "sc janus && cd ~/work/Project_Mongoose/Mongoose_Palladium/top/simv/tops/palladium/pi_test/titanic/sce0"
 )
+
+
+######################################################################
+# gls
+sessions=(
+    "repo"        "" "" "cd ~/work/Project_Mongoose/Mongoose"
+    "git"         "" "" "cd ~/work/Project_Mongoose/Mongoose/top"
+    "vim"         "" "" "cd ~/work/Project_Mongoose/Mongoose"
+    "sim.gate"    "" "aloxe" "sc default_64 && cd ~/work/Project_Mongoose/Mongoose/top/simv/tops/shiva_top/platform_scenario/sce_bank_id"
+    "log.gate"    "" "" "cd ~/work/Project_Mongoose/Mongoose/top/simv/tops/shiva_top/platform_scenario/sce_bank_id"
+    "simvision.gate"    "" "aloxe" "sc default_64 && cd ~/work/Project_Mongoose/Mongoose/top/simv/tops/shiva_top/platform_scenario/sce_bank_id"
+)
+
+setup_win 2
+sessions=(
+    "repo"        "" "" "cd ~/work/Project_Mongoose/Mongoose"
+    "git"         "" "" "cd ~/work/Project_Mongoose/Mongoose/top"
+    "vim"         "" "" "cd ~/work/Project_Mongoose/Mongoose"
+)
+
