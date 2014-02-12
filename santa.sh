@@ -281,4 +281,24 @@ sessions=(
     "git"         "" "" "cd ~/work/Project_Mongoose/Mongoose/top"
     "vim"         "" "" "cd ~/work/Project_Mongoose/Mongoose"
 )
+setup_win 2
+
+######################################################################
+# gls shared
+sessions=(
+    "repo"        "" "" "cd ~/work/Project_Mongoose/Mongoose_gls"
+    "git"         "" "" "cd ~/work/Project_Mongoose/Mongoose_gls/top"
+    "vim"         "" "" "cd ~/work/Project_Mongoose/Mongoose_gls"
+    "sim.gate"    "" "aloxe" "sc default_64 && cd ~/work/Project_Mongoose/Mongoose_gls/top/simv/tops/shiva_top/platform_scenario/sce_bank_id"
+    "log.gate"    "" "" "cd ~/work/Project_Mongoose/Mongoose_gls/top/simv/tops/shiva_top/platform_scenario/sce_bank_id"
+    "simvision.gate"    "" "aloxe" "sc default_64 && cd ~/work/Project_Mongoose/Mongoose_gls/top/simv/tops/shiva_top/platform_scenario/sce_bank_id"
+)
+
+setup_win 3
+sessions=(
+    "repo"        "" "" "cd ~/work/Project_Mongoose/Mongoose_gls"
+    "git"         "" "" "cd ~/work/Project_Mongoose/Mongoose_gls/top"
+    "vim"         "" "" "cd ~/work/Project_Mongoose/Mongoose_gls"
+)
+setup_win 3
 
