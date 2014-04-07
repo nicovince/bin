@@ -320,3 +320,14 @@ sessions=(
     "vim"         "" "" "cd ~/work/Project_Mongoose/Mongoose_gls_new_macros"
 )
 setup_win 4
+
+######################################################################
+# I2S v2
+setup_win 8
+sessions=(
+    "repo"        "" "" "cd ~/work/Project_Mongoose/Janus_i2s_v2_dev"
+    "git"         "" "" "cd ~/work/Project_Mongoose/Janus_i2s_v2_dev/top"
+    "vim"         "" "" "cd ~/work/Project_Mongoose/Janus_i2s_v2_dev"
+)
+setup_win 8
+
