@@ -8,8 +8,10 @@
 
 # format : tabname, hostname, command
 konsole_env=(
-     "cubalibre" "cubalibre" "echo coucou cubalibre"
-     "mojito"    ""          "ls"
+     "cubalibre.vim" "cubalibre" "cd dev"
+     "cubalibre.dev" "cubalibre" "cd dev"
+     "cubalibre.screen" "cubalibre" "screen -RD"
+     "mojito"    ""          ""
 )
 
-setup_konsole_env 2
+setup_konsole_env 1
