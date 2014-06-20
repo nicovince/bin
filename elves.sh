@@ -16,7 +16,8 @@ function create_session()
   SESSION_ID=$session_id
 }
 
-function create_konsole()
+# create konsole on specific desktop using kstart
+function create_konsole_kde()
 {
   local basename=$(date +"%H%M%N")
   local name=$basename"_konsoleX1_"
@@ -26,6 +27,21 @@ function create_konsole()
   local konsole_id=org.kde.konsole-$(ps aux | grep konsole | grep -v grep | grep $name | awk '{print $2}')
   sleep 0.1
   KONSOLE_ID=$konsole_id
+}
+
+# Create konsole window without using kstart which does not work in gnome
+# window is created on current workspace
+function create_konsole_gnome()
+{
+  local before=`mktemp`
+  qdbus | grep konsole | sort > $before
+  konsole --profile Node 2> /dev/null &
+  sleep 0.8
+  local after=`mktemp`
+  qdbus | grep konsole | sort > $after
+  local kons=`comm -3 $before $after`
+  rm -f $before $after
+  KONSOLE_ID=$kons
 }
 
 function set_title()
@@ -75,20 +91,25 @@ function setup_konsole_env()
 {
   local desktop=$1
   #konsole_id=`create_konsole "--desktop $desktop"`
-  create_konsole "--desktop $desktop"
+  create_konsole_gnome
   local konsole_id=$KONSOLE_ID
   local session_count=${#konsole_env[*]}
   local i=0
   while [[ $i -lt $session_count ]]
   do
+    # Do not create new tab for first one, use existing one
+    if [[ $i -ne 0 ]]; then
+      create_session $konsole_id
+      local session_id=$SESSION_ID
+    else
+      local session_id="1"
+    fi
     local tabname=${konsole_env[$i]}
     let i++
     local machine=${konsole_env[$i]}
     let i++
     local command=${konsole_env[$i]}
     let i++
-    create_session $konsole_id
-    local session_id=$SESSION_ID
     set_title $konsole_id $session_id $tabname
     if [ -n "$machine" ]; then
       send_command "$konsole_id" "$session_id" "ssh $machine"
