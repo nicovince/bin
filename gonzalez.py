@@ -1,8 +1,15 @@
 #!/usr/bin/env python
 
 import dbus
+import subprocess
 bus = dbus.SessionBus()
-konsoleObj = bus.get_object("org.kde.konsole-26946", "/Konsole")
+
+p = subprocess.Popen(['konsole', '--nofork'])
+subprocess.call(['sleep', '3'])
+konsole_name = "org.kde.konsole-%s" % p.pid
+konsoleObj = bus.get_object(konsole_name, "/Konsole")
 session = konsoleObj.newSession()
-session.setTitle(0, "title")
-session.setTitle(1, "title")
+sessionObj = bus.get_object(konsole_name,"/Sessions/%d" % session.real)
+#subprocess.call(['sleep', '1'])
+sessionObj.setTitle(0, "title")
+sessionObj.setTitle(1, "title")
