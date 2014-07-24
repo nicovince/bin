@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import sys
+import time
 import dbus
 import subprocess
 bus = dbus.SessionBus()
@@ -10,9 +12,10 @@ class KonsoleWindow:
         self.bus = dbus.SessionBus()
         # Create new konsole window
         p = subprocess.Popen(['konsole', '--nofork'])
-        subprocess.call(['sleep', '3'])
         # dbus id of the new konsole created
         self.serviceName = "org.kde.konsole-%s" % p.pid
+        self.waitServiceAvailable()
+        # use dbus.SessionBus().list_names() to look if self.serviceName is available instead of dirty sleep
         # dbus object
         self.dbusObj = self.bus.get_object(self.serviceName, "/Konsole")
         self.tabList = list()
@@ -24,6 +27,26 @@ class KonsoleWindow:
         self.tabList.append(tab)
         tab.setTitle(name)
         return tab
+
+    # Check if service attached to the konsole is available in the list of services presented
+    # by dbus
+    def isServiceAvailable(self):
+        return True if dbus.UTF8String(self.serviceName) in self.bus.list_names() else False
+
+    # Wait for dbus service to be available, timeout given in seconds
+    def waitServiceAvailable(self, timeout=5):
+        timeoutMs = timeout * 1000
+        step = 100.0
+        cnt = 0
+        while not(self.isServiceAvailable()) and (cnt < timeoutMs):
+            time.sleep(step/1000.0)
+            cnt += step
+        if cnt >= timeoutMs:
+            print "Service %s is not available after %d seconds" % (self.serviceName, timeout)
+            sys.exit(1)
+
+
+
 
 class TabSession:
     # Create new tab in konsole
