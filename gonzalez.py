@@ -14,9 +14,8 @@ class KonsoleWindow:
         p = subprocess.Popen(['konsole', '--nofork'])
         # dbus id of the new konsole created
         self.serviceName = "org.kde.konsole-%s" % p.pid
+        # Wait for newly created konsole's service to be available
         self.waitServiceAvailable()
-        # use dbus.SessionBus().list_names() to look if self.serviceName is available instead of dirty sleep
-        # dbus object
         self.dbusObj = self.bus.get_object(self.serviceName, "/Konsole")
         self.tabList = list()
 
@@ -68,18 +67,8 @@ class TabSession:
         self.dbusObj.sendText("%s\n" % cmd)
 
 
-if __name__ == '__main__':
+
+def test():
     konsole = KonsoleWindow()
     tab = konsole.createTab("coucou")
     tab.sendCmd("ls")
-else:
-    p = subprocess.Popen(['konsole', '--nofork'])
-    subprocess.call(['sleep', '3'])
-    konsole_name = "org.kde.konsole-%s" % p.pid
-    konsoleObj = bus.get_object(konsole_name, "/Konsole")
-    session = konsoleObj.newSession()
-    sessionObj = bus.get_object(konsole_name,"/Sessions/%d" % session.real)
-    #subprocess.call(['sleep', '1'])
-    sessionObj.setTitle(0, "title")
-    sessionObj.setTitle(1, "title")
-
