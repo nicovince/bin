@@ -3,6 +3,7 @@
 import sys
 import time
 import dbus
+import json
 import subprocess
 bus = dbus.SessionBus()
 
@@ -66,9 +67,43 @@ class TabSession:
     def sendCmd(self, cmd):
         self.dbusObj.sendText("%s\n" % cmd)
 
+class Gonzalez:
+    def __init__(self, config):
+        self.config = config
+        self.process()
+
+    # Process configuration
+    def process(self):
+        for kc in self.config["Konsoles"]:
+            self.processKonsole(kc)
+
+    # TODO process functions should go in appropriates classes
+    # Process Konsole Configuration
+    def processKonsole(self, konsoleConfig):
+        konsole = KonsoleWindow()
+        for tc in konsoleConfig["Tabs"]:
+            self.processTab(konsole, tc)
+
+    # Process Tab Configuration
+    def processTab(self, konsole, tabConfig):
+        tab = konsole.createTab(tabConfig["Name"])
+        for cmdConf in tabConfig["Cmds"]:
+            self.processCmd(tab, cmdConf)
+
+    # Process Command config
+    def processCmd(self, tab, cmdConf):
+        tab.sendCmd(cmdConf["Cmd"])
+        if 'delay' in cmdConf.keys():
+            time.sleep(cmdConf["delay"])
 
 
 def test():
     konsole = KonsoleWindow()
     tab = konsole.createTab("coucou")
     tab.sendCmd("ls")
+
+def main():
+    Gonzalez(json.load(open("/home/nvincent/bin/test.json")))
+
+if __name__ == '__main__':
+    main()
