@@ -18,14 +18,18 @@ class KonsoleWindow:
         # Wait for newly created konsole's service to be available
         self.waitServiceAvailable()
         self.dbusObj = self.bus.get_object(self.serviceName, "/Konsole")
-        self.tabList = list()
+        self.tabList = [TabSession(self, True)]
 
     # Create tab in konsole with given name
     # and return TabSession object
-    def createTab(self, name):
+    def createNamedTab(self, name):
+        tab = self.createTab()
+        tab.setTitle(name)
+        return tab
+
+    def createTab(self):
         tab = TabSession(self)
         self.tabList.append(tab)
-        tab.setTitle(name)
         return tab
 
     # Check if service attached to the konsole is available in the list of services presented
@@ -45,16 +49,30 @@ class KonsoleWindow:
             print "Service %s is not available after %d seconds" % (self.serviceName, timeout)
             sys.exit(1)
 
-
+    # Setup konsole configuration
+    def processConfig(self, konsoleConfig):
+        first = True
+        for tabConf in konsoleConfig["Tabs"]:
+            # do not create tab for first one as it already exists
+            if first:
+                first = False
+                tab = self.tabList[0]
+            else:
+                tab = self.createTab()
+            tab.processConfig(tabConf)
 
 
 class TabSession:
     # Create new tab in konsole
-    def __init__(self, konsole):
+    def __init__(self, konsole, first=False):
         self.bus = dbus.SessionBus()
         self.parentKonsole = konsole
-        sessionId = self.parentKonsole.dbusObj.newSession()
-        self.dbusPath = "/Sessions/%d" % sessionId.real
+        if not first:
+            sessionId = self.parentKonsole.dbusObj.newSession()
+            self.dbusPath = "/Sessions/%d" % sessionId.real
+        else:
+            self.dbusPath = "/Sessions/1"
+
         self.dbusObj = self.bus.get_object(self.parentKonsole.serviceName, self.dbusPath)
 
     # Set title of tab
@@ -67,6 +85,20 @@ class TabSession:
     def sendCmd(self, cmd):
         self.dbusObj.sendText("%s\n" % cmd)
 
+    # Setup tab configuration
+    def processConfig(self, tabConfig):
+        self.setTitle(tabConfig["Name"])
+        for cmdConfig in tabConfig["Cmds"]:
+            self.processCmd(cmdConfig)
+
+    # Process Command config
+    def processCmd(self, cmdConf):
+        self.sendCmd(cmdConf["Cmd"])
+        if 'delay' in cmdConf.keys():
+            time.sleep(cmdConf["delay"])
+
+
+
 class Gonzalez:
     def __init__(self, config):
         self.config = config
@@ -75,31 +107,12 @@ class Gonzalez:
     # Process configuration
     def process(self):
         for kc in self.config["Konsoles"]:
-            self.processKonsole(kc)
-
-    # TODO process functions should go in appropriates classes
-    # Process Konsole Configuration
-    def processKonsole(self, konsoleConfig):
-        konsole = KonsoleWindow()
-        for tc in konsoleConfig["Tabs"]:
-            self.processTab(konsole, tc)
-
-    # Process Tab Configuration
-    def processTab(self, konsole, tabConfig):
-        tab = konsole.createTab(tabConfig["Name"])
-        for cmdConf in tabConfig["Cmds"]:
-            self.processCmd(tab, cmdConf)
-
-    # Process Command config
-    def processCmd(self, tab, cmdConf):
-        tab.sendCmd(cmdConf["Cmd"])
-        if 'delay' in cmdConf.keys():
-            time.sleep(cmdConf["delay"])
-
+            konsole = KonsoleWindow()
+            konsole.processConfig(kc)
 
 def test():
     konsole = KonsoleWindow()
-    tab = konsole.createTab("coucou")
+    tab = konsole.createNamedTab("coucou")
     tab.sendCmd("ls")
 
 def main():
