@@ -5,6 +5,7 @@ import time
 import dbus
 import json
 import subprocess
+from optparse import OptionParser
 bus = dbus.SessionBus()
 
 class KonsoleWindow:
@@ -116,7 +117,12 @@ def test():
     tab.sendCmd("ls")
 
 def main():
-    Gonzalez(json.load(open("/home/nvincent/bin/test.json")))
+    parser = OptionParser()
+    parser.add_option("-f", "--file", dest="filename",
+                      default="/home/nvincent/bin/test.json",
+                      help="Json file where configuration is given")
+    (options,args) = parser.parse_args()
+    Gonzalez(json.load(open(options.filename)))
 
 if __name__ == '__main__':
     main()
