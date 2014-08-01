@@ -20,5 +20,5 @@ else
 endif
 
 # Setup sge (grid engine)
-setenv PATH /opt/sge/bin/lx-amd64:$PATH
-source /opt/sge/sequans/common/settings.csh
+#setenv PATH /opt/sge/bin/lx-amd64:$PATH
+#source /opt/sge/sequans/common/settings.csh
