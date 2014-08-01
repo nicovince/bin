@@ -10,14 +10,19 @@ bus = dbus.SessionBus()
 
 class KonsoleWindow:
     # Create new konsole window
-    def __init__(self):
+    def __init__(self, serviceName=None):
         self.bus = dbus.SessionBus()
-        # Create new konsole window
-        p = subprocess.Popen(['konsole', '--nofork'])
-        # dbus id of the new konsole created
-        self.serviceName = "org.kde.konsole-%s" % p.pid
-        # Wait for newly created konsole's service to be available
-        self.waitServiceAvailable()
+        if serviceName == None:
+            self.virgin = True
+            # Create new konsole window
+            p = subprocess.Popen(['konsole', '--nofork'])
+            # dbus id of the new konsole created
+            self.serviceName = "org.kde.konsole-%s" % p.pid
+            # Wait for newly created konsole's service to be available
+            self.waitServiceAvailable()
+        else:
+            self.virgin = False
+            self.serviceName = serviceName
         self.dbusObj = self.bus.get_object(self.serviceName, "/Konsole")
         self.tabList = [TabSession(self, True)]
 
@@ -54,8 +59,8 @@ class KonsoleWindow:
     def processConfig(self, konsoleConfig):
         first = True
         for tabConf in konsoleConfig["Tabs"]:
-            # do not create tab for first one as it already exists
-            if first:
+            # do not create tab for first one as it already exists when working on a new konsole
+            if first and self.virgin:
                 first = False
                 tab = self.tabList[0]
             else:
@@ -101,14 +106,15 @@ class TabSession:
 
 
 class Gonzalez:
-    def __init__(self, config):
+    def __init__(self, config, serviceName=None):
         self.config = config
+        self.serviceName = serviceName
         self.process()
 
     # Process configuration
     def process(self):
         for kc in self.config["Konsoles"]:
-            konsole = KonsoleWindow()
+            konsole = KonsoleWindow(serviceName=self.serviceName)
             konsole.processConfig(kc)
 
 def test():
@@ -121,8 +127,12 @@ def main():
     parser.add_option("-f", "--file", dest="filename",
                       default="/home/nvincent/bin/test.json",
                       help="Json file where configuration is given")
+    parser.add_option("-s", "--serviceName", dest="serviceName",
+                      default=None,
+                      help="Dbus service name of the konsole where tabs are created instead of creating a new konsole window")
     (options,args) = parser.parse_args()
-    Gonzalez(json.load(open(options.filename)))
+    Gonzalez(config=json.load(open(options.filename)),
+             serviceName=options.serviceName)
 
 if __name__ == '__main__':
     main()
