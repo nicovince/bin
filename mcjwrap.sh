@@ -14,7 +14,8 @@ fi
 MC_RUNNING=`ps aux | grep minecraft_server | grep -c java`
 if [ $MC_RUNNING -ne 1 ]; then
   # No, let's create a new one
-  echo screen -S $SCREEN_NAME -p $SERVER_TAB_NAME -X stuff "mcj$(printf \\r)"
+  echo "Start Minecraft Server"
+  screen -S $SCREEN_NAME -p $SERVER_TAB_NAME -X stuff "mcj$(printf \\r)"
 else
   echo "Minecraft server already running"
 fi
