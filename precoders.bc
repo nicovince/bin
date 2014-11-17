@@ -1,0 +1,45 @@
+#!/usr/bin/bc -l
+
+define round(n)
+{
+  oldscale = scale
+  if (n > 0)
+    value = n + 0.5
+  if (n < 0)
+      value = n - 0.5
+  scale = 0
+  rounded = value / 1
+  scale = oldscale
+  return rounded
+}
+
+pi=4*a(1)
+
+define precoder(m) {
+  auto re1, im1, re2, im2, re3, im3, fp_re1, fp_im1;
+  re1 = c(2*pi*m/32)/sqrt(8);
+  im1 = s(2*pi*m/32)/sqrt(8);
+  re2 = c(4*pi*m/32)/sqrt(8);
+  im2 = s(4*pi*m/32)/sqrt(8);
+  re3 = c(6*pi*m/32)/sqrt(8);
+  im3 = s(6*pi*m/32)/sqrt(8);
+
+  fp_re1 = round(re1*2^9)
+
+
+  print "m = ", m, "\n";
+  print "re1 = ", re1, "\n";
+  print "fp_re1 = ", fp_re1, "\n";
+  print "im1 = ", im1, "\n";
+  print "re2 = ", re2, "\n";
+  print "im2 = ", im2, "\n";
+  print "re3 = ", re3, "\n";
+  print "im3 = ", im3, "\n";
+  print "\n";
+}
+
+for (i=0; i<32; i = i+1){
+  precoder(i);
+}
+
+
