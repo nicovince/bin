@@ -19,3 +19,4 @@ if [ $MC_RUNNING -ne 1 ]; then
 else
   echo "Minecraft server already running"
 fi
+screen -RD $SCREEN_NAME
