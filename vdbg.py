@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import sys
 def setVdbgMode(mode=0, carrier=0):
     """
     Configure VDBG output (JANUS)
@@ -36,3 +36,12 @@ def setVdbgMode(mode=0, carrier=0):
     print 'write_reg "reg=%s value=0x%x idx=-1 inst=%s"' %('RAD_DFE_VDBG_CONTROL', RAD_DFE_VDBG_CONTROL, str(carrier))
     print 'write_reg "reg=%s value=0x%x idx=-1 inst=%s"' %('RAD_ULP_VDBG_CONTROL', RAD_ULP_VDBG_CONTROL, str(carrier))
     print 'write_reg "reg=%s value=0x%x idx=-1 inst=%s"' %('RAD_DFE_RAD_DEBUG_SEL', RAD_DFE_RAD_DEBUG_SEL, str(carrier))
+
+if (sys.argv[1] == "--help"):
+    print "1: ADC output"
+    print "2: RAD DFE input"
+    print "3: RAD DFE FLT1 output"
+    print "0: Off"
+else:
+    mode=int(sys.argv[1],10)
+    setVdbgMode(mode)
