@@ -172,6 +172,7 @@ class BootStrap:
                      '.bash_colors',
                      '.inputrc',
                      '.screenrc',
+                     '.gitignore_global',
                      ]
         srcFileList = []
         dstFileList = []
