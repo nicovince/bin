@@ -169,8 +169,10 @@ class BootStrap:
     def getLinkFiles(self):
         fileList =  ['.bashrc',
                      '.bash_aliases',
+                     '.bash_colors',
                      '.inputrc',
                      '.screenrc',
+                     '.gitignore_global',
                      ]
         srcFileList = []
         dstFileList = []
