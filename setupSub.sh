@@ -1,17 +1,21 @@
 #!/bin/bash
 
-
+if [ "$1" = "-h" ]; then
+  echo "$0 <Nb_Episodes>"
+  echo "Season number extract from directory"
+  exit 0
+fi
 # Number of episode for the season in the current folder
 NB_EPISODES=$1
 # Retrieve season number from directory
-SEASON=`basename $PWD | grep -o "[0-9]*"`
+SEASON=`basename $PWD | grep -o "[0-9]*" | sed 's/^0*//'`
 
 # Loop over episodes
 for e in `seq 1 $NB_EPISODES`; do
   # Build regex for video and subtitles
   ep=`printf "%02d" $e`
-  REGEX=".*${SEASON}.*${ep}.*\(avi\|mp4\)"
-  SUBREGEX=".*${SEASON}.*${ep}.*srt"
+  REGEX=".*${SEASON}.*${ep}.*\(avi\|mp4\|mkv\)"
+  SUBREGEX=".*0?${SEASON}.*${ep}.*srt"
 
   #echo vid regex : $REGEX
   #echo sub regex : $SUBREGEX
@@ -22,7 +26,8 @@ for e in `seq 1 $NB_EPISODES`; do
   # Test if we found both video and sub
   if [ -f "$SUBFILE" -a -f "$VIDFILE" ]; then
     # rename sub to match video
-    mv -v "$SUBFILE" "${VIDFILE%.mp4}.srt"
+    EXT=${VIDFILE##*.}
+    mv -v "$SUBFILE" "${VIDFILE%.${EXT}}.srt"
   else
     echo video or sub does not exists for episode $ep
   fi
