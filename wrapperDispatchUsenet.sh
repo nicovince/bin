@@ -14,11 +14,11 @@ parMessageOpt=$5
 BON_TEMPS="/home/admin/dev/Bon_Temps"
 CONFIG_FILE="${BON_TEMPS}/test/config.xml"
 JESSICA="${BON_TEMPS}/src/jessica.py --logFile BonTempsJessica.log --config $CONFIG_FILE"
-echo "$JESSICA --type $typeOpt \
-                   --archiveName $archiveNameOpt \
-                   --destDir $destDirOpt \
-                   --elapsedTime $elapsedTimeOpt \
-                   --parMessage $parMessageOpt" >> ~/dbgWrapper.log
+echo "$JESSICA --type \"$typeOpt\" \
+                   --archiveName \"$archiveNameOpt\" \
+                   --destDir \"$destDirOpt\" \
+                   --elapsedTime \"$elapsedTimeOpt\" \
+                   --parMessage \"$parMessageOpt\"" >> ~/dbgWrapper.log
 $JESSICA --type $typeOpt \
                    --archiveName "$archiveNameOpt" \
                    --destDir "$destDirOpt" \
