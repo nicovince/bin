@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 #!/opt/bin/env /opt/bin/python2.6
 
+# usage : put in crontab with
+# crontab -e
+# 00 8 */1 * * /home/admin/bin/monitorXboxMarket.py
+
 import os, sys, re
 import smtplib
 import logging
