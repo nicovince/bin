@@ -3,7 +3,7 @@
 PRINTER_1200="hpaio:/usb/PSC_1200_series?serial=MY49EG10BXT0"
 PRINTER_750="hpaio:/usb/PSC_750?serial=ES168BH0MRWB"
 PRINTER_4480="hpaio:/usb/Photosmart_C4400_series?serial=TH896H21V305BN"
-ENTERPRISE="Sequans"
+ENTERPRISE="Sogeti_HighTech"
 
 how_many_sheets()
 {
