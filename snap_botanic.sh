@@ -2,8 +2,8 @@
 
 DEST=/home/pi/Documents/botanic
 FILE_SUFFIX=tomatoes_`date +%F-%H-%R`
-FILENAME_ORIG=$DEST/${FILE_SUFFIX}.png
-FILENAME_CROPPED=$DEST/${FILE_SUFFIX}_cropped.png
+FILENAME_ORIG=$DEST/${FILE_SUFFIX}.jpg
+FILENAME_CROPPED=$DEST/${FILE_SUFFIX}_cropped.jpg
 
 DST_LINK=/var/www/html/latest.png
 DST_LINK_ORIG=/var/www/html/latest_orig.png
