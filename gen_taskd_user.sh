@@ -2,7 +2,7 @@
 
 ORG=juco
 
-# Extract username from command line
+# Extract username and email from command line
 if [ $# -gt 1 ]; then
   NAME=$1
   EMAIL=$2
@@ -33,21 +33,21 @@ sudo -u Debian-taskd taskd add --data /var/lib/taskd user $ORG $NAME | grep "New
 
 
 # 
-config=${GEN_DIR}/${NAME}.txt
+mail_content=${GEN_DIR}/${NAME}.txt
 uuid=$(cat $GEN_DIR/$NAME.uuid)
 ip=$(ifconfig wlan0 | grep -w inet | sed 's/.*inet //' | sed 's/\s*netmask.*//')
-echo "# Configure task warrior:" >> ${config}
-echo "task config taskd.credentials -- ${ORG}/${NAME}/${uuid}" >> ${config}
-echo "task config taskd.ca -- ~/.task/ca.cert.pem" >> ${config}
-echo "task config taskd.certificate -- ~/.task/${NAME}.cert.pem" >> ${config}
-echo "task config taskd.key -- ~/.task/${NAME}.key.pem" >> ${config}
-echo "task config taskd.server -- ${ip}:53589" >> ${config}
-echo "task config taskd.trust -- ignore hostname" >> ${config}
+echo "# Configure task warrior:" > ${mail_content}
+echo "task config taskd.credentials -- ${ORG}/${NAME}/${uuid}" >> ${mail_content}
+echo "task config taskd.ca -- ~/.task/ca.cert.pem" >> ${mail_content}
+echo "task config taskd.certificate -- ~/.task/${NAME}.cert.pem" >> ${mail_content}
+echo "task config taskd.key -- ~/.task/${NAME}.key.pem" >> ${mail_content}
+echo "task config taskd.server -- ${ip}:53589" >> ${mail_content}
+echo "task config taskd.trust -- ignore hostname" >> ${mail_content}
 
-echo "" >> ${config}
-echo "# Delete user" >> ${config}
-echo "sudo -u Debian-taskd taskd remove --data /var/lib/taskd  user juco $uuid" >> ${config}
+echo "" >> ${mail_content}
+echo "# Delete user" >> ${mail_content}
+echo "sudo -u Debian-taskd taskd remove --data /var/lib/taskd  user juco $uuid" >> ${mail_content}
 
 cd ../
 tar czvf $NAME.tar.gz $NAME
-sendemail.py "taskwarrior server config" ${config} ${EMAIL} ${EMAIL} --attach ${NAME}.tar.gz
+sendemail.py "taskwarrior server config" ${mail_content} ${EMAIL} ${EMAIL} --attach ${NAME}.tar.gz
