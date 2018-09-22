@@ -1,5 +1,6 @@
 #!/bin/bash
 
+SERVER_FOLDER=$HOME/Games/MinecraftServer
 SCREEN_NAME="mcj"
 SERVER_TAB_NAME="server"
 GAME=$1
@@ -11,7 +12,7 @@ fi
 
 case $GAME in
   "mcj" )
-    cmd="mcj"
+    cmd="cd $SERVER_FOLDER/juco; ./start.sh"
     ;;
   "ragecraft" )
     cmd="cd ~/MinecraftServer/ragecraft_3; ./start.sh"
@@ -25,12 +26,12 @@ case $GAME in
 esac
 echo $cmd
 
-NB=`screen -ls | grep -c mcj`
+NB=`screen -ls | grep -c ${SCREEN_NAME}`
 # Does an existing screen session exist
 if [ $NB -eq 0 ]; then
   # No, let's create one in detached mode
   echo "Creating Screen session to host minecraft server"
-  screen -d -m -S $SCREEN_NAME -c ~/configrc/cosmopolitan.mcj.screenrc
+  screen -d -m -S $SCREEN_NAME -c $HOME/.dotfiles/ginfizz.mc.screenrc
 fi
 
 # Is minecraft server already running
