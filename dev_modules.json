@@ -1,0 +1,29 @@
+{"Konsoles":
+ [
+  {"Name" : "Kernel Modules dev",
+   "Tabs":
+   [
+    {"Name": "git.scull",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/linux_dev/modules/scull"}
+     ]
+    },
+    {"Name": "vim.scull",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/linux_dev/modules/scull"}
+     ]
+    },
+    {"Name": "build",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/linux_dev/modules/scull"}
+     ]
+    },
+    {"Name": "log.kern",
+     "Cmds": [
+      {"Cmd" : "tail -f /var/log/kern.log"}
+     ]
+    }
+   ]
+  }
+ ]
+}
