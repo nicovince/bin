@@ -1,0 +1,25 @@
+{"Konsoles":
+ [
+  {"Name" : "uboot dev",
+   "Tabs":
+   [
+    {"Name": "git.uboot",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/ucc32/tbox/u-boot_400Mhz_workspace"}
+     ]
+    },
+    {"Name": "vim.uboot",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/ucc32/tbox/u-boot_400Mhz_workspace"}
+     ]
+    },
+    {"Name": "build.uboot",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/linux_dev/modules/scull"},
+      {"Cmd" : "source $HOME/work/siema.env"}
+     ]
+    }
+   ]
+  }
+ ]
+}
