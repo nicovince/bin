@@ -1,0 +1,24 @@
+{"Konsoles":
+ [
+  {"Name" : "r4ip dev",
+   "Tabs":
+   [
+    {"Name": "git.r4ip",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/ucc32/r4ip-inno"}
+     ]
+    },
+    {"Name": "vim.r4ip",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/ucc32/r4ip-inno"}
+     ]
+    },
+    {"Name": "build.r4ip",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/ucc32/r4ip-inno"}
+     ]
+    }
+   ]
+  }
+ ]
+}

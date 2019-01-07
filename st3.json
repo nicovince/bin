@@ -1,0 +1,24 @@
+{"Konsoles":
+ [
+  {"Name" : "st3 dev",
+   "Tabs":
+   [
+    {"Name": "svn.st3",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/ucc32/VLB-ST3/r4ip/trunk"}
+     ]
+    },
+    {"Name": "vim.st3",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/ucc32/VLB-ST3/r4ip/trunk"}
+     ]
+    },
+    {"Name": "build.st3",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/ucc32/VLB-ST3/r4ip/trunk"}
+     ]
+    }
+   ]
+  }
+ ]
+}
