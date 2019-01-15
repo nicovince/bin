@@ -1,0 +1,24 @@
+{"Konsoles":
+ [
+  {"Name" : "qapps dev",
+   "Tabs":
+   [
+    {"Name": "git.qapps",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/quick_apps"}
+     ]
+    },
+    {"Name": "vim.qapps",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/quick_apps"}
+     ]
+    },
+    {"Name": "run.qapps",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/quick_apps"}
+     ]
+    }
+   ]
+  }
+ ]
+}
