@@ -38,22 +38,26 @@ def send(me, you, subject, mailbody, attachment):
     outer.attach(msg)
 
     # Set attachement
-    ctype, encoding = mimetypes.guess_type(attachment)
-    maintype, subtype = ctype.split("/", 1)
-    fp = open(attachment, "rb")
-    msg = MIMEBase(maintype, subtype)
-    msg.set_payload(fp.read())
-    fp.close()
-    # Encode the payload using Base64
-    encoders.encode_base64(msg)
-    # Set the filename parameter
-    msg.add_header("Content-Disposition", "attachment", filename=os.path.basename(attachment))
-    outer.attach(msg)
+    if attachment is not None:
+        ctype, encoding = mimetypes.guess_type(attachment)
+        maintype, subtype = ctype.split("/", 1)
+        fp = open(attachment, "rb")
+        msg = MIMEBase(maintype, subtype)
+        msg.set_payload(fp.read())
+        fp.close()
+        # Encode the payload using Base64
+        encoders.encode_base64(msg)
+        # Set the filename parameter
+        msg.add_header("Content-Disposition", "attachment", filename=os.path.basename(attachment))
+        outer.attach(msg)
 
     composed = outer.as_string()
-    # Send the message via our own SMTP server, but don"t include the
-    # envelope header.
-    s = smtplib.SMTP("smtp.free.fr")
+    s = smtplib.SMTP("smtp.gmail.com:587")
+    s.ehlo()
+    s.starttls()
+    with open('gmail_password.txt', 'r') as fd:
+        password = fd.read(16)
+    s.login("nico.vince@gmail.com", password)
     s.sendmail(me, you, composed)
     s.quit()
 
