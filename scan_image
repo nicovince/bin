@@ -30,12 +30,14 @@ echov()
 PRINTER_4480="hpaio:/usb/Photosmart_C4400_series?serial=TH896H21V305BN"
 PRINTER_1200="hpaio:/usb/PSC_1200_series?serial=MY49EG10BXT0"
 PRINTER_750="hpaio:/usb/PSC_750?serial=ES168BH0MRWB"
+PRINTER_DCP_L2510D="libusb:001:006"
+PRINTER_DCP_L2510D="brother4:bus2;dev1"
 
 # Default printer
-printer=$PRINTER_4480
+printer=$PRINTER_DCP_L2510D
 # Default output filename for the scan
 filename="output"
-resolution="150"
+resolution="300"
 verbose=0
 
 # Read args
@@ -78,8 +80,8 @@ fi
 
 # Rock'n Roll
 echov $verbose "Scan in progress..."
-echo "scanimage -d $printer --mode Color --resolution $resolution > $filename.pnm"
-scanimage -d $printer --mode Color --resolution $resolution > $filename.pnm
+echo "scanimage -d $printer --resolution $resolution > $filename.pnm"
+scanimage -d $printer --resolution $resolution > $filename.pnm
 
 echov $verbose "Saving $filename.png"
 echo "convert $filename.pnm $filename.png"
