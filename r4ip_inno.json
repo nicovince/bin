@@ -5,17 +5,17 @@
    [
     {"Name": "git.r4ip",
      "Cmds": [
-      {"Cmd" : "cd $HOME/work/siema/ucc32/r4ip-inno"}
+      {"Cmd" : "cd $HOME/work/siema/innovation/r4ip"}
      ]
     },
     {"Name": "vim.r4ip",
      "Cmds": [
-      {"Cmd" : "cd $HOME/work/siema/ucc32/r4ip-inno"}
+      {"Cmd" : "cd $HOME/work/siema/innovation/r4ip"}
      ]
     },
     {"Name": "build.r4ip",
      "Cmds": [
-      {"Cmd" : "cd $HOME/work/siema/ucc32/r4ip-inno"}
+      {"Cmd" : "cd $HOME/work/siema/innovation/r4ip"}
      ]
     }
    ]
