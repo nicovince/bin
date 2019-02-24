@@ -2,7 +2,7 @@
 # Usage : gg_create_thumbnails.sh <directory>
 # Create thumbnails of images present in directory in directory/.thumbs
 # thumbnails already existing are not redone
-IMG_EXT="jpg png"
+IMG_EXT="jpg png JPG"
 
 # Report list of image to generate a thumbnail of.
 function gen_img_list()

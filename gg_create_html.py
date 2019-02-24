@@ -62,19 +62,19 @@ def file_has_ext(f, ext_list):
 # present in thumbs_dir with same file name
 def generate_htmls(img_dir, thumbs_dir, img_ext):
     thumbs_rel_dir = os.path.relpath(thumbs_dir, img_dir)
-    files = os.listdir(img_dir)
-    files = [f for f in files if file_has_ext(f, img_ext)]
+    files = [f for f in os.listdir(img_dir) if file_has_ext(f, img_ext)]
     files.sort()
-    for i,img_sublist in enumerate(chunks(files, 30)):
+    dirs = [f for f in os.listdir(img_dir) if os.path.isdir(f)]
+    for i,img_sublist in enumerate(chunks(dirs + files, 30)):
         page = os.path.join(img_dir, "p%02d.html" % (i))
-        generate_page(page, img_sublist, thumbs_dir)
+        generate_page(page, img_sublist, thumbs_rel_dir)
 
 def main():
     parser = argparse.ArgumentParser(description="Create HTML page for image gallery")
     parser.add_argument('img_folder', type=str, help="Image folder")
     parser.add_argument('thumbs_folder', type=str, help="Thumbnails image folder")
     args = parser.parse_args()
-    img_ext = ["png", "jpg"]
+    img_ext = ["png", "jpg", "JPG"]
 
     # make sure paths are absolutes
     args.img_folder = os.path.abspath(args.img_folder)
