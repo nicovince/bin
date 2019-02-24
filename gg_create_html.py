@@ -65,6 +65,7 @@ def generate_htmls(img_dir, thumbs_dir, img_ext):
     files = [f for f in os.listdir(img_dir) if file_has_ext(f, img_ext)]
     files.sort()
     dirs = [f for f in os.listdir(img_dir) if os.path.isdir(f)]
+    dirs = [d for d in dirs if os.path.basename(d) != ".thumbs"]
     for i,img_sublist in enumerate(chunks(dirs + files, 30)):
         page = os.path.join(img_dir, "p%02d.html" % (i))
         generate_page(page, img_sublist, thumbs_rel_dir)
