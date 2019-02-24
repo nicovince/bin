@@ -17,9 +17,28 @@ def html_header(fd, lvl):
     lvl -= 1
     fd.write("%s</head>\n" % (indent(lvl)))
 
+def navigation_links(previous_page, next_page, lvl):
+    s = "%s<table>\n" % (indent(lvl))
+    lvl += 1
+    s += "%s<tr>\n" % (indent(lvl))
+    lvl += 1
+    s += "%s<td>" % (indent(lvl))
+    if previous_page is not None:
+        s += "<a href=\"%s\">page precedente</a>" % (previous_page)
+    s += "</td>\n"
+    s += "%s<td>" % (indent(lvl))
+    if next_page is not None:
+        s += "<a href=\"%s\">page suivante</a>" % (next_page)
+    s += "</td>\n"
+    lvl -= 1
+    s += "%s</tr>\n" % (indent(lvl))
+    s += "%s</body>" % (indent(lvl))
+    return s
+
+
 # Write html content in page for given image list
-def generate_page(page, img_list, thumbs_dir):
-    print("-> %s" % page)
+def generate_page(page, img_list, thumbs_dir, previous_page=None, next_page=None):
+    print("-> %s [%s; %s]" % (page, previous_page, next_page))
     fd = open(page, 'w')
     fd.write("<html>\n")
     lvl = 1
@@ -28,7 +47,10 @@ def generate_page(page, img_list, thumbs_dir):
     fd.write("%s<body>\n" % (indent(lvl)))
     lvl += 1
 
-    # Start array
+    # generate navigation links
+    fd.write("%s" % (navigation_links(previous_page, next_page, lvl)))
+
+    # Start images array
     fd.write("%s<table>\n" % (indent(lvl)))
     lvl += 1
 
@@ -65,10 +87,22 @@ def generate_htmls(img_dir, thumbs_dir, img_ext):
     files = [f for f in os.listdir(img_dir) if file_has_ext(f, img_ext)]
     files.sort()
     dirs = [f for f in os.listdir(img_dir) if os.path.isdir(f)]
+    # remove .thumbs/ from directory list
     dirs = [d for d in dirs if os.path.basename(d) != ".thumbs"]
-    for i,img_sublist in enumerate(chunks(dirs + files, 30)):
+
+    # split images per pages
+    imgs_per_page = chunks(dirs + files, 30)
+    n_pages = sum(1 for _ in chunks(dirs + files, 30))
+    for i, img_sublist in enumerate(chunks(dirs + files, 30)):
+        previous_page = None
+        next_page = None
+        if i != 0:
+            previous_page = "p%02d.html" % (i - 1)
+        if i != (n_pages - 1):
+            next_page = "p%02d.html" % (i + 1)
+
         page = os.path.join(img_dir, "p%02d.html" % (i))
-        generate_page(page, img_sublist, thumbs_rel_dir)
+        generate_page(page, img_sublist, thumbs_rel_dir, previous_page, next_page)
 
 def main():
     parser = argparse.ArgumentParser(description="Create HTML page for image gallery")
