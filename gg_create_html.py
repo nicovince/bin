@@ -60,7 +60,7 @@ def generate_page(page, img_list, thumbs_dir, previous_page=None, next_page=None
         lvl += 1
         for img in img_grp:
             thumb = os.path.join(thumbs_dir, img)
-            fd.write("%s<td>" % (indent(lvl)))
+            fd.write("%s<td align=\"center\">" % (indent(lvl)))
             fd.write("<a href=\"%s\">" % (img))
             fd.write("<img src=\"%s\" />" % (thumb))
             fd.write("</a>")
