@@ -1,0 +1,24 @@
+{"Konsoles":
+ [
+  {"Name" : "lora dev",
+   "Tabs":
+   [
+    {"Name": "git.lora",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/innovation/r4ip-proxy-lora"}
+     ]
+    },
+    {"Name": "vim.lora",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/innovation/r4ip-proxy-lora"}
+     ]
+    },
+    {"Name": "build.r4ip-lora",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/innovation/r4ip"}
+     ]
+    }
+   ]
+  }
+ ]
+}

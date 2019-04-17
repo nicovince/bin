@@ -1,0 +1,26 @@
+{"Konsoles":
+ [
+  {"Name" : "uboot dev",
+   "Tabs":
+   [
+    {"Name": "git.uboot",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/ucc32/tbox/u-boot_400Mhz_workspace"}
+     ]
+    },
+    {"Name": "vim.uboot",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/ucc32/tbox/u-boot_400Mhz_workspace"}
+     ]
+    },
+    {"Name": "build.uboot",
+     "Cmds": [
+      {"Cmd" : "cd $HOME/work/siema/ucc32/tbox/u-boot_400Mhz_workspace"},
+      {"Cmd" : "echo \"CROSS_COMPILE=powerpc-linux- ARCH=powerpc make tbox_cp11_config debug_flash=1\""},
+      {"Cmd" : "source $HOME/work/siema.env"}
+     ]
+    }
+   ]
+  }
+ ]
+}
