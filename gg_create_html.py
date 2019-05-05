@@ -19,26 +19,28 @@ def html_header(fd, lvl):
     fd.write("%s</head>\n" % (indent(lvl)))
 
 def navigation_links(previous_page, next_page, lvl):
-    s = "%s<table>\n" % (indent(lvl))
+    s = "%s<div class=\"w3-row\">\n" % (indent(lvl))
     lvl += 1
-    s += "%s<tr>\n" % (indent(lvl))
-    lvl += 1
-    s += "%s<td>" % (indent(lvl))
+    s += "%s<div class=\"w3-col w3-container\" style=\"width:20%%\">" % (indent(lvl))
     if previous_page is not None:
         s += "<a href=\"%s\">page precedente</a>" % (previous_page)
-    s += "</td>\n"
-    s += "%s<td>" % (indent(lvl))
+    s += "</div>\n"
+    s += "%s<div class=\"w3-col w3-container\" style=\"width:60%%\">" % (indent(lvl))
+    s += "</div>\n"
+    
+    s += "%s<div class=\"w3-col w3-container w3-right-align\" style=\"width:20%%\">" % (indent(lvl))
     if next_page is not None:
         s += "<a href=\"%s\">page suivante</a>" % (next_page)
-    s += "</td>\n"
+    s += "</div>\n"
     lvl -= 1
-    s += "%s</tr>\n" % (indent(lvl))
-    s += "%s</table>\n" % (indent(lvl))
+    s += "%s</div>\n" % (indent(lvl))
     return s
 
 
 # Write html content in page for given image list
-def generate_page(page, img_list, thumbs_dir, previous_page=None, next_page=None):
+def generate_page(page, img_list, thumbs_dir, nb_cols, previous_page=None, next_page=None):
+    width = 320
+    height = 200
     print("-> %s [%s; %s]" % (page, previous_page, next_page))
     fd = open(page, 'w')
     fd.write("<html>\n")
@@ -48,23 +50,28 @@ def generate_page(page, img_list, thumbs_dir, previous_page=None, next_page=None
     fd.write("%s<body>\n" % (indent(lvl)))
     lvl += 1
 
-    # generate navigation links
+    # generate top navigation links
     fd.write("%s" % (navigation_links(previous_page, next_page, lvl)))
 
-    for img_grp in chunks(img_list, 3):
+    for img_grp in chunks(img_list, nb_cols):
         # start new line of array
         fd.write("%s<div class=\"w3-row-padding\">\n" % (indent(lvl)))
         lvl += 1
         for img in img_grp:
             thumb = os.path.join(thumbs_dir, img)
-            fd.write("%s<div class=\"w3-third\">" % (indent(lvl)))
-            fd.write("<a href=\"%s\">" % (img))
-            fd.write("<img src=\"%s\" class=\"w3-round\" style=\"width:100%%\"/>" % (thumb))
-            fd.write("</a>")
-            fd.write("</div>\n")
+            fd.write("%s<div class=\"w3-quarter w3-cell-middle\">\n" % (indent(lvl)))
+            lvl += 1
+            fd.write("%s<a href=\"%s\">" % (indent(lvl), img))
+            fd.write("<img src=\"%s\" class=\"w3-round w3-border w3-padding\" style=\"width:100%%\"/>" % (thumb))
+            fd.write("</a>\n")
+            lvl -= 1
+            fd.write("%s</div>\n" % (indent(lvl)))
         # Close line of array
         lvl -= 1
         fd.write("%s</div>\n" % (indent(lvl)))
+
+    # generate bottom navigation links
+    fd.write("%s" % (navigation_links(previous_page, next_page, lvl)))
 
     fd.write("%s</body>\n" % (indent(lvl)))
     fd.write("</html>\n")
@@ -83,10 +90,12 @@ def generate_htmls(img_dir, thumbs_dir, img_ext):
     # remove .thumbs/ from directory list
     dirs = [d for d in dirs if os.path.basename(d) != ".thumbs"]
 
+    nb_cols = 4
+    nb_rows = 8
     # split images per pages
-    imgs_per_page = chunks(dirs + files, 30)
-    n_pages = sum(1 for _ in chunks(dirs + files, 30))
-    for i, img_sublist in enumerate(chunks(dirs + files, 30)):
+    imgs_per_page = chunks(dirs + files, nb_cols * nb_rows)
+    n_pages = sum(1 for _ in chunks(dirs + files, nb_cols * nb_rows))
+    for i, img_sublist in enumerate(chunks(dirs + files, nb_cols * nb_rows)):
         previous_page = None
         next_page = None
         if i != 0:
@@ -95,7 +104,8 @@ def generate_htmls(img_dir, thumbs_dir, img_ext):
             next_page = "p%02d.html" % (i + 1)
 
         page = os.path.join(img_dir, "p%02d.html" % (i))
-        generate_page(page, img_sublist, thumbs_rel_dir, previous_page, next_page)
+        generate_page(page, img_sublist, thumbs_rel_dir, nb_cols,
+                      previous_page, next_page)
 
 def main():
     parser = argparse.ArgumentParser(description="Create HTML page for image gallery")
