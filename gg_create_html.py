@@ -32,7 +32,7 @@ def navigation_links(previous_page, next_page, lvl):
     s += "</td>\n"
     lvl -= 1
     s += "%s</tr>\n" % (indent(lvl))
-    s += "%s</body>" % (indent(lvl))
+    s += "%s</table>\n" % (indent(lvl))
     return s
 
 
@@ -50,30 +50,22 @@ def generate_page(page, img_list, thumbs_dir, previous_page=None, next_page=None
     # generate navigation links
     fd.write("%s" % (navigation_links(previous_page, next_page, lvl)))
 
-    # Start images array
-    fd.write("%s<table>\n" % (indent(lvl)))
-    lvl += 1
-
     for img_grp in chunks(img_list, 3):
         # start new line of array
-        fd.write("%s<tr>\n" % (indent(lvl)))
+        fd.write("%s<div class=\"w3-row-padding\">\n" % (indent(lvl)))
         lvl += 1
         for img in img_grp:
             thumb = os.path.join(thumbs_dir, img)
-            fd.write("%s<td align=\"center\">" % (indent(lvl)))
+            fd.write("%s<div class=\"w3-third\">" % (indent(lvl)))
             fd.write("<a href=\"%s\">" % (img))
-            fd.write("<img src=\"%s\" />" % (thumb))
+            fd.write("<img src=\"%s\" class=\"w3-round\" style=\width:100\%\"/>" % (thumb))
             fd.write("</a>")
-            fd.write("</td>\n")
+            fd.write("</div>\n")
         # Close line of array
         lvl -= 1
-        fd.write("%s</tr>\n" % (indent(lvl)))
+        fd.write("%s</div>\n" % (indent(lvl)))
 
-    # Close array
-    lvl -= 1
-    fd.write("%s</table>\n" % (indent(lvl)))
-
-    fd.write("%s<body>\n" % (indent(lvl)))
+    fd.write("%s</body>\n" % (indent(lvl)))
     fd.write("</html>\n")
     fd.close()
 
