@@ -14,7 +14,7 @@ def html_header(fd, lvl):
     fd.write("%s<head>\n" % (indent(lvl)))
     lvl += 1
     fd.write("%s<title>Emilie's gallery</title>\n" % (indent(lvl)))
-    fd.write("%s<link rel=\"stylesheet\" href=\"w3.css\">") % (indent(lvl))
+    fd.write("%s<link rel=\"stylesheet\" href=\"w3.css\">" % (indent(lvl)))
     lvl -= 1
     fd.write("%s</head>\n" % (indent(lvl)))
 
