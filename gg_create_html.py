@@ -58,7 +58,7 @@ def generate_page(page, img_list, thumbs_dir, previous_page=None, next_page=None
             thumb = os.path.join(thumbs_dir, img)
             fd.write("%s<div class=\"w3-third\">" % (indent(lvl)))
             fd.write("<a href=\"%s\">" % (img))
-            fd.write("<img src=\"%s\" class=\"w3-round\" style=\width:100%%\"/>" % (thumb))
+            fd.write("<img src=\"%s\" class=\"w3-round\" style=\"width:100%%\"/>" % (thumb))
             fd.write("</a>")
             fd.write("</div>\n")
         # Close line of array
