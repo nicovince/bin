@@ -13,7 +13,8 @@ def indent(lvl):
 def html_header(fd, lvl):
     fd.write("%s<head>\n" % (indent(lvl)))
     lvl += 1
-    fd.write("%s<title>todo title</title>\n" % (indent(lvl)))
+    fd.write("%s<title>Emilie's gallery</title>\n" % (indent(lvl)))
+    fd.write("<link rel=\"stylesheet\" href=\"w3.css\">
     lvl -= 1
     fd.write("%s</head>\n" % (indent(lvl)))
 
