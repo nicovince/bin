@@ -7,6 +7,7 @@ from PIL.ExifTags import TAGS
 import time  
 
 def get_date_name(image):
+    """Read exif data from image to return string img name with timestamp"""
     date =  Image.open(image)._getexif()[36867]
     date = date.replace(":", "")
     date = date.replace(" ", "_")
