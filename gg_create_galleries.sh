@@ -3,6 +3,10 @@ BIN_DIR=$(dirname $(realpath $0))
 GALLERY_ROOT=$1
 THUMBS_DIR=${GALLERY_ROOT}/.thumbs
 
+# Rename images into timestamps names for automatic sorting
+echo "Rename images"
+${BIN_DIR}/gg_rename_pictures.py ${GALLERY_ROOT}
+
 # Generate thumbnails for all images found under gallery's root.
 echo "Create thumbnails"
 ${BIN_DIR}/gg_create_thumbnails.sh ${GALLERY_ROOT}
