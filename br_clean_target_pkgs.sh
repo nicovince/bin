@@ -4,7 +4,7 @@ BUILD_DIR=$(find $(pwd) -maxdepth 2 -name build)
 
 function filter_host_pkgs()
 {
-  find ${BUILD_DIR} -maxdepth 1 -mindepth 1 | grep -v "host-"
+  find ${BUILD_DIR} -maxdepth 1 -mindepth 1 | grep -v "host-" | grep -v "packages-file-list-host.txt"
 }
 
 
