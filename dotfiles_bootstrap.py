@@ -173,6 +173,7 @@ class BootStrap:
                      '.inputrc',
                      '.screenrc',
                      '.gitignore_global',
+                     '.gitconfig',
                      ]
         srcFileList = []
         dstFileList = []
@@ -183,7 +184,7 @@ class BootStrap:
 
     # Return list of (template, dst) file that needs to be processed
     def getTemplateFiles(self):
-        fileList = ['template.gitconfig']
+        fileList = ['template.gitconfig_user']
         templateFileList = []
         dstFileList = []
         for f in fileList:
