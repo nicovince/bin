@@ -172,6 +172,7 @@ class BootStrap:
                      '.bash_colors',
                      '.inputrc',
                      '.screenrc',
+                     '.tmux.conf',
                      '.gitignore_global',
                      '.gitconfig',
                      ]
