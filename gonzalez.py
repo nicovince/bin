@@ -89,8 +89,11 @@ class TabSession:
         self.dbusObj.setTitle(1,title)
 
     # Execute command in tab
-    def sendCmd(self, cmd):
-        self.dbusObj.sendText("%s\n" % cmd)
+    def sendCmd(self, cmd, exec_cmd=True):
+        if exec_cmd:
+            self.dbusObj.sendText("%s\n" % cmd)
+        else:
+            self.dbusObj.sendText("%s" % cmd)
 
     # Setup tab configuration
     def processConfig(self, tabConfig):
@@ -100,7 +103,11 @@ class TabSession:
 
     # Process Command config
     def processCmd(self, cmdConf):
-        self.sendCmd(cmdConf["Cmd"])
+        exec_cmd = True
+        if "Exec" in cmdConf:
+            assert type(cmdConf["Exec"]) == bool, "Exec field must be a boolean"
+            exec_cmd = cmdConf["Exec"]
+        self.sendCmd(cmdConf["Cmd"], exec_cmd)
         if 'delay' in cmdConf.keys():
             time.sleep(cmdConf["delay"])
 
