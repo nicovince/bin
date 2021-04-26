@@ -65,7 +65,8 @@ scan_monthly_batch_file()
   scan_again=1
   idx=1
   while [ $scan_again -eq 1 ]; do
-    filename=`printf "%s_%d_%02d_%d" $filename_prefix $year $month $idx`
+    filename_no_index=$(printf "%s_%d_%02d" ${filename_prefix} ${year} ${month})
+    filename=$(printf "%s_%d" ${filename_no_index} $idx)
     echo $filename
     scan_image -f $filename #-p $PRINTER
 
@@ -74,6 +75,9 @@ scan_monthly_batch_file()
     read answer
     if [ "$answer" = "n" ]; then
       scan_again=0
+      convert ${filename_no_index}_*.png ${filename_no_index}_big.pdf
+      pdf_reduce.sh ${filename_no_index}_big.pdf ${filename_no_index}.pdf
+      rm ${filename_no_index}_*.png ${filename_no_index}_big.pdf
       continue
     fi
 
@@ -83,6 +87,9 @@ scan_monthly_batch_file()
     if [ "$next_month" = "n" ]; then
       idx=$(($idx+1))
     else
+      convert ${filename_no_index}_*.png ${filename_no_index}_big.pdf
+      pdf_reduce.sh ${filename_no_index}_big.pdf ${filename_no_index}.pdf
+      rm ${filename_no_index}_*.png ${filename_no_index}_big.pdf
       idx=1
       if [ $month -eq 12 ]; then
         month=1
