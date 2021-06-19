@@ -32,6 +32,7 @@ scan_batch_file()
     filename=`printf "%s_%0${digits}d" $filename_prefix $idx`
     echo $filename
     scan_image -f $filename #-p $PRINTER
+    png_list="${png_list} ${filename}.png"
     idx=$((idx+1))
     echo -n "Continue [Y/n]"
     read -n 1 answer
@@ -40,6 +41,10 @@ scan_batch_file()
       echo
     fi
   done
+  convert ${png_list} ${filename_prefix}_big.pdf
+  rm -f ${png_list}
+  pdf_reduce.sh ${filename_prefix}_big.pdf ${filename_prefix}.pdf
+  rm ${filename_prefix}_big.pdf
 }
 
 scan_monthly_batch_file()
