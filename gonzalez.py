@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import time
@@ -53,7 +53,7 @@ class KonsoleWindow:
             time.sleep(step/1000.0)
             cnt += step
         if cnt >= timeoutMs:
-            print "Service %s is not available after %d seconds" % (self.serviceName, timeout)
+            print("Service %s is not available after %d seconds" % (self.serviceName, timeout))
             sys.exit(1)
 
     # Setup konsole configuration

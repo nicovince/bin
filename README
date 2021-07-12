@@ -1,1 +1,10 @@
 Create One branch per machine named ${HOSTNMAME}_bin
+
+## Gonzalez:
+```
+_konsole_dbus_session_name()
+{
+  echo org.kde.konsole-$(pstree -p -s $(ps | grep $(basename $(echo $0)) | head -1 | awk '{print $1}') | grep -o 'konsole([0-9]\+)' | grep -o '[0-9]\+')
+}
+gonzalez.py -s $(_konsole_dbus_session_name) ~/.dotfiles/gonzalez_config/vog_zephyr.json
+```
