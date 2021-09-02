@@ -46,8 +46,8 @@ def display2(n, pkt_sz=32, msb_zero=False):
                     lsb_idx = len(packets) * pkt_sz - 1 - lsb_idx
                 c += format_range(msb_idx, lsb_idx) + " | "
                 s += " |  "
-        print s
-        print c
+        print(s)
+        print(c)
 
 def display(n):
     while n != 0:
@@ -59,14 +59,14 @@ def display(n):
                 bit = 1
             else:
                 bit = 0
-        
+
             s = s + str(bit)
             if i % 4 == 0:
                 c = c + format_range(i+3, i) + " | "
                 s = s + " |  "
-        
-        print s
-        print c
+
+        print(s)
+        print(c)
         n = n >> 32
 
 def main():
