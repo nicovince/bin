@@ -15,7 +15,12 @@ scan_one_file()
 {
   echo -n "filename : "
   read filename
-  scan_image -f $filename -p $PRINTER
+  set -e
+  scan_image -f $filename
+  convert ${filename}.png ${filename}_big.pdf
+  rm ${filename}.png
+  pdf_reduce.sh ${filename}_big.pdf ${filename}.pdf
+  rm ${filename}_big.pdf
 }
 
 scan_batch_file()
