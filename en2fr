@@ -1,4 +1,0 @@
-#!/bin/bash
-i=http://www.wordreference.com/fr/Translation.asp?enfr=
-j=$i$1
-w3m $j

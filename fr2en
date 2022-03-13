@@ -1,2 +1,0 @@
-#!/bin/bash
-w3m http://www.wordreference.com/fr/en/translation.asp?fren=$1

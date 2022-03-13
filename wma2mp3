@@ -1,9 +1,0 @@
-#!/bin/sh
-
-for i in "$*";
-do
-	mplayer -ao pcm -ao pcm:file="${i%.wma}.wav" "$i"
-	lame --preset standard "${i%.wma}.wav" "${i%.wma}.mp3"
-	rm -f "${i%.wma}.wav"
-done
-

@@ -1,9 +1,0 @@
-#!/bin/bash
-TODO=~/Documents/.todo/TODO
-if [ -z $1 ]; then
-  cat -n $TODO
-else
-  for i in $*; do
-    sed -i ${i}d $TODO
-  done
-fi

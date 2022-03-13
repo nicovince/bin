@@ -1,8 +1,0 @@
-#!/bin/sh
-
-i="$*"
-
-
-mplayer -vo null -ao pcm -ao pcm:file="${i%.wmv}.wav" "$i"
-lame --preset standard "${i%.wmv}.wav" "${i%.wmv}.mp3"
-rm -f "${i%.wmv}.wav"

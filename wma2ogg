@@ -1,8 +1,0 @@
-#!/bin/sh
-# Script to convert every *.wma file of current directory in ogg
-for i in *.wma; 
-	do 
-	mplayer -ao pcm -ao pcm:file="${i%.wma}.wav" "$i"
-	oggenc -m 256 "${i%.wma}.wav"
-	rm -f "${i%.wma}.wav"
-done
