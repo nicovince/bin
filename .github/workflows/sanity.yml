@@ -9,7 +9,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install pre-commit
-        run: pip install pre-commit
+        run: pip install pre-commit pylint dbus-python
       - name: Lint Files
         run: pre-commit run --all-files
 
