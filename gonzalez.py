@@ -131,6 +131,20 @@ def test():
     tab.send_cmd("ls")
 
 
+def convert_json_to_yaml(file_path):
+    filename, ext = os.path.splitext(file_path)
+    print(f"{file_path=}, {filename=}, {ext=}")
+    assert ext == ".json"
+    yml_file = f"{filename}.yaml"
+    yml = yaml.YAML()
+    yml.indent(mapping=2, sequence=4, offset=2)
+    # pylint: disable=line-too-long
+    with open(file_path, 'r', encoding='utf-8') as json_fd, open(yml_file, 'w', encoding='utf-8') as yaml_fd:
+        yml.dump(yaml.safe_load(json_fd), yaml_fd)
+    print(f"Converted {file_path} to {yml_file}")
+
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("filename",
@@ -138,10 +152,16 @@ def main():
     parser.add_argument("-s", "--service-name", dest="service_name",
                         default=None,
                         help="Dbus service name for the Konsole where the tabs needs to be crated")
+    parser.add_argument("-c", "--convert", dest="convert", action="store_true",
+                        help="Convert json file into yaml and exit")
     args = parser.parse_args()
-    with open(args.filename, 'r', encoding='utf-8') as cfg_fd:
-        cfg = yaml.safe_load(cfg_fd)
-        Gonzalez(config=cfg, service_name=args.service_name)
+
+    if args.convert:
+        convert_json_to_yaml(args.filename)
+    else:
+        with open(args.filename, 'r', encoding='utf-8') as cfg_fd:
+            cfg = yaml.safe_load(cfg_fd)
+            Gonzalez(config=cfg, service_name=args.service_name)
 
 if __name__ == '__main__':
     main()
