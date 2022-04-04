@@ -2,9 +2,9 @@
 
 import sys
 import time
-import json
 import os
 import argparse
+from ruamel import yaml
 import dbus
 
 
@@ -139,9 +139,9 @@ def main():
                         default=None,
                         help="Dbus service name for the Konsole where the tabs needs to be crated")
     args = parser.parse_args()
-    with open(args.filename, 'r', encoding='utf-8') as json_cfg_fd:
-        json_cfg = json.load(json_cfg_fd)
-        Gonzalez(config=json_cfg, service_name=args.service_name)
+    with open(args.filename, 'r', encoding='utf-8') as cfg_fd:
+        cfg = yaml.safe_load(cfg_fd)
+        Gonzalez(config=cfg, service_name=args.service_name)
 
 if __name__ == '__main__':
     main()
