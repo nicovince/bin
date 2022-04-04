@@ -21,3 +21,11 @@ repos:
     rev: 0.14.0
     hooks:
       - id: check-github-workflows
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+        require_serial: true

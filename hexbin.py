@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import sys
 import argparse
 
 
@@ -14,29 +13,32 @@ def format_range(upper,lower):
         bitrange = leading_spaces * space + bitrange
     return bitrange
 
-def split(n, bitlen):
-    l = list()
-    while n != 0:
-        val = n & (1 << bitlen) - 1
-        l.append(val)
-        n = n >> bitlen
+def split(num, bitlen):
+    """Split number into bitlen groups.
 
-    return l
+    split(0xAB,4) -> [0xA, 0xB]
+    """
+    split_num = []
+    while num != 0:
+        val = num & (1 << bitlen) - 1
+        split_num.append(val)
+        num = num >> bitlen
 
-def bitval(n, b):
-    if n & (1 << b):
+    return split_num
+
+def bitval(num, bitpos):
+    if num & (1 << bitpos):
         return 1
-    else:
-        return 0
+    return 0
 
-def display2(n, pkt_sz=32, msb_zero=False):
-    packets = split(n, pkt_sz)
-    for pkt_cnt,p in enumerate(packets):
-        s = " "
-        c = ""
+def display(num, pkt_sz=32, msb_zero=False):
+    packets = split(num, pkt_sz)
+    for pkt_cnt,pkt in enumerate(packets):
+        binstr = " "
+        rangestr = ""
         for i in reversed(range(0, pkt_sz)):
-            bit = bitval(p, i)
-            s += str(bit)
+            bit = bitval(pkt, i)
+            binstr += str(bit)
             if (i % 4) == 0:
                 msb_idx = pkt_cnt * pkt_sz + i + 3
                 lsb_idx = pkt_cnt * pkt_sz + i
@@ -44,30 +46,10 @@ def display2(n, pkt_sz=32, msb_zero=False):
                 if msb_zero:
                     msb_idx = len(packets) * pkt_sz - 1 - msb_idx
                     lsb_idx = len(packets) * pkt_sz - 1 - lsb_idx
-                c += format_range(msb_idx, lsb_idx) + " | "
-                s += " |  "
-        print(s)
-        print(c)
-
-def display(n):
-    while n != 0:
-        s=" "
-        c=""
-        val = n & (1 << 32) - 1
-        for i in reversed(range(0,32)):
-            if val & (1 << i):
-                bit = 1
-            else:
-                bit = 0
-
-            s = s + str(bit)
-            if i % 4 == 0:
-                c = c + format_range(i+3, i) + " | "
-                s = s + " |  "
-
-        print(s)
-        print(c)
-        n = n >> 32
+                rangestr += format_range(msb_idx, lsb_idx) + " | "
+                binstr += " |  "
+        print(binstr)
+        print(rangestr)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -78,7 +60,7 @@ def main():
                         choices=[8,16,32,64], default=32)
     args = parser.parse_args()
     args.n = int(args.n, 16)
-    display2(args.n, args.pkt_size, args.msb_zero)
+    display(args.n, args.pkt_size, args.msb_zero)
 
 if __name__ == "__main__":
     main()
