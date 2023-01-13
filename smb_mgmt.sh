@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 declare -A SMB_MNT_INFOS
 SMB_MNT_INFOS[U]="//SV-VLB-0001/users$/nicolas.vincent"
@@ -7,12 +7,12 @@ SMB_MNT_INFOS[R]="//SV-VLB-0002/ref"
 SMB_MNT_INFOS[X]="//SV-VLB-0002/echange"
 
 SMB_CRED="$HOME/.smbcred"
-MNT_OPTS="_netdev,credentials=${SMB_CRED},dir_mode=0555,file_mode=0444,uid=500,gid=500"
 
 MOUNT=0
 UMOUNT=0
 DRIVES=""
 DRIVE_LIST="U S R X"
+RW=0
 while [ $# -gt 0 ]; do
     key="$1"
     case ${key} in
@@ -36,6 +36,10 @@ while [ $# -gt 0 ]; do
             DRIVES="${DRIVES} X"
             shift
             ;;
+        -rw)
+            RW=1
+            shift
+            ;;
         umount)
             UMOUNT=1
             shift
@@ -46,6 +50,17 @@ while [ $# -gt 0 ]; do
             ;;
     esac
 done
+
+if [ ${RW} -eq 1 ]; then
+    DIR_MODE="0755"
+    FILE_MODE="0644"
+else
+    DIR_MODE="0555"
+    FILE_MODE="0444"
+fi
+USR_UID="$(id -u)"
+USR_GID="$(id -g)"
+MNT_OPTS="_netdev,credentials=${SMB_CRED},dir_mode=${DIR_MODE},file_mode=${FILE_MODE},uid=${USR_UID},gid=${USR_GID}"
 
 if [ -z "${DRIVES}" ]; then
     DRIVES="U S R X"
