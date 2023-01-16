@@ -69,4 +69,4 @@ if [ -f "${GH_HOSTS}" ]; then
 fi
 
 echo "Update manually pass store:"
-echo "pass edit www/github.com/token-git-cli@${HOSTNAME}"
+echo "pass git pull && pass edit www/github.com/token-git-cli@${HOSTNAME} && pass git push"
