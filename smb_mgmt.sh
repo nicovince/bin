@@ -1,10 +1,10 @@
 #!/bin/bash -e
 
 declare -A SMB_MNT_INFOS
-SMB_MNT_INFOS[U]="//SV-VLB-0001/users$/nicolas.vincent"
-SMB_MNT_INFOS[S]="//SV-VLB-0001/services"
-SMB_MNT_INFOS[R]="//SV-VLB-0002/ref"
-SMB_MNT_INFOS[X]="//SV-VLB-0002/echange"
+SMB_MNT_INFOS[U]="//SV-VLB-0001.railway.ad/users$/nicolas.vincent"
+SMB_MNT_INFOS[S]="//SV-VLB-0001.railway.ad/services"
+SMB_MNT_INFOS[R]="//SV-VLB-0002.railway.ad/ref"
+SMB_MNT_INFOS[X]="//SV-VLB-0002.railway.ad/echange"
 
 SMB_CRED="$HOME/.smbcred"
 
