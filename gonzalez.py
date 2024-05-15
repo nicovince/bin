@@ -43,7 +43,7 @@ class KonsoleWindow:
     # Check if service attached to the konsole is available in the list of services presented
     # by dbus
     def is_service_available(self):
-        return dbus.UTF8String(self.service_name) in self.bus.list_names()
+        return dbus.String(self.service_name) in self.bus.list_names()
 
     # Wait for dbus service to be available, timeout given in seconds
     def wait_service_available(self, timeout=5):
@@ -151,7 +151,8 @@ def main():
                         help="Json file where configuration is given")
     parser.add_argument("-s", "--service-name", dest="service_name",
                         default=None,
-                        help="Dbus service name for the Konsole where the tabs needs to be crated")
+                        help="Dbus service name for the Konsole where the tabs needs to be created."
+                        " Use qdbus to list services available")
     parser.add_argument("-c", "--convert", dest="convert", action="store_true",
                         help="Convert json file into yaml and exit")
     args = parser.parse_args()
@@ -160,7 +161,8 @@ def main():
         convert_json_to_yaml(args.filename)
     else:
         with open(args.filename, 'r', encoding='utf-8') as cfg_fd:
-            cfg = yaml.safe_load(cfg_fd)
+            yaml_loader = yaml.YAML(typ='safe', pure=True)
+            cfg = yaml_loader.load(cfg_fd)
             Gonzalez(config=cfg, service_name=args.service_name)
 
 if __name__ == '__main__':
