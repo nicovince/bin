@@ -5,13 +5,14 @@ SMB_MNT_INFOS[U]="//SV-VLB-0001.railway.ad/users$/nicolas.vincent"
 SMB_MNT_INFOS[S]="//SV-VLB-0001.railway.ad/services"
 SMB_MNT_INFOS[R]="//SV-VLB-0002.railway.ad/ref"
 SMB_MNT_INFOS[X]="//SV-VLB-0002.railway.ad/echange"
+SMB_MNT_INFOS[VOG]="//SV-VLB-0001.railway.ad/VOG_Yocto-Data-Storage"
 
 SMB_CRED="$HOME/.smbcred"
 
 MOUNT=0
 UMOUNT=0
 DRIVES=""
-DRIVE_LIST="U S R X"
+DRIVE_LIST="U S R X VOG"
 RW=0
 while [ $# -gt 0 ]; do
     key="$1"
@@ -34,6 +35,10 @@ while [ $# -gt 0 ]; do
             ;;
         -x)
             DRIVES="${DRIVES} X"
+            shift
+            ;;
+        -vog)
+            DRIVES="${DRIVES} VOG"
             shift
             ;;
         -rw)
@@ -63,7 +68,7 @@ USR_GID="$(id -g)"
 MNT_OPTS="_netdev,credentials=${SMB_CRED},dir_mode=${DIR_MODE},file_mode=${FILE_MODE},uid=${USR_UID},gid=${USR_GID}"
 
 if [ -z "${DRIVES}" ]; then
-    DRIVES="U S R X"
+    DRIVES="U S R X VOG"
 fi
 
 if [ ${MOUNT} -eq 1 ]; then
