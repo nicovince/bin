@@ -30,8 +30,7 @@ echov()
 PRINTER_4480="hpaio:/usb/Photosmart_C4400_series?serial=TH896H21V305BN"
 PRINTER_1200="hpaio:/usb/PSC_1200_series?serial=MY49EG10BXT0"
 PRINTER_750="hpaio:/usb/PSC_750?serial=ES168BH0MRWB"
-PRINTER_DCP_L2510D="libusb:001:006"
-PRINTER_DCP_L2510D="brother4:bus2;dev1"
+PRINTER_DCP_L2510D="brother4:bus1;dev5"
 
 # Default printer
 printer=$PRINTER_DCP_L2510D
