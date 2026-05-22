@@ -52,8 +52,8 @@ scan_batch_file()
       echo
     fi
   done
-  convert ${png_list} "${filename_prefix}_big.pdf"
-  rm -f ${png_list}
+  convert "${png_list}" "${filename_prefix}_big.pdf"
+  rm -f "${png_list}"
   pdf_reduce.sh "${filename_prefix}_big.pdf" "${filename_prefix}.pdf"
   rm "${filename_prefix}_big.pdf"
 }
@@ -80,7 +80,7 @@ scan_monthly_batch_file()
   scan_again=1
   idx=1
   while [ $scan_again -eq 1 ]; do
-    filename_no_index=$(printf "%s_%d_%02d" "$filename_prefix" $year $month)
+    filename_no_index=$(printf "%s_%d_%02d" "$filename_prefix" "$year" "$month")
     filename=$(printf "%s_%d" "$filename_no_index" $idx)
     echo "$filename"
     scan_image -f "$filename"
@@ -106,7 +106,7 @@ scan_monthly_batch_file()
       pdf_reduce.sh "${filename_no_index}_big.pdf" "${filename_no_index}.pdf"
       rm "${filename_no_index}_"*.png "${filename_no_index}_big.pdf"
       idx=1
-      if [ $month -eq 12 ]; then
+      if [ "$month" -eq 12 ]; then
         month=1
         year=$((year+1))
       else
