@@ -6,37 +6,43 @@
 
 function is_integer()
 {
-  #printf "%d" $1 > /dev/null 2>&1
-  [ "$1" -eq "$1" ] > /dev/null 2>&1
+  # return 0 if argument is an integer (one or more digits), 1 otherwise
+  [[ "$1" =~ ^[0-9]+$ ]]
   return $?
 }
 
 scan_one_file()
 {
-  echo -n "filename : "
-  read filename
+  local filename="$1"
+  if [ -z "$filename" ]; then
+    echo "Error: missing filename for one-file mode"
+    exit 1
+  fi
   set -e
-  scan_image -f $filename
-  convert ${filename}.png ${filename}_big.pdf
-  rm ${filename}.png
-  pdf_reduce.sh ${filename}_big.pdf ${filename}.pdf
-  rm ${filename}_big.pdf
+  scan_image -f "$filename"
+  convert "${filename}.png" "${filename}_big.pdf"
+  rm "${filename}.png"
+  pdf_reduce.sh "${filename}_big.pdf" "${filename}.pdf"
+  rm "${filename}_big.pdf"
 }
 
 scan_batch_file()
 {
-  echo -n "filename prefix : "
-  read filename_prefix
-  echo -n "How many digits : "
-  read digits
-  echo -n "Startup index (0): "
-  read idx
+  local filename_prefix="$1"
+  local digits="$2"
+  local idx="$3"
+  if [ -z "$filename_prefix" ]; then
+    echo "Error: missing filename prefix for batch mode"
+    exit 1
+  fi
+  # digits and idx are provided by the caller (digits is hardcoded to 3)
+  png_list=""
   scan_again=1
   idx=${idx:=0}
   while [ $scan_again -eq 1 ]; do
-    filename=`printf "%s_%0${digits}d" $filename_prefix $idx`
-    echo $filename
-    scan_image -f $filename #-p $PRINTER
+    filename=$(printf "%s_%0${digits}d" "$filename_prefix" $idx)
+    echo "$filename"
+    scan_image -f "$filename"
     png_list="${png_list} ${filename}.png"
     idx=$((idx+1))
     echo -n "Continue [Y/n]"
@@ -46,48 +52,47 @@ scan_batch_file()
       echo
     fi
   done
-  convert ${png_list} ${filename_prefix}_big.pdf
+  convert ${png_list} "${filename_prefix}_big.pdf"
   rm -f ${png_list}
-  pdf_reduce.sh ${filename_prefix}_big.pdf ${filename_prefix}.pdf
-  rm ${filename_prefix}_big.pdf
+  pdf_reduce.sh "${filename_prefix}_big.pdf" "${filename_prefix}.pdf"
+  rm "${filename_prefix}_big.pdf"
 }
 
 scan_monthly_batch_file()
 {
-  echo -n "filename prefix : "
-  read filename_prefix
-
-  echo -n "year : "
-  read year
-  if [ `is_integer $year` ]; then
-    echo "Error : year must be integer"
+  local filename_prefix="$1"
+  local year="$2"
+  local month="$3"
+  if [ -z "$filename_prefix" ] || [ -z "$year" ] || [ -z "$month" ]; then
+    echo "Error: missing arguments for monthly mode"
+    echo "Usage: scanator -m <filename prefix> <year> <month>"
+    exit 1
+  fi
+  if ! is_integer "$year"; then
+    echo "Error: year must be integer"
+    exit 1
+  fi
+  if ! is_integer "$month"; then
+    echo "Error: month must be integer"
     exit 1
   fi
 
-  echo -n "month : "
-  read month
-  if [ `is_integer $month` ]; then
-    echo "Error : month must be integer"
-    exit 1
-  fi
-
-  
   scan_again=1
   idx=1
   while [ $scan_again -eq 1 ]; do
-    filename_no_index=$(printf "%s_%d_%02d" ${filename_prefix} ${year} ${month})
-    filename=$(printf "%s_%d" ${filename_no_index} $idx)
-    echo $filename
-    scan_image -f $filename #-p $PRINTER
+    filename_no_index=$(printf "%s_%d_%02d" "$filename_prefix" $year $month)
+    filename=$(printf "%s_%d" "$filename_no_index" $idx)
+    echo "$filename"
+    scan_image -f "$filename"
 
     # Continue ?
     echo -n "Continue [Y/n]"
     read answer
     if [ "$answer" = "n" ]; then
       scan_again=0
-      convert ${filename_no_index}_*.png ${filename_no_index}_big.pdf
-      pdf_reduce.sh ${filename_no_index}_big.pdf ${filename_no_index}.pdf
-      rm ${filename_no_index}_*.png ${filename_no_index}_big.pdf
+      convert "${filename_no_index}_"*.png "${filename_no_index}_big.pdf"
+      pdf_reduce.sh "${filename_no_index}_big.pdf" "${filename_no_index}.pdf"
+      rm "${filename_no_index}_"*.png "${filename_no_index}_big.pdf"
       continue
     fi
 
@@ -95,17 +100,17 @@ scan_monthly_batch_file()
     echo -n "Next month [Y/n]"
     read next_month
     if [ "$next_month" = "n" ]; then
-      idx=$(($idx+1))
+      idx=$((idx+1))
     else
-      convert ${filename_no_index}_*.png ${filename_no_index}_big.pdf
-      pdf_reduce.sh ${filename_no_index}_big.pdf ${filename_no_index}.pdf
-      rm ${filename_no_index}_*.png ${filename_no_index}_big.pdf
+      convert "${filename_no_index}_"*.png "${filename_no_index}_big.pdf"
+      pdf_reduce.sh "${filename_no_index}_big.pdf" "${filename_no_index}.pdf"
+      rm "${filename_no_index}_"*.png "${filename_no_index}_big.pdf"
       idx=1
       if [ $month -eq 12 ]; then
         month=1
-        year=$(($year+1))
+        year=$((year+1))
       else
-        month=$(($month+1))
+        month=$((month+1))
       fi
     fi
   done
@@ -116,12 +121,16 @@ scan_monthly_batch_file()
 print_help()
 {
   echo "Usage : scanator <option>"
-  echo "This script is a scan utility to make scan of a batch of files easy with clever naming pattern"
+  echo "This script is a scan utility to make scanning batches easier."
+  echo "Non-interactive: all required parameters must be provided on the command line."
   echo "Valid options are :"
-  echo "        -m, --monthly  : run a scan for monthly files. (prefix_year_month_idx.png)"
-  echo "        -b, --batch    : run a scan of batch files. (prefix_idx.png)"
-  echo "        -o, --one-file : run a scan of batch files. (filename.png)"
-  echo "        -h, --help     : display this help and exit"
+  echo "        -o <filename>                      : scan a single file and produce <filename>.pdf"
+  echo "        -b <filename_prefix>               : batch mode. filenames will be <prefix>_XXX (3 digits), start index 0"
+  echo "                                           (digits hardcoded to 3; this mode is kept for compatibility)"
+  echo "        -m <filename_prefix> <year> <month> : monthly mode. filenames will be <prefix>_YYYY_MM_N where N is page index"
+  echo "        -h, --help                         : display this help and exit"
+  echo "Note: For batch and monthly modes the script will still prompt whether to continue scanning the current"
+  echo "      sheet and (for monthly mode) whether to move to the next month. Missing required arguments aborts."
 }
 
 if [ $# -eq 0 ]; then
@@ -129,22 +138,40 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-# Get operation from command line arguments
-while [ $# -ne 0 ]; do
-  case $1 in
-    -m|--monthly)
-      scan_monthly_batch_file;;
-    -b|--batch)
-      scan_batch_file;;
-    -o|--one-file)
-      scan_one_file;;
-    -h|--help)
+# Single-option mode: require parameters on the CLI
+opt="$1"
+shift
+case "$opt" in
+  -m|--monthly)
+    prefix="$1"; year="$2"; month="$3"
+    if [ -z "$prefix" ] || [ -z "$year" ] || [ -z "$month" ]; then
+      echo "Error: -m requires <filename prefix> <year> <month>"
       print_help
-      exit 0;;
-    *)
-      echo "Unknown option $1"
+      exit 1
+    fi
+    scan_monthly_batch_file "$prefix" "$year" "$month" ;;
+  -b|--batch)
+    prefix="$1"
+    if [ -z "$prefix" ]; then
+      echo "Error: -b requires <filename prefix>"
       print_help
-      exit 1;;
-  esac
-  shift
-done
+      exit 1
+    fi
+    # hardcode digits to 3 and start index to 0 as requested
+    scan_batch_file "$prefix" 3 0 ;;
+  -o|--one-file)
+    filename="$1"
+    if [ -z "$filename" ]; then
+      echo "Error: -o requires <filename>"
+      print_help
+      exit 1
+    fi
+    scan_one_file "$filename" ;;
+  -h|--help)
+    print_help
+    exit 0 ;;
+  *)
+    echo "Unknown option $opt"
+    print_help
+    exit 1 ;;
+esac
