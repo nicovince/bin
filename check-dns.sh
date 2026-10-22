@@ -17,12 +17,14 @@ DNS_SERVER="$DEFAULT_DNS"
 FQDN=""
 INTERVAL=2
 LOGFILE="dig_$(ts).log"
+DIG_LOGFILE="${LOGFILE}"
 
 print_usage() {
     cat <<EOF
 Usage: $PROGNAME [--dns DNS] [--help] FQDN
   --dns DNS     Use DNS server (default: $DEFAULT_DNS)
   --log LOGFILE Log to specified file (default: dig_<timestamp utc>.log)
+  --dig-logfile DIG_LOGFILE Log dig output to specified file (default to same file as regular log)
   --help        Show this help
 FQDN may appear before or after options.
 The script runs until interrupted (Ctrl-C).
@@ -30,7 +32,7 @@ EOF
 }
 
 # Parse options (allow positional anywhere)
-if ! opts=$(getopt -o '' --long log:,dns:,help -- "$@"); then
+if ! opts=$(getopt -o '' --long log:,dig-logfile:,dns:,help -- "$@"); then
   print_usage
   exit 2
 fi
@@ -40,6 +42,7 @@ while true; do
         --dns) DNS_SERVER="$2"; shift 2 ;;
         --help) print_usage; exit 0 ;;
         --log) LOGFILE="$2"; shift 2;;
+        --dig-logfile) DIG_LOGFILE="$2"; shift 2;;
         --) shift; break ;;
         *) break ;;
     esac
@@ -85,8 +88,8 @@ resolve_once() {
     local fqdn="$3"
 
     # +time=3 to keep it quick, +tries=1 to avoid retrying at dig level
-    ts_utc >> "${LOGFILE}"
-    dig @"${dns_server}" "${tcp_opt}" +time=3 +tries=1 "${fqdn}" A >> "${LOGFILE}" 2>&1
+    ts_utc >> "${DIG_LOGFILE}"
+    dig @"${dns_server}" "${tcp_opt}" +time=3 +tries=1 "${fqdn}" A >> "${DIG_LOGFILE}" 2>&1
     res="$?"
     if [ "${res}" -eq 0 ]; then
         # non-empty output means we got at least one A record
